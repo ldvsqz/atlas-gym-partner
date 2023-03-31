@@ -3,6 +3,7 @@ import { query, getDocs, collection, where, addDoc } from "firebase/firestore"
 import {db} from "./firebase"
 import {app} from "./firebase"
 
+const auth = getAuth(app)
 
 const logInWithEmailAndPassword = async (email, password) => {
     try {
@@ -13,15 +14,17 @@ const logInWithEmailAndPassword = async (email, password) => {
     }
 };
 
-const registerWithEmailAndPassword = async (name, email, password) => {
+const registerWithEmailAndPassword = async (dni, birthday, phone, name, email, password) => {
     try {
         const res = await createUserWithEmailAndPassword(auth, email, password);
         const user = res.user;
       await addDoc(collection(db, "users"), {
         uid: user.uid,
+        dni,
+        birthday,
+        phone,
         name,
-        authProvider: "local",
-        email,
+        email
     });
 } catch (err) {
     console.error(err);
@@ -41,9 +44,9 @@ const sendPasswordReset = async (email) => {
 
 const logout = () => {
     signOut(auth);
+    console.log("here!")
 };
 
-const auth = getAuth(app)
 
 export {
     signInWithEmailAndPassword,
