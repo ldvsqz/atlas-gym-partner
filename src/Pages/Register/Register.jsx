@@ -10,40 +10,63 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [dni, setDni] = useState("");
+  const [phone, setPhone] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
   const register = () => {
     if (!name) alert("Please enter name");
-    registerWithEmailAndPassword(name, email, password);
+    registerWithEmailAndPassword(dni, birthday, phone, name, email, password);
   };
   useEffect(() => {
     if (loading) return;
-    if (user) console.log("Listo")
     if (user) navigate("/perfil:id");
   }, [user, loading]);
   return (
     <div className="register">
       <div className="register__container">
+      <input
+          type="text"
+          className="register__textBox"
+          value={dni}
+          onChange={(e) => setDni(e.target.value)}
+          placeholder="Número de cédula"
+        />
         <input
           type="text"
           className="register__textBox"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Full Name"
+          placeholder="Nombre completo"
+        />
+        <input
+          type="date"
+          className="register__textBox"
+          value={birthday}
+          onChange={(e) => setBirthday(e.target.value)}
+          placeholder="Fecha de nacimiento"
+        />
+        <input
+          type="text"
+          className="register__textBox"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="Número de teléfono"
         />
         <input
           type="text"
           className="register__textBox"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="E-mail Address"
+          placeholder="Correo electrónico"
         />
         <input
           type="password"
           className="register__textBox"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
+          placeholder="Contraseña"
         />
         <button className="register__btn" onClick={register}>
           Register

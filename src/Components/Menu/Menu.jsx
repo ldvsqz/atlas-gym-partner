@@ -5,6 +5,7 @@ import { IconContext } from 'react-icons';
 import * as  FaIcons from "react-icons/fa";
 import * as  AiIcons from "react-icons/ai";
 import './Menu.css';
+import Logout from '../Logout/Logout';
 
 function Menu() {
 
@@ -43,6 +44,7 @@ function Menu() {
           </nav>
         </div>
       </IconContext.Provider>
+      <Logout/>
     </>
   );
 }
