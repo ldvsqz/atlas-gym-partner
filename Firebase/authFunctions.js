@@ -1,8 +1,33 @@
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
-import UserService from "./userService";
-import { app } from "./firebase"
+import { GoogleAuthProvider, signInWithPopup, getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut} from "firebase/auth";
+import { query, getDocs, collection, where, addDoc } from "firebase/firestore"
+import {db} from "./firebase"
+import {app} from "./firebase"
 
 const auth = getAuth(app)
+const googleProvider = new GoogleAuthProvider();
+
+
+const signInWithGoogle = async () => {
+  try {
+    const res = await signInWithPopup(auth, googleProvider);
+    const user = res.user;
+    const q = query(collection(db, "users"), where("uid", "==", user.uid));
+    const docs = await getDocs(q);
+    if (docs.docs.length === 0) {
+        UserService.add({
+            uid: user.uid,
+            dni,
+            birthday: user.birthday,
+            phone: user.phoneNumber,
+            name: user.displayName,
+            email : user.email
+        })
+    }
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  }
+};
 
 const logInWithEmailAndPassword = async (email, password) => {
     try {
@@ -55,6 +80,7 @@ const logout = () => {
 
 
 export {
+    signInWithGoogle,
     signInWithEmailAndPassword,
     auth,
     logInWithEmailAndPassword,

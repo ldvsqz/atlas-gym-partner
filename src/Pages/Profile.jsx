@@ -4,6 +4,7 @@ import Stats from '../Components/Stats/addStats';
 import { useLocation } from 'react-router-dom';
 import StatService from '../../Firebase/statsService';
 //import RoutinesService from '../../Firebase/routinesService';
+import Routines from '../Components/Routines/Routines';
 
 function Profile() {
   const location = useLocation();

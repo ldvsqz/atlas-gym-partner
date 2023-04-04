@@ -5,6 +5,7 @@ import Register from "./Pages/Register/Register";
 import Events from "./Pages/Events";
 import Clients from "./Pages/Clients/Clients";
 import Profile from "./Pages/Profile";
+import ResetPassword from './Pages/ResetPassword/ResetPassword';
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
     <Router>
       <Routes>
           <Route path='/' exact element={<Login/>} />
+          <Route path='/reset' exact element={<ResetPassword/>} />
           <Route path='/register' element={<Register/>} />
           <Route path='/events' element={<Events/>} />
           <Route path='/clients' element={<Clients/>} />
