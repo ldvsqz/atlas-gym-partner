@@ -1,4 +1,4 @@
-import { collection, addDoc, deleteDoc, updateDoc, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, updateDoc, getDocs, doc, getDoc, setDoc, query, where, limit } from 'firebase/firestore';
 import { db } from "./firebase"
 
 
@@ -19,8 +19,9 @@ class UserService {
 
     //add a user to firebase
     async add(user) {
+        const userRef = doc(db, 'users', user.uid);
         try {
-            await addDoc(collection(db, "users"), user);
+            await setDoc(userRef, user);
         } catch (error) {
             console.error('Error trying to insert user:', error);
         }
@@ -37,10 +38,18 @@ class UserService {
                     id: documentSnapshot.id,
                     ...documentSnapshot.data()
                 };
-                console.log('Usuario encontrado:', user);
-            } else {
-                console.log('El usuario no existe');
+                return user;
             }
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+        }
+    }
+
+    async exists(dni) {
+        try {
+            const userRef = doc(db, 'users', dni);
+            const documentSnapshot = await getDoc(userRef);
+            return documentSnapshot.exists();
         } catch (error) {
             console.error('Error al obtener el usuario:', error);
         }
@@ -86,6 +95,21 @@ class UserService {
             console.log('User data updated successfully');
         } catch (error) {
             console.error('Error trying to update user data:', error);
+        }
+    }
+
+    async getByEMail(email) {
+        const statsRef = collection(db, 'users');
+        const querySnapshot = await query(statsRef, where('email', '==', email), limit(1));
+        if (querySnapshot.docs) {
+            const documentSnapshot = querySnapshot.docs[0];
+            const stats = {
+                id: documentSnapshot.id,
+                ...documentSnapshot.data()
+            };
+            return stats;
+        } else {
+            return null;
         }
     }
 }

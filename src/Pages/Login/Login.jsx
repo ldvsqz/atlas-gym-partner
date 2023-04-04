@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, signInWithEmailAndPassword } from "../../../Firebase/authFunctions";
 import { useAuthState } from "react-firebase-hooks/auth";
+import UserService from '../../../Firebase/userService'
 import "./Login.css";
 function Login() {
   const [email, setEmail] = useState("");
@@ -13,8 +14,14 @@ function Login() {
       // maybe trigger a loading screen
       return;
     }
-    if (user) navigate("/perfil:id");
-  }, [user, loading]);
+    if (user) {
+      UserService.get(user.uid).then(client => {
+        if (!!client) {
+          navigate(`/perfil/${user.uid}`, { state: { client } });
+        }
+      });
+    }
+    }, [user, loading]);
   return (
     <div className="login">
       <div className="login__container">

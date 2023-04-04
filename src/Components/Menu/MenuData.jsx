@@ -25,7 +25,7 @@ export const MenuData = [
     },
     {
         title: 'Mi perfil',
-        path: '/perfil:id',
+        path: '/perfil/:uid',
         icon: <FaIcons.FaCartPlus/>,
         cName: 'nav-text'
     }
