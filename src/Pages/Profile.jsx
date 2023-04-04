@@ -1,5 +1,6 @@
 import React from 'react';
 import Menu from '../Components/Menu/Menu';
+import Routines from '../Components/Routines/Routines';
 
 function Profile() {
 
@@ -7,6 +8,7 @@ function Profile() {
     <div>
       <Menu/>
       <h1>Mi perfil</h1>
+      <Routines/>
     </div>
   );
 }

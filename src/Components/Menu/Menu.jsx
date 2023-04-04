@@ -41,10 +41,10 @@ function Menu() {
                 )
               })}
             </ul>
+            <Logout/>
           </nav>
         </div>
       </IconContext.Provider>
-      <Logout/>
     </>
   );
 }
