@@ -14,12 +14,14 @@ const signInWithGoogle = async () => {
     const q = query(collection(db, "users"), where("uid", "==", user.uid));
     const docs = await getDocs(q);
     if (docs.docs.length === 0) {
-      await addDoc(collection(db, "users"), {
-        uid: user.uid,
-        name: user.displayName,
-        authProvider: "google",
-        email: user.email,
-      });
+        UserService.add({
+            uid: user.uid,
+            dni,
+            birthday: user.birthday,
+            phone: user.phoneNumber,
+            name: user.displayName,
+            email : user.email
+        })
     }
   } catch (err) {
     console.error(err);
@@ -37,21 +39,28 @@ const logInWithEmailAndPassword = async (email, password) => {
 };
 
 const registerWithEmailAndPassword = async (dni, birthday, phone, name, email, password) => {
-    try {
-        const res = await createUserWithEmailAndPassword(auth, email, password);
-        const user = res.user;
-      await addDoc(collection(db, "users"), {
-        uid: user.uid,
-        dni,
-        birthday,
-        phone,
-        name,
-        email
-    });
-} catch (err) {
-    console.error(err);
-    alert(err.message);
-}
+    const userExists = await UserService.exists(dni)
+    if (!userExists) {
+        try {
+            const res = await createUserWithEmailAndPassword(auth, email, password);
+            const user = res.user;
+            //verificar si el usuario ya existe, crearlo en caso contrario
+            UserService.add({
+                uid: user.uid,
+                dni,
+                birthday,
+                phone,
+                name,
+                email
+            })
+        } catch (err) {
+            console.error(err);
+            alert(err.message);
+        }
+    } else {
+        console.error("el usuario ya existe");
+        alert("el usuario ya existe");
+    }
 };
 
 const sendPasswordReset = async (email) => {
@@ -78,4 +87,4 @@ export {
     registerWithEmailAndPassword,
     sendPasswordReset,
     logout
-  };
+};

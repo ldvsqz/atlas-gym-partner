@@ -1,4 +1,4 @@
-import { collection, addDoc, deleteDoc, updateDoc, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, updateDoc, getDocs, doc, getDoc, setDoc, query, where, limit } from 'firebase/firestore';
 import { db } from "./firebase"
 
 
@@ -18,9 +18,10 @@ class UserService {
 
 
     //add a user to firebase
-    static async add(user) {
+    async add(user) {
+        const userRef = doc(db, 'users', user.uid);
         try {
-            await addDoc(collection(db, "users"), user);
+            await setDoc(userRef, user);
         } catch (error) {
             console.error('Error trying to insert user:', error);
         }
@@ -28,7 +29,7 @@ class UserService {
 
 
     //get user data from a single user by ID
-    static async get(userId) {
+    async get(userId) {
         const userRef = doc(db, 'users', userId);
         try {
             const documentSnapshot = await getDoc(userRef);
@@ -37,10 +38,18 @@ class UserService {
                     id: documentSnapshot.id,
                     ...documentSnapshot.data()
                 };
-                console.log('Usuario encontrado:', user);
-            } else {
-                console.log('El usuario no existe');
+                return user;
             }
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+        }
+    }
+
+    async exists(dni) {
+        try {
+            const userRef = doc(db, 'users', dni);
+            const documentSnapshot = await getDoc(userRef);
+            return documentSnapshot.exists();
         } catch (error) {
             console.error('Error al obtener el usuario:', error);
         }
@@ -48,7 +57,7 @@ class UserService {
 
 
     //get all users
-    static async getAll() {
+    async getAll() {
         const usersRef = collection(db, 'users');
         try {
             const querySnapshot = await getDocs(usersRef);
@@ -59,7 +68,7 @@ class UserService {
                     ...doc.data()
                 });
             });
-            console.log('Usuarios:', users);
+            return users;
         } catch (error) {
             console.error('Error al obtener los usuarios:', error);
         }
@@ -67,7 +76,7 @@ class UserService {
 
 
     //delete a single user by ID
-    static async delete(uid) {
+    async delete(uid) {
         const userRef = doc(db, 'users', uid);
         try {
             await deleteDoc(userRef);
@@ -79,13 +88,28 @@ class UserService {
 
 
     //Update user data by passing user ID and new Data
-    static async update(uid, newData) {
+    async update(uid, newData) {
         const userRef = doc(db, 'users', uid);
         try {
             await updateDoc(userRef, newData);
             console.log('User data updated successfully');
         } catch (error) {
             console.error('Error trying to update user data:', error);
+        }
+    }
+
+    async getByEMail(email) {
+        const statsRef = collection(db, 'users');
+        const querySnapshot = await query(statsRef, where('email', '==', email), limit(1));
+        if (querySnapshot.docs) {
+            const documentSnapshot = querySnapshot.docs[0];
+            const stats = {
+                id: documentSnapshot.id,
+                ...documentSnapshot.data()
+            };
+            return stats;
+        } else {
+            return null;
         }
     }
 }
