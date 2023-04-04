@@ -2,6 +2,7 @@ import { GoogleAuthProvider, signInWithPopup, getAuth, signInWithEmailAndPasswor
 import { query, getDocs, collection, where, addDoc } from "firebase/firestore"
 import {db} from "./firebase"
 import {app} from "./firebase"
+import UserService from './userService';
 
 const auth = getAuth(app)
 const googleProvider = new GoogleAuthProvider();
