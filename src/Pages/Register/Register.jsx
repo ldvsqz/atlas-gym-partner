@@ -6,6 +6,8 @@ import {
   registerWithEmailAndPassword,
 } from "./../../../Firebase/authFunctions";
 import "./Register.css";
+import ResetPassword from "../ResetPassword/ResetPassword";
+
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
