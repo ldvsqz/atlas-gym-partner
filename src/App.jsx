@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Pages/Login/Login";
 import Register from "./Pages/Register/Register";
 import Events from "./Pages/Events";
-import Clients from "./Pages/Clients/Clients";
-import Profile from "./Pages/Profile";
+import Users from "./Pages/User/Users";
+import User from "./Pages/User/User";
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
 
 
@@ -17,9 +17,8 @@ function App() {
           <Route path='/reset' exact element={<ResetPassword/>} />
           <Route path='/register' element={<Register/>} />
           <Route path='/events' element={<Events/>} />
-          <Route path='/clients' element={<Clients/>} />
-          <Route path='/perfil/:uid' element={<Profile/>} />
-
+          <Route path='/users' element={<Users/>} />
+          <Route path='/user/:uid' element={<User/>} />
       </Routes>
     </Router>
     </>

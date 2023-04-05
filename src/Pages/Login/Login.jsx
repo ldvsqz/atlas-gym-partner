@@ -17,7 +17,8 @@ function Login() {
     if (user) {
       UserService.get(user.uid).then(client => {
         if (!!client) {
-          navigate(`/perfil/${user.uid}`, { state: { client } });
+          const uid = user.uid;
+          navigate(`/user/${uid}`, { state: { uid } });
         }
       });
     }
