@@ -23,7 +23,7 @@ function Register() {
   };
   useEffect(() => {
     if (loading) return;
-    if (user) navigate("/perfil:id");
+    if (user) navigate(`/user/${uid}`, { state: { uid } });
   }, [user, loading]);
   return (
     <div className="register">

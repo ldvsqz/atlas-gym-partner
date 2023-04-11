@@ -17,7 +17,7 @@ const signInWithGoogle = async () => {
     if (docs.docs.length === 0) {
         UserService.add({
             uid: user.uid,
-            dni,
+            dni: '',
             birthday: user.birthday,
             phone: user.phoneNumber,
             name: user.displayName,

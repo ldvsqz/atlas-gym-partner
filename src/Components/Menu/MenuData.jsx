@@ -12,8 +12,8 @@ export const MenuData = [
         cName: 'nav-text'
     },
     {
-        title: 'Clientes',
-        path: '/clients',
+        title: 'Usuarios',
+        path: '/users',
         icon: <IoIcons.IoIosPaper/>,
         cName: 'nav-text'
     },
@@ -25,7 +25,7 @@ export const MenuData = [
     },
     {
         title: 'Mi perfil',
-        path: '/perfil/:uid',
+        path: '/user/:uid',
         icon: <FaIcons.FaCartPlus/>,
         cName: 'nav-text'
     }

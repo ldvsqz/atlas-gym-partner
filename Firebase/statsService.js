@@ -1,4 +1,4 @@
-import { collection, deleteDoc, updateDoc, getDocs, doc, getDoc, setDoc, query, where, orderBy, limit } from 'firebase/firestore';
+import { collection, deleteDoc, updateDoc, getDocs, doc, getDoc, addDoc, setDoc, query, where, orderBy, limit } from 'firebase/firestore';
 import { db } from "./firebase"
 
 
@@ -19,9 +19,11 @@ class StatService {
 
     //add a stats to firebase
     async add(stats) {
-        const statsRef = doc(db, 'stats', stats.dni);
         try {
-            await setDoc(statsRef, stats);
+            const statsRef = collection(db, 'stats');
+            const docRef = doc(statsRef);
+            stats['id'] = docRef.id;
+            await setDoc(docRef, stats);
         } catch (error) {
             console.error('Error trying to insert stats:', error);
         }
@@ -77,22 +79,23 @@ class StatService {
 
 
     //Update stats data by passing stats ID and new Data
-    async update(dni, newData) {
-        const statsRef = doc(db, 'stats', dni);
+    async update(id, newStats) {
+        const statsRef = doc(db, 'stats', id);
         try {
-            await updateDoc(statsRef, newData);
+            await updateDoc(statsRef, newStats);
             console.log('stats data updated successfully');
         } catch (error) {
             console.error('Error trying to update stats data:', error);
         }
     }
 
-    async getLast(dni) {
-        if (!dni) {
+    async getLast(uid) {
+        if (!uid) {
             return null
         }
         const statsRef = collection(db, 'stats');
-        const querySnapshot = await query(statsRef, where('dni', '==', dni), orderBy('routine_start_date', 'desc'), limit(1)); 
+        const statsQuery = await query(statsRef, where('uid', '==', uid), orderBy('date', 'desc'), limit(1));
+        const querySnapshot = await getDocs(statsQuery);
         if (querySnapshot.docs) {
             const documentSnapshot = querySnapshot.docs[0];
             const stats = {
@@ -101,7 +104,7 @@ class StatService {
             };
             return stats;
         } else {
-            console.log(`No se encontró ningún usuario con DNI ${dni}`);
+            console.log(`no hay stats para este usuario`);
             return null;
         }
     }
