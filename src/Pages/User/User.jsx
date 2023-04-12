@@ -21,6 +21,7 @@ function User() {
   const [user, setUser] = useState({});
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
+  console.log(location);
 
 
   useEffect(() => {

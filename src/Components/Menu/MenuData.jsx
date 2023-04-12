@@ -1,32 +1,30 @@
-import * as  FaIcons from "react-icons/fa"
-import * as  AiIcons from "react-icons/ai"
-import * as  IoIcons from "react-icons/io"
-
-//https://react-icons.github.io/react-icons/icons?name=fa
-
+import HomeIcon from '@mui/icons-material/Home';
+import GroupIcon from '@mui/icons-material/Group';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 export const MenuData = [
     {
         title: 'Inicio',
         path: '/',
-        icon: <AiIcons.AiFillHome/>,
+        icon: <HomeIcon/>,
         cName: 'nav-text'
     },
     {
         title: 'Usuarios',
         path: '/users',
-        icon: <IoIcons.IoIosPaper/>,
+        icon: <GroupIcon/>,
         cName: 'nav-text'
     },
     {
         title: 'Eventos',
         path: '/events',
-        icon: <FaIcons.FaCartPlus/>,
+        icon: <EmojiEventsIcon/>,
         cName: 'nav-text'
     },
     {
         title: 'Mi perfil',
         path: '/user/:uid',
-        icon: <FaIcons.FaCartPlus/>,
+        icon: <AccountBoxIcon/>,
         cName: 'nav-text'
     }
 ]

@@ -18,6 +18,12 @@ function Login() {
       UserService.get(user.uid).then(client => {
         if (!!client) {
           const uid = user.uid;
+          try {
+            localStorage.setItem('UID', uid);
+          } catch (error) {
+            console.log(error);
+          }
+          localStorage.setItem('UID', uid);
           navigate(`/user/${uid}`, { state: { uid } });
         }
       });

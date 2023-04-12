@@ -1,51 +1,93 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { MenuData } from './MenuData';
-import { IconContext } from 'react-icons';
-import * as  FaIcons from "react-icons/fa";
-import * as  AiIcons from "react-icons/ai";
 import './Menu.css';
 import Logout from '../Logout/Logout';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import AppBar from '@mui/material/AppBar';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import LogoutIcon from '@mui/icons-material/Logout';
+
+
+
 
 function Menu() {
 
-  const [sidebar, setSidebar] = useState(false)
+  const [uid, setUid] = useState(localStorage.getItem('UID'))
+  console.log(uid);
+  const [showMenu, setMenu] = useState(false);
 
-  const showSidebar = () => setSidebar(!sidebar)
+  const toggleDrawer = (open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setMenu(open);
+  };
+
+  const list = () => (
+    <Box
+      sx={{ width: 250 }}
+      role="presentation"
+      onClick={toggleDrawer(false)}
+      onKeyDown={toggleDrawer(false)}
+    >
+      <List>
+        {MenuData.map((item) => (
+          <ListItem key={item.title} disablePadding>
+            <ListItemButton component={Link} to={{pathname: item.path === "/user/:uid" ? `/user/${uid}` : item.path, state: { fromDashboard: true } }}>
+              <ListItemIcon>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.title} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+        <Divider />
+        <Logout />
+      </List>
+    </Box>
+  );
 
 
   return (
-    <>
-      <IconContext.Provider value={{ color: '#fff' }}>
-        <div className='navbar'>
-          <div>
-            <Link to="#" className='menu-bars'>
-              <FaIcons.FaBars onClick={showSidebar} />
-            </Link>
-          </div>
-          <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
-            <ul className='nav-menu-items' onClick={showSidebar} >
-              <li className='navbar-toggle'>
-                <Link to='#' className='menu-bars'>
-                  <AiIcons.AiOutlineClose />
-                </Link>
-              </li>
-              {MenuData.map((item, index) => {
-                return (
-                  <li key={index} className={item.cName}>
-                    <Link to={item.path}>
-                      {item.icon}
-                      <span>{item.title}</span>
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
-            <Logout/>
-          </nav>
-        </div>
-      </IconContext.Provider>
-    </>
+    <div>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static" >
+          <Toolbar sx={{ marginRight: 'auto' }}>
+            <IconButton
+              onClick={toggleDrawer(true)}
+              size="large"
+              color="inherit"
+              edge="start"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Atlas
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </Box>
+      <Drawer
+        anchor={'left'}
+        open={showMenu}
+        onClose={toggleDrawer(false)}
+      >
+        {list()}
+      </Drawer>
+    </div>
   );
 }
 
