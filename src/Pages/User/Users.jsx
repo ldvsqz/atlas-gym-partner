@@ -79,12 +79,12 @@ function User() {
             <CircularProgress color="inherit" />
           </Backdrop>
         ) : (
-          <Box sx={{ width: '100%', maxWidth: 1080 }}>
+          <Box sx={{ width: '100%'}}>
             <Typography variant="h4" gutterBottom>
               Lista de usuarios
             </Typography>
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <Table sx={{ minWidth: '100%' }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
                     <TableCell>Nombre</TableCell>
