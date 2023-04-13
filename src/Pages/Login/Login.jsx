@@ -15,15 +15,12 @@ function Login() {
       return;
     }
     if (user) {
-      UserService.get(user.uid).then(client => {
-        if (!!client) {
+      UserService.get(user.uid).then(userData => {
+        if (!!userData) {
           const uid = user.uid;
-          try {
-            localStorage.setItem('UID', uid);
-          } catch (error) {
-            console.log(error);
-          }
+          console.log(userData);
           localStorage.setItem('UID', uid);
+          localStorage.setItem('ROL', userData.rol);
           navigate(`/user/${uid}`, { state: { uid } });
         }
       });
