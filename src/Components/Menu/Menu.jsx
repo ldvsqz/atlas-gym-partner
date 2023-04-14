@@ -1,38 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { MenuData } from './MenuData';
-import './Menu.css';
-import Logout from '../Logout/Logout';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import AppBar from '@mui/material/AppBar';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from "react-router-dom";
+import Logout from "../Logout/Logout";
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import AppBar from "@mui/material/AppBar";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import HomeIcon from "@mui/icons-material/Home";
+import GroupIcon from "@mui/icons-material/Group";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import "./Menu.css";
 
 
 
 
 function Menu() {
 
-  const [uid, setUid] = useState(localStorage.getItem('UID'))
-  console.log(uid);
+  const [uid, setUid] = useState(localStorage.getItem("UID"))
+  const [rol, setRol] = useState(localStorage.getItem("ROL"))
   const [showMenu, setMenu] = useState(false);
+  const navigate = useNavigate();
 
   const toggleDrawer = (open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+    if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
     }
+    console.log(rol);
     setMenu(open);
   };
+
+  const handleOnNavigate = () => {
+    navigate(`/user/${uid}`, { state: { uid } });
+  }
+
 
   const list = () => (
     <Box
@@ -42,20 +52,47 @@ function Menu() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        {MenuData.map((item) => (
-          <ListItem key={item.title} disablePadding>
-            <ListItemButton component={Link} to={{pathname: item.path === "/user/:uid" ? `/user/${uid}` : item.path, state: { fromDashboard: true } }}>
-              <ListItemIcon>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <ListItem key={"Inicio"} disablePadding>
+          <ListItemButton component={Link} to="/">
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Inicio"} />
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem key={"Mi perfil"} disablePadding>
+          <ListItemButton onClick={() => handleOnNavigate()}>
+            <ListItemIcon>
+              <AccountBoxIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Mi perfil"} />
+          </ListItemButton>
+        </ListItem>
+        {rol == 0 && <ListItem key={"Personas"} disablePadding>
+          <ListItemButton component={Link} to="/users">
+            <ListItemIcon>
+              <GroupIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Personas"} />
+          </ListItemButton>
+        </ListItem>
+        }
+
+
+        <ListItem key={"Eventos"} disablePadding>
+          <ListItemButton component={Link} to="/events">
+            <ListItemIcon>
+              <EmojiEventsIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Eventos"} />
+          </ListItemButton>
+        </ListItem>
+
         <Divider />
         <Logout />
       </List>
-    </Box>
+    </Box >
   );
 
 
@@ -63,7 +100,7 @@ function Menu() {
     <div>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static" >
-          <Toolbar sx={{ marginRight: 'auto' }}>
+          <Toolbar sx={{ marginRight: "auto" }}>
             <IconButton
               onClick={toggleDrawer(true)}
               size="large"
@@ -81,7 +118,7 @@ function Menu() {
         </AppBar>
       </Box>
       <Drawer
-        anchor={'left'}
+        anchor={"left"}
         open={showMenu}
         onClose={toggleDrawer(false)}
       >

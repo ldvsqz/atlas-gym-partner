@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import UserService from '../../../Firebase/userService';
-import SetUser from "./SetUser";
-import Menu from '../../Components/Menu/Menu';
 import { useNavigate } from "react-router-dom";
+import UserService from '../../../Firebase/userService';
+import Menu from '../../Components/Menu/Menu';
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 import Table from '@mui/material/Table';
@@ -16,14 +15,16 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-
+import TextField from '@mui/material/TextField';
+import SearchIcon from '@mui/icons-material/Search';
+import InputAdornment from '@mui/material/InputAdornment';
 
 function User() {
   const [Users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selecteduser, setSelecteduser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [focused, setFocused] = useState(false);
   const navigate = useNavigate();
 
 
@@ -46,16 +47,7 @@ function User() {
     setFilteredUsers(filteredUsersData);
   };
 
-  const handleDelete = async (uid) => {
-    const confirmDelete = window.confirm('¿Estás seguro que quieres eliminar este usuario?');
-    if (confirmDelete) {
-      await UserService.delete(uid);
-      const updatedUsersData = Users.filter((user) => user.uid !== uid);
-      setUsers(updatedUsersData);
-      setFilteredUsers(updatedUsersData);
-    }
-  };
-
+ 
   const getAge = (birthdayString) => {
     const birthday = new Date(birthdayString);
     const ageDiffMs = Date.now() - birthday.getTime();
@@ -79,43 +71,44 @@ function User() {
             <CircularProgress color="inherit" />
           </Backdrop>
         ) : (
-          <Box sx={{ width: '100%'}}>
+          <Box sx={{ width: '100%' }}>
             <Typography variant="h4" gutterBottom>
-              Lista de usuarios
+              Usuarios
             </Typography>
+            <TextField label="Buscar usuario" variant="standard"
+              value={searchTerm}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                handleSearch(e);
+              }}
+              InputProps={{
+                startAdornment: focused ? null : (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: '100%' }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
                     <TableCell>Nombre</TableCell>
-                    <TableCell align="left">Edad</TableCell>
                     <TableCell align="left">Teléfono</TableCell>
-                    <TableCell align="left">Correo</TableCell>
+                    <TableCell align="left">Estado</TableCell>
                     <TableCell align="center">Detalles</TableCell>
-                    <TableCell align="center">Editar</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {filteredUsers.map((user) => (
                     <TableRow key={user.uid} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                      <TableCell component="th" scope="row">{user.name}</TableCell>
-                      <TableCell align="left">{getAge(user.birthday)}</TableCell>
+                      <TableCell component="th" scope="row">{user.name}, {getAge(user.birthday)}</TableCell>
                       <TableCell align="left">{user.phone}</TableCell>
-                      <TableCell align="left">{user.email}</TableCell>
-                      <TableCell align="left">
-                        <Button onClick={() => handleViewProfile(user.uid)}>Ver</Button>
-                      </TableCell>
+                      <TableCell align="left">{user.until}</TableCell>
                       <TableCell align="center">
-                      <SetUser
-                          user={user}
-                          onSave={(updateduser) => {
-                            const updatedUsersData = Users.map((user) =>
-                              user.uid === updateduser.uid ? updateduser : user
-                            );
-                            setUsers(updatedUsersData);
-                            setFilteredUsers(updatedUsersData);
-                          }}
-                        />
+                        <Button onClick={() => handleViewProfile(user.uid)}>Ver</Button>
                       </TableCell>
                     </TableRow>
                   ))}

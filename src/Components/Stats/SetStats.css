@@ -1,0 +1,12 @@
+.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+    width: 90%
+}
+.MuiDialogContent-root {
+    overflow-y: auto;
+    max-height: 500px; /* ajustar según la altura deseada */
+  }
+
+  .edit-button {
+    padding-left: 8%;
+    padding-right: 8%;
+  }
