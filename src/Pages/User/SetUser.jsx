@@ -30,11 +30,10 @@ function SetUser(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const updatedUser = { ...user };
-    UserService.update(updatedUser.uid, updatedUser).then(() => {
-      onSave(updatedUser);
-      handleClose();
-    });
+    const updatedUser = { ...userState };
+    UserService.update(updatedUser.uid, updatedUser);
+    onSave(updatedUser);
+    handleClose();
   };
 
   return (
@@ -53,17 +52,17 @@ function SetUser(props) {
           <Grid container sx={{ color: 'text.primary' }}>
             <Grid item xs={12} mt={2}>
               <TextField id="standard-basic" label="Nombre completo" variant="standard"
-                value={userState.name} 
+                value={userState.name}
                 onChange={(event) => setUserState(
                   {
                     ...userState,
-                    name: event.target.value ,
+                    name: event.target.value,
                   }
                 )} />
             </Grid>
             <Grid item xs={12} mt={2}>
               <TextField id="standard-basic" label="Número telefónico" variant="standard"
-                value={userState.phone} 
+                value={userState.phone}
                 onChange={(event) => setUserState(
                   {
                     ...userState,
@@ -73,20 +72,20 @@ function SetUser(props) {
             </Grid>
             <Grid item xs={12} mt={2}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker label="Fecha de nacimiento" 
-                onChange={(newDate) => setUserState(
-                  {
-                    ...userState,
-                    birthday: newDate ,
-                  }
-                )} />
+                <DatePicker label="Fecha de nacimiento"
+                  onChange={(newDate) => setUserState(
+                    {
+                      ...userState,
+                      birthday: newDate.toString(),
+                    }
+                  )} />
               </LocalizationProvider>
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit}>Guardar</Button>
           <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={handleSubmit}>Guardar</Button>
         </DialogActions>
       </Dialog>
     </div>

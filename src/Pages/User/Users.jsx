@@ -18,6 +18,9 @@ import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
+import Util from '../../assets/Util';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 
 function User() {
   const [Users, setUsers] = useState([]);
@@ -26,6 +29,7 @@ function User() {
   const [loading, setLoading] = useState(true);
   const [focused, setFocused] = useState(false);
   const navigate = useNavigate();
+  const util = new Util();
 
 
   useEffect(() => {
@@ -47,7 +51,7 @@ function User() {
     setFilteredUsers(filteredUsersData);
   };
 
- 
+
   const getAge = (birthdayString) => {
     const birthday = new Date(birthdayString);
     const ageDiffMs = Date.now() - birthday.getTime();
@@ -65,49 +69,51 @@ function User() {
     <div>
       <Menu />
       <Container fixed>
+        <Typography variant="h5" gutterBottom >
+          Usuarios
+        </Typography>
+        <TextField label="Buscar usuario" variant="standard"
+          value={searchTerm}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            handleSearch(e);
+          }}
+          InputProps={{
+            startAdornment: focused ? null : (
+              <InputAdornment position="start">
+              </InputAdornment>
+            ),
+          }}
+        />
         {loading ? (
-          <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
+          <Stack spacing={1}>
+            <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+            <Skeleton variant="rounded" height={40} />
+            <Skeleton variant="rounded" height={40} />
+            <Skeleton variant="rounded" height={40} />
+          </Stack>
         ) : (
           <Box sx={{ width: '100%' }}>
-            <Typography variant="h4" gutterBottom>
-              Usuarios
-            </Typography>
-            <TextField label="Buscar usuario" variant="standard"
-              value={searchTerm}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                handleSearch(e);
-              }}
-              InputProps={{
-                startAdornment: focused ? null : (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <TableContainer component={Paper}>
+
+            <TableContainer component={Paper} sx={{ mt: 4 }}>
               <Table sx={{ minWidth: '100%' }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
                     <TableCell>Nombre</TableCell>
-                    <TableCell align="left">Teléfono</TableCell>
-                    <TableCell align="left">Estado</TableCell>
+                    <TableCell align="center">Teléfono</TableCell>
+                    <TableCell align="center">Estado</TableCell>
                     <TableCell align="center">Detalles</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {filteredUsers.map((user) => (
-                    <TableRow key={user.uid} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                      <TableCell component="th" scope="row">{user.name}, {getAge(user.birthday)}</TableCell>
-                      <TableCell align="left">{user.phone}</TableCell>
-                      <TableCell align="left">{user.until}</TableCell>
-                      <TableCell align="center">
+                    <TableRow key={user.uid} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px' }}>
+                      <TableCell sx={{ padding: '10px' }} >{user.name}, {getAge(user.birthday)}</TableCell>
+                      <TableCell sx={{ padding: '10px' }} align="center">{user.phone}</TableCell>
+                      <TableCell sx={{ padding: '10px' }} align="center">{util.formatDateShort(user.until)}</TableCell>
+                      <TableCell sx={{ padding: '10px' }} align="center">
                         <Button onClick={() => handleViewProfile(user.uid)}>Ver</Button>
                       </TableCell>
                     </TableRow>

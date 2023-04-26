@@ -1,4 +1,4 @@
-[
+export const exercises = [
   {
     "bodyPart": "cintura",
     "equipment": "peso corporal",
@@ -36,7 +36,7 @@
     "equipment": "peso corporal",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0006.gif",
     "id": 6,
-    "name": "Toques de tacón alternativos",
+    "name": "Toques de tacón alternados",
     "target": "abdominales"
   },
   {
@@ -432,7 +432,7 @@
     "target": "dorsal"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "banda",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0977.gif",
     "id": 977,
@@ -440,7 +440,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "banda",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0978.gif",
     "id": 978,
@@ -560,7 +560,7 @@
     "target": "abdominales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "banda",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0993.gif",
     "id": 993,
@@ -592,7 +592,7 @@
     "target": "abdominales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "banda",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0997.gif",
     "id": 997,
@@ -664,7 +664,7 @@
     "target": "abdominales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "banda",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1022.gif",
     "id": 1022,
@@ -712,7 +712,7 @@
     "target": "columna vertebral"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "banda",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1012.gif",
     "id": 1012,
@@ -760,7 +760,7 @@
     "target": "antebrazos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "banda",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1017.gif",
     "id": 1017,
@@ -936,7 +936,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0041.gif",
     "id": 41,
@@ -1224,7 +1224,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0067.gif",
     "id": 67,
@@ -1328,7 +1328,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0075.gif",
     "id": 75,
@@ -1336,7 +1336,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0076.gif",
     "id": 76,
@@ -1464,7 +1464,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0086.gif",
     "id": 86,
@@ -1472,7 +1472,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0087.gif",
     "id": 87,
@@ -1520,7 +1520,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0091.gif",
     "id": 91,
@@ -1608,7 +1608,7 @@
     "target": "abdominales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0100.gif",
     "id": 100,
@@ -1664,7 +1664,7 @@
     "target": "antebrazos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0105.gif",
     "id": 105,
@@ -1688,7 +1688,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1456.gif",
     "id": 1456,
@@ -1704,7 +1704,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0107.gif",
     "id": 107,
@@ -1760,7 +1760,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1457.gif",
     "id": 1457,
@@ -1808,7 +1808,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3305.gif",
     "id": 3305,
@@ -1816,7 +1816,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0120.gif",
     "id": 120,
@@ -1824,7 +1824,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0119.gif",
     "id": 119,
@@ -1832,7 +1832,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0121.gif",
     "id": 121,
@@ -1864,7 +1864,7 @@
     "target": "cuádriceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0123.gif",
     "id": 123,
@@ -1904,7 +1904,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "soga",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0128.gif",
     "id": 128,
@@ -2152,7 +2152,7 @@
     "target": "aductores"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0148.gif",
     "id": 148,
@@ -2224,7 +2224,7 @@
     "target": "dorsal"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0154.gif",
     "id": 154,
@@ -2304,7 +2304,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0161.gif",
     "id": 161,
@@ -2312,7 +2312,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0162.gif",
     "id": 162,
@@ -2320,7 +2320,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0164.gif",
     "id": 164,
@@ -2432,7 +2432,7 @@
     "target": "abdominales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3697.gif",
     "id": 3697,
@@ -2472,7 +2472,7 @@
     "target": "dorsal"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0178.gif",
     "id": 178,
@@ -2608,7 +2608,7 @@
     "target": "pectorales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0192.gif",
     "id": 192,
@@ -2768,7 +2768,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0202.gif",
     "id": 202,
@@ -2776,7 +2776,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0203.gif",
     "id": 203,
@@ -3000,7 +3000,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0215.gif",
     "id": 215,
@@ -3016,7 +3016,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0216.gif",
     "id": 216,
@@ -3040,7 +3040,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0219.gif",
     "id": 219,
@@ -3112,7 +3112,7 @@
     "target": "pantorrillas"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0225.gif",
     "id": 225,
@@ -3192,7 +3192,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0233.gif",
     "id": 233,
@@ -3216,7 +3216,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0235.gif",
     "id": 235,
@@ -3264,7 +3264,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0240.gif",
     "id": 240,
@@ -3368,7 +3368,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "cable",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0246.gif",
     "id": 246,
@@ -3736,7 +3736,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0286.gif",
     "id": 286,
@@ -3760,7 +3760,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2137.gif",
     "id": 2137,
@@ -3768,7 +3768,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0287.gif",
     "id": 287,
@@ -3792,7 +3792,7 @@
     "target": "pectorales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0290.gif",
     "id": 290,
@@ -3944,7 +3944,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0299.gif",
     "id": 299,
@@ -3952,7 +3952,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2136.gif",
     "id": 2136,
@@ -4072,7 +4072,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0310.gif",
     "id": 310,
@@ -4080,7 +4080,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0309.gif",
     "id": 309,
@@ -4088,7 +4088,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0311.gif",
     "id": 311,
@@ -4272,7 +4272,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0323.gif",
     "id": 323,
@@ -4312,7 +4312,7 @@
     "target": "pectorales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0325.gif",
     "id": 325,
@@ -4320,7 +4320,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0326.gif",
     "id": 326,
@@ -4352,7 +4352,7 @@
     "target": "trapecios"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3542.gif",
     "id": 3542,
@@ -4392,7 +4392,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0332.gif",
     "id": 332,
@@ -4424,7 +4424,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0334.gif",
     "id": 334,
@@ -4432,7 +4432,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0335.gif",
     "id": 335,
@@ -4480,7 +4480,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0863.gif",
     "id": 863,
@@ -4504,7 +4504,7 @@
     "target": "pectorales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2470.gif",
     "id": 2470,
@@ -4512,7 +4512,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0341.gif",
     "id": 341,
@@ -4544,7 +4544,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0345.gif",
     "id": 345,
@@ -4592,7 +4592,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0348.gif",
     "id": 348,
@@ -4752,7 +4752,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0355.gif",
     "id": 355,
@@ -4760,7 +4760,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0356.gif",
     "id": 356,
@@ -4808,7 +4808,7 @@
     "target": "antebrazos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0359.gif",
     "id": 359,
@@ -4864,7 +4864,7 @@
     "target": "antebrazos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0361.gif",
     "id": 361,
@@ -4872,7 +4872,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0360.gif",
     "id": 360,
@@ -4912,7 +4912,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0363.gif",
     "id": 363,
@@ -5096,7 +5096,7 @@
     "target": "pectorales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1700.gif",
     "id": 1700,
@@ -5104,7 +5104,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0376.gif",
     "id": 376,
@@ -5112,7 +5112,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2292.gif",
     "id": 2292,
@@ -5120,7 +5120,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0377.gif",
     "id": 377,
@@ -5128,7 +5128,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0378.gif",
     "id": 378,
@@ -5136,7 +5136,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0380.gif",
     "id": 380,
@@ -5144,7 +5144,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0379.gif",
     "id": 379,
@@ -5176,7 +5176,7 @@
     "target": "pectorales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0383.gif",
     "id": 383,
@@ -5240,7 +5240,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0386.gif",
     "id": 386,
@@ -5248,7 +5248,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2397.gif",
     "id": 2397,
@@ -5256,7 +5256,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0387.gif",
     "id": 387,
@@ -5272,7 +5272,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0388.gif",
     "id": 388,
@@ -5280,7 +5280,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3546.gif",
     "id": 3546,
@@ -5296,7 +5296,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2317.gif",
     "id": 2317,
@@ -5308,7 +5308,7 @@
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1730.gif",
     "id": 1730,
-    "name": "pesa sentada doblada sobre sobornos alternativos",
+    "name": "pesa sentada doblada sobre sobornos alternados",
     "target": "tríceps"
   },
   {
@@ -5360,7 +5360,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0392.gif",
     "id": 392,
@@ -5392,7 +5392,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0396.gif",
     "id": 396,
@@ -5400,7 +5400,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0395.gif",
     "id": 395,
@@ -5496,7 +5496,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0405.gif",
     "id": 405,
@@ -5504,7 +5504,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0404.gif",
     "id": 404,
@@ -5536,7 +5536,7 @@
     "target": "abdominales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0408.gif",
     "id": 408,
@@ -5552,7 +5552,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3548.gif",
     "id": 3548,
@@ -5616,7 +5616,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0414.gif",
     "id": 414,
@@ -5624,7 +5624,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0415.gif",
     "id": 415,
@@ -5640,7 +5640,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2143.gif",
     "id": 2143,
@@ -5688,7 +5688,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0419.gif",
     "id": 419,
@@ -5744,7 +5744,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0424.gif",
     "id": 424,
@@ -5760,7 +5760,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0426.gif",
     "id": 426,
@@ -5768,7 +5768,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0427.gif",
     "id": 427,
@@ -5904,7 +5904,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0437.gif",
     "id": 437,
@@ -5912,7 +5912,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1765.gif",
     "id": 1765,
@@ -5920,7 +5920,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0864.gif",
     "id": 864,
@@ -5936,7 +5936,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "pesa",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0438.gif",
     "id": 438,
@@ -6224,7 +6224,7 @@
     "target": "tríceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "EZ Barbell",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0445.gif",
     "id": 445,
@@ -6984,7 +6984,7 @@
     "target": "antebrazos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0520.gif",
     "id": 520,
@@ -7016,7 +7016,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0523.gif",
     "id": 523,
@@ -7048,7 +7048,7 @@
     "target": "bíceps"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0527.gif",
     "id": 527,
@@ -7056,7 +7056,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0528.gif",
     "id": 528,
@@ -7064,7 +7064,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0529.gif",
     "id": 529,
@@ -7128,7 +7128,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0537.gif",
     "id": 537,
@@ -7144,7 +7144,7 @@
     "target": "pectorales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0538.gif",
     "id": 538,
@@ -7152,7 +7152,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0539.gif",
     "id": 539,
@@ -7160,7 +7160,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0540.gif",
     "id": 540,
@@ -7176,7 +7176,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0542.gif",
     "id": 542,
@@ -7184,7 +7184,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0543.gif",
     "id": 543,
@@ -7208,7 +7208,7 @@
     "target": "pectorales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0546.gif",
     "id": 546,
@@ -7216,7 +7216,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1438.gif",
     "id": 1438,
@@ -7224,7 +7224,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0547.gif",
     "id": 547,
@@ -7248,7 +7248,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0550.gif",
     "id": 550,
@@ -7264,7 +7264,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0552.gif",
     "id": 552,
@@ -7272,7 +7272,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "retaguardia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0553.gif",
     "id": 553,
@@ -7384,7 +7384,7 @@
     "target": "abdominales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3237.gif",
     "id": 3237,
@@ -7400,7 +7400,7 @@
     "target": "abdominales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "peso corporal",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2271.gif",
     "id": 2271,
@@ -7624,7 +7624,7 @@
     "target": "abdominales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "palanca",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0584.gif",
     "id": 584,
@@ -7656,7 +7656,7 @@
     "target": "isquiotibiales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "palanca",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0587.gif",
     "id": 587,
@@ -7696,7 +7696,7 @@
     "target": "dorsal"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "palanca",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0590.gif",
     "id": 590,
@@ -7880,7 +7880,7 @@
     "target": "abdominales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "palanca",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0602.gif",
     "id": 602,
@@ -7888,7 +7888,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "palanca",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0601.gif",
     "id": 601,
@@ -7912,7 +7912,7 @@
     "target": "pantorrillas"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "palanca",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0603.gif",
     "id": 603,
@@ -7920,7 +7920,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "palanca",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0869.gif",
     "id": 869,
@@ -7928,7 +7928,7 @@
     "target": "deltoides"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "palanca",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2318.gif",
     "id": 2318,
@@ -8640,7 +8640,7 @@
     "target": "glúteos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "peso corporal",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0669.gif",
     "id": 669,
@@ -8704,7 +8704,7 @@
     "target": "abductor"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "banda de resistencia",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3122.gif",
     "id": 3122,
@@ -9368,7 +9368,7 @@
     "target": "trapecios"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "máquina Smith",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0747.gif",
     "id": 747,
@@ -9568,7 +9568,7 @@
     "target": "pantorrillas"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "máquina Smith",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0762.gif",
     "id": 762,
@@ -9616,7 +9616,7 @@
     "target": "pantorrillas"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "máquina Smith",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0765.gif",
     "id": 765,
@@ -9632,7 +9632,7 @@
     "target": "antebrazos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "máquina Smith",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0766.gif",
     "id": 766,
@@ -9680,7 +9680,7 @@
     "target": "antebrazos"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "máquina Smith",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0772.gif",
     "id": 772,
@@ -9696,7 +9696,7 @@
     "target": "pantorrillas"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "máquina Smith",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0774.gif",
     "id": 774,
@@ -9720,7 +9720,7 @@
     "target": "pantorrillas"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "máquina Smith",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0775.gif",
     "id": 775,
@@ -9856,7 +9856,7 @@
     "target": "superior de la espalda"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0788.gif",
     "id": 788,
@@ -10296,7 +10296,7 @@
     "target": "abdominales"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "ponderado",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0834.gif",
     "id": 834,
@@ -10320,7 +10320,7 @@
     "target": "columna vertebral"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "ponderado",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3641.gif",
     "id": 3641,
@@ -10376,7 +10376,7 @@
     "target": "dorsal"
   },
   {
-    "bodyPart": "espalda",
+    "bodyPart": "deltoides",
     "equipment": "ponderado",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0844.gif",
     "id": 844,
