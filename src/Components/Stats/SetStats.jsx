@@ -19,14 +19,13 @@ function SetStats(props) {
   const { stats = new StatsModel(), uid = '', isEditing = false, onSave } = props;
   if (!isEditing) {
     stats.uid = uid;
-    stats.date = new Date().toString();
+    stats.date = isEditing ? stats.date : new Date().toString();
   }
 
   const [statsState, setStatsState] = useState(stats);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () =>
-    (false);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     setStatsState(statsState)
@@ -35,7 +34,8 @@ function SetStats(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const updatedStats = { ...statsState };
-    setOpen(false);
+    handleClose();
+    console.log(updatedStats);
     if (isEditing) {
       StatsService.update(updatedStats.id, updatedStats);
     } else {
@@ -68,7 +68,7 @@ function SetStats(props) {
           </Typography>
           <FormControl sx={{ m: 3 }}>
             <Grid container sx={{ color: 'text.primary' }}>
-              <Grid item xs={6}>
+              <Grid item sx={{ mt: 2, marginLeft: '15px' }}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -84,7 +84,7 @@ function SetStats(props) {
                   label="Fuma"
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item sx={{ mt: 2, marginLeft: '15px' }}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -100,7 +100,7 @@ function SetStats(props) {
                   label="Bebe"
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item sx={{ mt: 2, marginLeft: '15px' }}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -116,7 +116,7 @@ function SetStats(props) {
                   label="Corre"
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item sx={{ mt: 2, marginLeft: '15px' }}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -139,8 +139,8 @@ function SetStats(props) {
             Consideraciones
           </Typography>
           <Grid container sx={{ color: 'text.primary' }}>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Cirugías recientes" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Cirugías recientes" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 type="text"
                 value={statsState.considerations.recent_surgeries}
                 onChange={(event) =>
@@ -151,8 +151,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Factores de riesgo" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Factores de riesgo" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 type="text"
                 value={statsState.considerations.risks_factors}
                 onChange={(event) =>
@@ -169,8 +169,8 @@ function SetStats(props) {
             Medidas
           </Typography>
           <Grid container sx={{ color: 'text.primary' }}>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Peso kg" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Peso kg" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.weight_kg}
                 onChange={(event) =>
                   setStatsState({
@@ -181,8 +181,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Estatura cm" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Estatura cm" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.Height_cm}
                 onChange={(event) =>
                   setStatsState({
@@ -193,8 +193,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="IMC" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="IMC" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.IMC}
                 onChange={(event) =>
                   setStatsState({
@@ -204,8 +204,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Grasa corp %" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Grasa corp %" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.body_fat}
                 onChange={(event) =>
                   setStatsState({
@@ -215,8 +215,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Músculo %" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Músculo %" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.muscle}
                 onChange={(event) =>
                   setStatsState({
@@ -226,8 +226,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Grasa viceral %" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Grasa viceral %" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.visceral_fat}
                 onChange={(event) =>
                   setStatsState({
@@ -237,8 +237,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Edad metabólica" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Edad metabólica" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.metabolic_age}
                 onChange={(event) =>
                   setStatsState({
@@ -248,8 +248,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Kcal" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Kcal" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.kcal}
                 onChange={(event) =>
                   setStatsState({
@@ -259,8 +259,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Pecho/espalda cm" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Pecho/espalda cm" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.chest_back_cm}
                 onChange={(event) =>
                   setStatsState({
@@ -270,8 +270,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Cintura cm" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Cintura cm" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.waist_cm}
                 onChange={(event) =>
                   setStatsState({
@@ -281,19 +281,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Abdomen cm" variant="standard"
-                value={statsState.abdomen_cm}
-                onChange={(event) =>
-                  setStatsState({
-                    ...statsState,
-                    abdomen_cm: event.target.value,
-                  })
-                }
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Cadera cm" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Cadera cm" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.hip_cm}
                 onChange={(event) =>
                   setStatsState({
@@ -303,8 +292,8 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Brazo izq cm" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Brazo izq cm" variant="standard" sx={{ maxWidth: '40%', padding: '10px' }}
                 value={statsState.l_amr_cm}
                 onChange={(event) =>
                   setStatsState({
@@ -314,9 +303,7 @@ function SetStats(props) {
                   })
                 }
               />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Brazo der cm" variant="standard"
+              <TextField id="standard-basic" label="Brazo der cm" variant="standard" sx={{ maxWidth: '40%', padding: '10px' }}
                 value={statsState.r_amr_cm}
                 onChange={(event) =>
                   setStatsState({
@@ -326,8 +313,9 @@ function SetStats(props) {
                 }
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Pierna izq cm" variant="standard"
+
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Pierna izq cm" variant="standard" sx={{ maxWidth: '40%', padding: '10px' }}
                 value={statsState.l_quad_cm}
                 onChange={(event) =>
                   setStatsState({
@@ -336,10 +324,7 @@ function SetStats(props) {
                     r_quad_cm: event.target.value,
                   })
                 }
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Pierna der cm" variant="standard"
+              /><TextField id="standard-basic" label="Pierna der cm" variant="standard" sx={{ maxWidth: '40%', padding: '10px' }}
                 value={statsState.r_quad_cm}
                 onChange={(event) =>
                   setStatsState({
@@ -350,8 +335,8 @@ function SetStats(props) {
               />
             </Grid>
 
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Pant. izq cm" variant="standard"
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Pant. izq cm" variant="standard" sx={{ maxWidth: '40%', padding: '10px' }}
                 value={statsState.l_calf_cm}
                 onChange={(event) =>
                   setStatsState({
@@ -361,9 +346,7 @@ function SetStats(props) {
                   })
                 }
               />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField id="standard-basic" label="Pant. der cm" variant="standard"
+              <TextField id="standard-basic" label="Pant. der cm" variant="standard" sx={{ maxWidth: '40%', padding: '10px' }}
                 value={statsState.r_calf_cm}
                 onChange={(event) =>
                   setStatsState({
@@ -376,8 +359,8 @@ function SetStats(props) {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit}>Guardar</Button>
           <Button onClick={() => setOpen(false)}>Cancelar</Button>
+          <Button onClick={handleSubmit}>Guardar</Button>
         </DialogActions>
       </Dialog>
 

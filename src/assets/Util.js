@@ -5,6 +5,14 @@ class Util {
         return formattedDate;
     }
 
+    formatDateShort(_date) {
+        const date = new Date(_date);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear().toString();
+        return `${day}/${month}/${year}`;
+    }
+
     getAge(birthdayString) {
         const birthday = new Date(birthdayString);
         const ageDiffMs = Date.now() - birthday.getTime();

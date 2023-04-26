@@ -29,7 +29,7 @@ function Stats(props) {
                 aria-describedby="modal-modal-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {util.formatDate(stats.date)}
+                    Medidas del {util.formatDate(statsState.date)}
                 </DialogTitle>
                 <DialogContent>
 
@@ -37,24 +37,24 @@ function Stats(props) {
                         Hábitos
                     </Typography>
                     <Grid container sx={{ color: 'text.primary' }}>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Fuma: {stats.habits.smoke ? 'Sí' : 'No'}
+                                Fuma: {statsState.habits.smoke ? 'Sí' : 'No'}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Bebe: {stats.habits.drink ? 'Sí' : 'No'}
+                                Bebe: {statsState.habits.drink ? 'Sí' : 'No'}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Corre: {stats.habits.running ? 'Sí' : 'No'}
+                                Corre: {statsState.habits.running ? 'Sí' : 'No'}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Pesas: {stats.habits.lifting ? 'Sí' : 'No'}
+                                Pesas: {statsState.habits.lifting ? 'Sí' : 'No'}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -63,11 +63,11 @@ function Stats(props) {
                     </Typography>
                     <Grid container sx={{ color: 'text.primary' }}>
                         <Grid item xs={12}>
-                            Cirugías recientes: {stats.considerations.recent_surgeries}
+                            Cirugías recientes: {statsState.considerations.recent_surgeries}
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="subtitle1" gutterBottom>
-                                Factores de riesgo: {stats.considerations.risks_factors}
+                                Factores de riesgo: {statsState.considerations.risks_factors}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -75,105 +75,82 @@ function Stats(props) {
                         Medidas
                     </Typography>
                     <Grid container sx={{ color: 'text.primary' }}>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Peso: {stats.weight_kg}kg
+                                Peso: {statsState.weight_kg}kg
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Estatura: {stats.Height_cm}cm
+                                Estatura: {statsState.Height_cm}cm
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                IMC: {stats.IMC}
+                                IMC: {statsState.IMC}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Grasa corp: %{stats.body_fat}
+                                Grasa corp: %{statsState.body_fat}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Musculo: %{stats.muscle}
+                                Musculo: %{statsState.muscle}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Grasa viceral: %{stats.visceral_fat}
+                                Grasa viceral: %{statsState.visceral_fat}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Edad metabólica: {stats.metabolic_age}
+                                Edad met: {statsState.metabolic_age}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Kcal: {stats.kcal}
+                                Kcal: {statsState.kcal}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Pecho/espalda: {stats.chest_back_cm}cm
+                                Torso: {statsState.chest_back_cm}cm
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Cintura: {stats.waist_cm}cm
+                                Cintura: {statsState.waist_cm}cm
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Abdomen: {stats.abdomen_cm}cm
+                                Cadera: {statsState.hip_cm}cm
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Cadera: {stats.hip_cm}cm
+                                Brazo: {statsState.l_amr_cm}/{statsState.r_amr_cm}cm
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Brazo izq: {stats.l_amr_cm}cm
+                                Pierna: {statsState.l_quad_cm}/{statsState.r_quad_cm}cm
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={6} sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">
-                                Brazo der: {stats.r_amr_cm}cm
+                                Pantorrilla: {statsState.l_calf_cm}/{statsState.r_calf_cm}cm
                             </Typography>
                         </Grid>
-                        <Grid item xs={6}>
-                            <Typography variant="subtitle1">
-                                Pierna izq: {stats.l_quad_cm}cm
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Typography variant="subtitle1">
-                                Pioerna der: {stats.r_quad_cm}cm
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Typography variant="subtitle1">
-                                Pant. izq: {stats.l_calf_cm}cm
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Typography variant="subtitle1">
-                                Pant. der: {stats.r_calf_cm}cm
-                            </Typography>
-                        </Grid>
-
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <div className='edit-button'>
-                        <SetStats stats={stats} uid={stats.uid} isEditing={true} onSave={(updatedStats) => setStats(updatedStats)} />
-                    </div>
-                    <Button onClick={() => setOpen(false)}>Historial</Button>
                     <Button onClick={() => setOpen(false)}>Cancelar</Button>
+                    <Button onClick={() => setOpen(false)}>Historial</Button>
+                    <SetStats stats={stats} uid={stats.uid} isEditing={true} onSave={(updatedStats) => setStats(updatedStats)} />
                 </DialogActions>
 
             </Dialog>

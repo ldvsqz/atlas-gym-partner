@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import Menu from '../../Components/Menu/Menu';
-import SetUser from "./SetUser";
-import SetStats from '../../Components/Stats/SetStats';
-import Stats from '../../Components/Stats/Stats';
-import StatService from '../../../Firebase/statsService';
-import UserService from '../../../Firebase/userService';
-import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Backdrop from '@mui/material/Backdrop';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import PhoneIcon from '@mui/icons-material/Phone';
 import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import EditIcon from '@mui/icons-material/Edit';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
+
+import Menu from '../../Components/Menu/Menu';
+import SetUser from "./SetUser";
+import StatService from '../../../Firebase/statsService';
+import UserService from '../../../Firebase/userService';
 import Util from '../../assets/Util';
-import Alert from '../../Components/Alert/Alert'
-//import RoutinesService from '../../Firebase/routinesService';
-//import Routines from '../../Components/Routines/Routines';
+import Alert from '../../Components/Alert/Alert';
+import Routines from '../../Components/Routines/Routines';
+import SetRoutine from "../../Components/Routines/SetRoutine";
+import SetStats from '../../Components/Stats/SetStats';
+import Stats from '../../Components/Stats/Stats';
 
 function User() {
   const location = useLocation();
@@ -28,7 +28,6 @@ function User() {
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
   const util = new Util();
-  console.log(user);
 
   useEffect(() => {
     if (location.state) {
@@ -42,7 +41,7 @@ function User() {
       };
       fetchClient();
     }
-  }, [location.state]);
+  }, [location.state, setUser, setStats]);
 
 
 
@@ -50,8 +49,10 @@ function User() {
     if (response) {
       const today = new Date(); // fecha actual
       const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
-      setUser({ ...user, until: nextMonth.toString() })
-      UserService.update(user.uid, user)
+      const refreshedUser = user;
+      refreshedUser['until'] = nextMonth.toString();
+      setUser(refreshedUser);
+      UserService.update(user.uid, refreshedUser);
     }
   }
 
@@ -61,23 +62,32 @@ function User() {
       <Menu />
       <Container fixed>
         {loading ? (
-          <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
+          <Stack spacing={1} sx={{ mt: 4 }}>
+            {/* For variant="text", adjust the height via font-size */}
+            <Skeleton variant="rectangular" width={210} height={20} />
+            {/* For other variants, adjust the size with `width` and `height` */}
+            <Skeleton variant="circular" width={40} height={40} />
+            <Skeleton variant="rectangular" width={210} height={60} />
+            <Skeleton variant="rounded" width={210} height={60} />
+          </Stack>
         ) : (
-          <Box sx={{ width: '100%', maxWidth: 500 }}>
+          <Box sx={{ width: '100%', maxWidth: 700, mt: 4 }}>
+
             <Grid container sx={{ color: 'text.primary' }}>
               <Grid item xs={8}>
-                <Typography variant="h5" gutterBottom>
-                  {user.name}, {util.getAge(user.birthday)}
-                </Typography>
+                <Stack direction="row" spacing={2}>
+                  <Avatar alt={user.name} src="" />
+                  <Typography variant="h5" gutterBottom>
+                    {user.name}, {util.getAge(user.birthday)}
+                  </Typography>
+                </Stack>
+
               </Grid>
               <Grid item xs={4}>
-                <SetUser user={user} 
-                onSave={(updatedUser) =>
-                setUser(updatedUser)
-                }/>
+                <SetUser user={user}
+                  onSave={(updatedUser) =>
+                    setUser(updatedUser)
+                  } />
               </Grid>
               <Grid item xs={8}>
                 <Typography variant="h6" gutterBottom>
@@ -89,7 +99,7 @@ function User() {
                   title={"Renovar suscripción"}
                   message={`¿Desea renovar la suscripciónde: ${user.name}?`}
                   onResponse={(response) =>
-                  handleOnRenew(response)} />
+                    handleOnRenew(response)} />
               </Grid>
             </Grid>
 
@@ -127,9 +137,9 @@ function User() {
               </Grid>
             </Grid>
 
-            <Typography variant="h6" gutterBottom>
-              Rutina
-            </Typography>
+
+            <Routines uid={user.uid} />
+            <SetRoutine />
           </Box>
         )}
       </Container>
