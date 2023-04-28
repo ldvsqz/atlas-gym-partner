@@ -71,10 +71,10 @@ function User() {
             <Skeleton variant="rounded" width={210} height={60} />
           </Stack>
         ) : (
-          <Box sx={{ width: '100%', maxWidth: 700, mt: 4 }}>
+          <Box sx={{ width: '100%', mt: 4 }}>
 
             <Grid container sx={{ color: 'text.primary' }}>
-              <Grid item xs={8}>
+              <Grid item xs={10}>
                 <Stack direction="row" spacing={2}>
                   <Avatar alt={user.name} src="" />
                   <Typography variant="h5" gutterBottom>
@@ -83,18 +83,18 @@ function User() {
                 </Stack>
 
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={2}>
                 <SetUser user={user}
                   onSave={(updatedUser) =>
                     setUser(updatedUser)
                   } />
               </Grid>
-              <Grid item xs={8}>
+              <Grid item xs={10}>
                 <Typography variant="h6" gutterBottom>
                   Activo hasta: {util.formatDate(user.until)}
                 </Typography>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={2}>
                 <Alert buttonName={<AutorenewIcon />}
                   title={"Renovar suscripción"}
                   message={`¿Desea renovar la suscripciónde: ${user.name}?`}

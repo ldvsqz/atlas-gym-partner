@@ -7,6 +7,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Util from '../../assets/Util';
 import './SetStats.css';
 
@@ -14,11 +18,15 @@ function Stats(props) {
     const { stats } = props
     const [open, setOpen] = useState(false);
     const [statsState, setStats] = useState(stats);
+    const [expanded, setExpanded] = useState(true);
+    const util = new Util();
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const util = new Util();
 
+    const handleChange = () => {
+        setExpanded(!expanded);
+    };
     return (
         <div>
             <Button onClick={handleOpen}>Ver medidas</Button>
@@ -32,120 +40,153 @@ function Stats(props) {
                     Medidas del {util.formatDate(statsState.date)}
                 </DialogTitle>
                 <DialogContent>
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1bh-content"
+                            id="panel1bh-header"
+                        >
+                            <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                                Hábitos
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Grid container sx={{ color: 'text.primary' }}>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Fuma:</b> {statsState.habits.smoke ? 'Sí' : 'No'}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Bebe:</b> {statsState.habits.drink ? 'Sí' : 'No'}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Corre:</b> {statsState.habits.running ? 'Sí' : 'No'}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Pesas:</b> {statsState.habits.lifting ? 'Sí' : 'No'}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </AccordionDetails>
+                    </Accordion>
 
-                    <Typography variant="h6" gutterBottom>
-                        Hábitos
-                    </Typography>
-                    <Grid container sx={{ color: 'text.primary' }}>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Fuma: {statsState.habits.smoke ? 'Sí' : 'No'}
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel2bh-content"
+                            id="panel2bh-header"
+                        >
+                            <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                                Consideraciones
                             </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Bebe: {statsState.habits.drink ? 'Sí' : 'No'}
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Grid container sx={{ color: 'text.primary' }}>
+                                <Grid item xs={12}>
+                                    <b>Cirugías recientes:</b> {statsState.considerations.recent_surgeries}
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography variant="subtitle1" gutterBottom>
+                                        <b>Factores de riesgo:</b> {statsState.considerations.risks_factors}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </AccordionDetails>
+                    </Accordion>
+
+                    <Accordion expanded={expanded} onChange={handleChange}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel3bh-content"
+                            id="panel3bh-header"
+                        >
+                            <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                                Medidas
                             </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Corre: {statsState.habits.running ? 'Sí' : 'No'}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Pesas: {statsState.habits.lifting ? 'Sí' : 'No'}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                    <Typography variant="h6" gutterBottom>
-                        Consideraciones
-                    </Typography>
-                    <Grid container sx={{ color: 'text.primary' }}>
-                        <Grid item xs={12}>
-                            Cirugías recientes: {statsState.considerations.recent_surgeries}
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="subtitle1" gutterBottom>
-                                Factores de riesgo: {statsState.considerations.risks_factors}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                    <Typography variant="h6" gutterBottom>
-                        Medidas
-                    </Typography>
-                    <Grid container sx={{ color: 'text.primary' }}>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Peso: {statsState.weight_kg}kg
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Estatura: {statsState.Height_cm}cm
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                IMC: {statsState.IMC}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Grasa corp: %{statsState.body_fat}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Musculo: %{statsState.muscle}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Grasa viceral: %{statsState.visceral_fat}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Edad met: {statsState.metabolic_age}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Kcal: {statsState.kcal}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Torso: {statsState.chest_back_cm}cm
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Cintura: {statsState.waist_cm}cm
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Cadera: {statsState.hip_cm}cm
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Brazo: {statsState.l_amr_cm}/{statsState.r_amr_cm}cm
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Pierna: {statsState.l_quad_cm}/{statsState.r_quad_cm}cm
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                Pantorrilla: {statsState.l_calf_cm}/{statsState.r_calf_cm}cm
-                            </Typography>
-                        </Grid>
-                    </Grid>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Grid container sx={{ color: 'text.primary' }}>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Peso:</b> {statsState.weight_kg}kg
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Estatura:</b> {statsState.Height_cm}cm
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>IMC:</b> {statsState.IMC}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Grasa corp:</b> %{statsState.body_fat}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Musculo:</b> %{statsState.muscle}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Grasa viceral:</b> %{statsState.visceral_fat}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Edad met:</b> {statsState.metabolic_age}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Kcal:</b> {statsState.kcal}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Torso:</b> {statsState.chest_back_cm}cm
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Cintura:</b> {statsState.waist_cm}cm
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Cadera:</b> {statsState.hip_cm}cm
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Brazo:</b> {statsState.l_amr_cm}/{statsState.r_amr_cm}cm
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Pierna:</b> {statsState.l_quad_cm}/{statsState.r_quad_cm}cm
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ mt: 1 }}>
+                                    <Typography variant="subtitle1">
+                                        <b>Pantorrilla:</b> {statsState.l_calf_cm}/{statsState.r_calf_cm}cm
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </AccordionDetails>
+                    </Accordion>
+
+
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)}>Cancelar</Button>

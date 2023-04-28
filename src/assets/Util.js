@@ -19,6 +19,10 @@ class Util {
         const ageDate = new Date(ageDiffMs);
         return Math.abs(ageDate.getUTCFullYear() - 1970);
     };
+
+    removeAccents(str) {
+        return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    };
 }
 
 

@@ -6,11 +6,22 @@ import Events from "./Pages/Events";
 import Users from "./Pages/User/Users";
 import User from "./Pages/User/User";
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
-
+import { blue, teal } from '@mui/material/colors';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: blue[500],
+    },
+    secondary: {
+      main: teal[500],
+    },
+  },
+});
 
 function App() {
   return (
-    <>
+    <ThemeProvider theme={theme}>
     <Router>
       <Routes>
           <Route path='/' exact element={<Login/>} />
@@ -21,7 +32,7 @@ function App() {
           <Route path='/user/:uid' element={<User/>} />
       </Routes>
     </Router>
-    </>
+    </ThemeProvider>
   )
 }
 

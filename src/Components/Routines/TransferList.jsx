@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import ExerciseImage from '../../Components/ExerciseImage/ExerciseImage';
+import Util from '../../assets/Util';
+
 
 function not(a, b) {
     return a.filter((value) => b.indexOf(value) === -1);
@@ -19,26 +22,41 @@ function intersection(a, b) {
 }
 
 export default function TransferList(props) {
-    const { leftList, rightList, onTransfer } = props;
+    const { leftList, rightList, onTransferLeft, onTransferRight } = props;
     const [checked, setChecked] = useState([]);
-    const [left, setLeft] = useState(leftList);
-    const [right, setRight] = useState(rightList);
+    const [left, setLeft] = useState([]);
+    const [right, setRight] = useState([]);
+    const [openView, setOpenView] = useState(false);
+    const [selectedExercise, setSelectedExercise] = useState(false);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const util = new Util();
+
+
+    useEffect(() => {
+        setLeft(leftList);
+        setRight(rightList);
+    }, [])
 
     const leftChecked = intersection(checked, left);
     const rightChecked = intersection(checked, right);
 
-    const [searchTerm, setSearchTerm] = useState('');
 
     const handleSearch = (event) => {
-        const term = event.target.value.toLowerCase();
+        const term = util.removeAccents(event.target.value.toLowerCase());
         setSearchTerm(term);
-        const filteredExercises = left.filter((ex) =>
-            ex.name.toLowerCase().includes(term) ||
-            ex.equipment.toLowerCase().includes(term) ||
-            ex.bodyPart.toLowerCase().includes(term) ||
-            ex.target.toLowerCase().includes(term)
-        );
-        setLeft(filteredExercises);
+        if (!!term) {
+
+            const filteredExercises = left.filter((ex) =>
+                util.removeAccents(ex.name.toLowerCase()).includes(term) ||
+                util.removeAccents(ex.equipment.toLowerCase()).includes(term) ||
+                util.removeAccents(ex.bodyPart.toLowerCase()).includes(term) ||
+                util.removeAccents(ex.target.toLowerCase()).includes(term)
+            );
+            setLeft(filteredExercises);
+        } else {
+            setLeft(leftList);
+        }
     };
 
     const handleToggle = (value) => () => {
@@ -55,32 +73,31 @@ export default function TransferList(props) {
     };
 
     const handleCheckedRight = () => {
-        onTransfer(leftChecked);
+        onTransferRight(leftChecked);
         setRight(right.concat(leftChecked));
         setLeft(not(left, leftChecked));
         setChecked(not(checked, leftChecked));
     };
 
     const handleCheckedLeft = () => {
+        onTransferLeft(rightChecked)
         setLeft(left.concat(rightChecked));
         setRight(not(right, rightChecked));
         setChecked(not(checked, rightChecked));
     };
 
-    const customList = (items) => (
-        <Paper sx={{ width: '250px', height: 400, overflow: 'auto', mt: 2 }}>
+
+    const ExercisesList = (items) => (
+        <Paper sx={{ width: '500px', minWith: '40%', height: 400, overflow: 'auto', mt: 2 }}>
             <List dense component="div" role="list">
                 {items.map((exercise) => {
-
                     return (
                         <ListItem
                             key={exercise.id}
-                            role="listitem"
-                            button
-                            onClick={handleToggle(exercise)}
-                        >
-                            <ListItemIcon>
+                            secondaryAction={
                                 <Checkbox
+                                    edge="start"
+                                    onChange={handleToggle(exercise)}
                                     checked={checked.indexOf(exercise) !== -1}
                                     tabIndex={-1}
                                     disableRipple
@@ -88,8 +105,9 @@ export default function TransferList(props) {
                                         'aria-labelledby': exercise.id,
                                     }}
                                 />
-                            </ListItemIcon>
-                            <ListItemText id={exercise.id} primary={exercise.name} />
+                            }
+                        >
+                            <ExerciseImage exercise={exercise} />
                         </ListItem>
                     );
                 })}
@@ -97,9 +115,50 @@ export default function TransferList(props) {
         </Paper>
     );
 
+
+    const RoutineList = (items) => (
+        <Paper sx={{ width: '500px', minWith: '40%', height: 400, overflow: 'auto', mt: 2 }}>
+            <List dense component="div" role="list">
+                {items.map((exercise, index) => {
+                    return (
+                        <ListItem
+                            key={exercise.id}
+                            secondaryAction={
+                                <Checkbox
+                                    onChange={handleToggle(exercise)}
+                                    checked={checked.indexOf(exercise) !== -1}
+                                    tabIndex={-1}
+                                    disableRipple
+                                    inputProps={{
+                                        'aria-labelledby': exercise.id,
+                                    }}
+                                />
+                            }
+                        >
+                            <TextField id="standard-basic" label="Sets" variant="outlined" sx={{ maxWidth: '65px', padding: '1' }}
+                                value={exercise.sets}
+                                onChange={(event) =>
+                                    setRight((prevRight) => {
+                                        const newRight = [...prevRight];  // create a new array to avoid mutating state directly
+                                        newRight[index] = {  // update the item at index with a new object
+                                            ...newRight[index],  // copy the original properties of the item
+                                            sets: event.target.value,  // set the new value for the 'sets' property
+                                        };
+                                        return newRight;  // return the updated array to set the new state
+                                    })
+                                }
+                            />
+                            <ExerciseImage exercise={exercise} />
+                        </ListItem>
+                    );
+                })}
+            </List>
+        </Paper>
+    );
+
+
     return (
         <Grid container spacing={2} justifyContent="center" alignItems="center">
-
             <Grid item>
                 <TextField label="Buscar ejercicio" variant="standard"
                     value={searchTerm}
@@ -108,7 +167,7 @@ export default function TransferList(props) {
                         handleSearch(e);
                     }}
                 />
-                {customList(left)}
+                {ExercisesList(left)}
             </Grid>
             <Grid item>
                 <Grid container direction="column" alignItems="center">
@@ -135,10 +194,8 @@ export default function TransferList(props) {
                 </Grid>
             </Grid>
             <Grid item>
-                <Typography variant="subtitle1">
-                    Rutina del dia
-                </Typography>
-                {customList(right)}
+                {right.length !== 0 && <Button>Agregar como rutina</Button>}
+                {RoutineList(right)}
             </Grid>
         </Grid>
     );

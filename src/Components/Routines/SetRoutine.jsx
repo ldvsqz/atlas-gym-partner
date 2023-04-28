@@ -41,7 +41,7 @@ function SetRoutine(props) {
         target: '',
         routine: []
     });
-    const [exercisesList, setRExercisesList] = useState([]);
+    const [exercisesList, setExercisesList] = useState([]);
     const [backExercises, setBackExercises] = useState();
     const [chestExercises, setChestExercises] = useState();
     const [deltsExercises, setDeltsExercises] = useState();
@@ -66,13 +66,13 @@ function SetRoutine(props) {
             exercises.filter((exercise) => exercise.bodyPart.toLowerCase().includes('deltoides'))
         )
         setAbsExercises(
-            exercises.filter((exercise) => exercise.target.toLowerCase().includes('abdominales'))
+            exercises.filter((exercise) => exercise.bodyPart.toLowerCase().includes('core'))
         )
         setArmsExercises(
-            exercises.filter((exercise) => exercise.bodyPart.toLowerCase().includes('parte superior de los brazos') || exercise.bodyPart.toLowerCase().includes('antebrazos'))
+            exercises.filter((exercise) => exercise.bodyPart.toLowerCase().includes('brazos') || exercise.bodyPart.toLowerCase().includes('antebrazos'))
         )
         setLegsExercises(
-            exercises.filter((exercise) => exercise.bodyPart.toLowerCase().includes('piernas superiores') || exercise.bodyPart.toLowerCase().includes('piernas inferiores'))
+            exercises.filter((exercise) => exercise.bodyPart.toLowerCase().includes('piernas'))
         )
     }, [setBackExercises, setChestExercises, setDeltsExercises, setAbsExercises, setArmsExercises, setLegsExercises]);
 
@@ -88,62 +88,125 @@ function SetRoutine(props) {
     };
 
 
+    function removeExercise(newList) {
+        const updatedList = exercisesList.filter((exercise) => !newList.includes(exercise));
+        setExercisesList(updatedList);
+    }
+
+    const restoreExercise = (newList) => {
+        newList.forEach((exercise) => {
+            switch (exercise.bodyPart) {
+                case 'espalda':
+                    setBackExercises((prevExercises) => [...prevExercises, exercise]);
+                    break;
+                case 'pecho':
+                    setChestExercises((prevExercises) => [...prevExercises, exercise]);
+                    break;
+                case 'deltoides':
+                    setDeltsExercises((prevExercises) => [...prevExercises, exercise]);
+                    break;
+                case 'core':
+                    setAbsExercises((prevExercises) => [...prevExercises, exercise]);
+                    break;
+                case 'brazos':
+                case 'antebrazos':
+                    setArmsExercises((prevExercises) => [...prevExercises, exercise]);
+                    break;
+                case 'piernas':
+                    setLegsExercises((prevExercises) => [...prevExercises, exercise]);
+                    break;
+                default:
+                    break;
+            }
+        });
+    };
+
+
+
     return (
         <>
             {!open && <Button onClick={handleOpen}>Agregar rutina</Button>}
             {open && <div>
                 <Button onClick={handleClose}>Cerrar</Button>
-                <Box sx={{ width: '92%', maxWidth: 700, typography: 'body1' }}>
+                <Box sx={{ width: '100%', typography: 'body1' }}>
                     <TabContext value={value}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <TabList onChange={handleChange} aria-label="lab API tabs example" variant="scrollable">
-                                <Tab sx={{ width: '16.6%' }} label="Espalda" value="1" />
-                                <Tab sx={{ width: '16.6%' }} label="Pecho" value="2" />
-                                <Tab sx={{ width: '16.6%' }} label="Hombro" value="3" />
-                                <Tab sx={{ width: '16.6%' }} label="Abdomen" value="4" />
-                                <Tab sx={{ width: '16.6%' }} label="Brazos" value="5" />
-                                <Tab sx={{ width: '16.6%' }} label="Pierna" value="6" />
+                                <Tab label="Espalda" value="1" />
+                                <Tab label="Pecho" value="2" />
+                                <Tab label="Hombro" value="3" />
+                                <Tab label="Abdomen" value="4" />
+                                <Tab label="Brazos" value="5" />
+                                <Tab label="Pierna" value="6" />
                             </TabList>
                         </Box>
                         <TabPanel value="1">
-                            <TransferList leftList={backExercises} rightList={exercisesList} onTransfer={(newList) => {
-                                setRExercisesList(exercisesList.concat(newList))
-                                console.log(newList);
-                                setBackExercises(backExercises.filter((ex) => !newList.includes(ex)))
-                            }} />
+                            <TransferList leftList={backExercises} rightList={exercisesList}
+                                onTransferRight={(newList) => {
+                                    setExercisesList(exercisesList.concat(newList))
+                                    setBackExercises(backExercises.filter((ex) => !newList.includes(ex)))
+                                }}
+                                onTransferLeft={(newList) => {
+                                    removeExercise(newList)
+                                    restoreExercise(newList)
+                                }} />
                         </TabPanel>
                         <TabPanel value="2">
-                            <TransferList leftList={chestExercises} rightList={exercisesList} onTransfer={(newList) => {
-                                setRExercisesList(exercisesList.concat(newList))
-                                setChestExercises(chestExercises.filter((ex) => !newList.includes(ex)))
-                            }} />
+                            <TransferList leftList={chestExercises} rightList={exercisesList}
+                                onTransferRight={(newList) => {
+                                    setExercisesList(exercisesList.concat(newList))
+                                    setChestExercises(chestExercises.filter((ex) => !newList.includes(ex)))
+                                }}
+                                onTransferLeft={(newList) => {
+                                    removeExercise(newList)
+                                    restoreExercise(newList)
+                                }} />
                         </TabPanel>
                         <TabPanel value="3">
-                            <TransferList leftList={deltsExercises} rightList={exercisesList} onTransfer={(newList) => {
-                                setRExercisesList(exercisesList.concat(newList))
-                                setDeltsExercises(deltsExercises.filter((ex) => !newList.includes(ex)))
-                            }} />
+                            <TransferList leftList={deltsExercises} rightList={exercisesList}
+                                onTransferRight={(newList) => {
+                                    setExercisesList(exercisesList.concat(newList))
+                                    setDeltsExercises(deltsExercises.filter((ex) => !newList.includes(ex)))
+                                }}
+                                onTransferLeft={(newList) => {
+                                    removeExercise(newList)
+                                    restoreExercise(newList)
+                                }} />
                         </TabPanel>
                         <TabPanel value="4">
-                            <TransferList leftList={absExercises} rightList={exercisesList} onTransfer={(newList) => {
-                                setRExercisesList(exercisesList.concat(newList))
-                                setAbsExercises(absExercises.filter((ex) => !newList.includes(ex)))
-                            }} />
+                            <TransferList leftList={absExercises} rightList={exercisesList}
+                                onTransferRight={(newList) => {
+                                    setExercisesList(exercisesList.concat(newList))
+                                    setAbsExercises(absExercises.filter((ex) => !newList.includes(ex)))
+                                }}
+                                onTransferLeft={(newList) => {
+                                    removeExercise(newList)
+                                    restoreExercise(newList)
+                                }} />
                         </TabPanel>
                         <TabPanel value="5">
-                            <TransferList leftList={armsExercises} rightList={exercisesList} onTransfer={(newList) => {
-                                setRExercisesList(exercisesList.concat(newList))
-                                setArmsExercises(armsExercises.filter((ex) => !newList.includes(ex)))
-                            }} />
+                            <TransferList leftList={armsExercises} rightList={exercisesList}
+                                onTransferRight={(newList) => {
+                                    setExercisesList(exercisesList.concat(newList))
+                                    setArmsExercises(armsExercises.filter((ex) => !newList.includes(ex)))
+                                }}
+                                onTransferLeft={(newList) => {
+                                    removeExercise(newList)
+                                    restoreExercise(newList)
+                                }} />
                         </TabPanel>
                         <TabPanel value="6">
-                            <TransferList leftList={legsExercises} rightList={exercisesList} onTransfer={(newList) => {
-                                setRExercisesList(exercisesList.concat(newList))
-                                setLegsExercises(legsExercises.filter((ex) => !newList.includes(ex)))
-                            }} />
+                            <TransferList leftList={legsExercises} rightList={exercisesList}
+                                onTransferRight={(newList) => {
+                                    setExercisesList(exercisesList.concat(newList))
+                                    setLegsExercises(legsExercises.filter((ex) => !newList.includes(ex)))
+                                }}
+                                onTransferLeft={(newList) => {
+                                    removeExercise(newList)
+                                    restoreExercise(newList)
+                                }} />
                         </TabPanel>
                     </TabContext>
-                    <Button onClick={handleAddDay}>Agregar como día de rutina</Button>
                 </Box>
             </div>
             }
