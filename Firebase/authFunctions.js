@@ -1,7 +1,7 @@
-import { GoogleAuthProvider, signInWithPopup, getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut} from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { query, getDocs, collection, where, addDoc } from "firebase/firestore"
-import {db} from "./firebase"
-import {app} from "./firebase"
+import { db } from "./firebase"
+import { app } from "./firebase"
 import UserService from './userService';
 
 const auth = getAuth(app)
@@ -9,33 +9,32 @@ const googleProvider = new GoogleAuthProvider();
 
 
 const signInWithGoogle = async () => {
-  try {
-    const res = await signInWithPopup(auth, googleProvider);
-    const user = res.user;
-    const q = query(collection(db, "users"), where("uid", "==", user.uid));
-    const docs = await getDocs(q);
-    if (docs.docs.length === 0) {
-        UserService.add({
-            uid: user.uid,
-            dni: '',
-            birthday: user.birthday,
-            phone: user.phoneNumber,
-            name: user.displayName,
-            email : user.email
-        })
+    try {
+        const res = await signInWithPopup(auth, googleProvider);
+        const user = res.user;
+        const q = query(collection(db, "users"), where("uid", "==", user.uid));
+        const docs = await getDocs(q);
+        if (docs.docs.length === 0) {
+            UserService.add({
+                uid: user.uid,
+                dni: '',
+                birthday: user.birthday,
+                phone: user.phoneNumber,
+                name: user.displayName,
+                email: user.email
+            })
+        }
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
     }
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  }
 };
 
 const logInWithEmailAndPassword = async (email, password) => {
     try {
-        await signInWithEmailAndPassword(auth, email, password);
+        return await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
-        console.error(err);
-        alert(err.message);
+        return err
     }
 };
 

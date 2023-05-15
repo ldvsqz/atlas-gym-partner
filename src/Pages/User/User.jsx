@@ -34,27 +34,16 @@ function User() {
   useEffect(() => {
     if (location.state) {
       const uid = location.state.uid;
-      const fetchClient = async () => {
-        setLoading(true);
+      const fechClientData = async () => {
         const userData = await UserService.get(uid);
-        setUser(userData);
-        setLoading(false);
-      };
-      const fetchStats = async () => {
-        setLoading(true);
         const userStats = await StatService.getLast(uid);
-        setStats(userStats);
-        setLoading(false);
-      };
-      const fetchRoutine = async () => {
-        setLoading(true);
         const userRoutine = await RoutineService.getLast(uid);
+        setUser(userData);
+        setStats(userStats);
         setRoutine(userRoutine);
         setLoading(false);
       };
-      fetchClient();
-      fetchStats();
-      fetchRoutine();
+      fechClientData();
     }
   }, []);
 
