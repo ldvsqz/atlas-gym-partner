@@ -23,6 +23,11 @@ class Util {
     removeAccents(str) {
         return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     };
+
+
+    genId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
 }
 
 
