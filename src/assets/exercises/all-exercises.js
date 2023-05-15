@@ -1,4 +1,4 @@
-export const exercises = [
+export const allExercises = [
   {
     "bodyPart": "core",
     "equipment": "peso corporal",
@@ -302,7 +302,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1314.gif",
     "id": 1314,
     "name": "Extensión posterior en la pelota de estabilidad",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -752,7 +752,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1010.gif",
     "id": 1010,
     "name": "Peso muerto pierna recta con banda",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -6683,7 +6683,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1333.gif",
     "id": 1333,
     "name": "Extensión de retroceso de la bola de ejercicio con brazos extendidos",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -6692,7 +6692,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1334.gif",
     "id": 1334,
     "name": "Extensión de espalda de bola de ejercicio con las manos detrás de la cabeza",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -6701,7 +6701,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1335.gif",
     "id": 1335,
     "name": "Extensión de retroceso de la bola de ejercicio con rodillas fuera del suelo",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -6710,7 +6710,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1336.gif",
     "id": 1336,
     "name": "Extensión de retroceso de la bola de ejercicio con rotación",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -6737,7 +6737,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1338.gif",
     "id": 1338,
     "name": "abrazo de pelota de ejercicios",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -6827,7 +6827,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1343.gif",
     "id": 1343,
     "name": "Bola de ejercicio Rose de pierna propensa",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -7475,7 +7475,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0489.gif",
     "id": 489,
     "name": "hiperextensión",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -7484,7 +7484,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0488.gif",
     "id": 488,
     "name": "Hyperextension (en banco)",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -8294,7 +8294,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0573.gif",
     "id": 573,
     "name": "extensión de la máquina",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -8924,7 +8924,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1352.gif",
     "id": 1352,
     "name": "rizo de la espalda baja",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -9815,7 +9815,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2208.gif",
     "id": 2208,
     "name": "estiramiento hacia espalda",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -10895,7 +10895,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1362.gif",
     "id": 1362,
     "name": "esfinge",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -10913,7 +10913,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1363.gif",
     "id": 1363,
     "name": "estiramiento de la columna",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -10921,7 +10921,7 @@ export const exercises = [
     "equipment": "peso corporal",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2329.gif",
     "id": 2329,
-    "name": "giro de la columna vertebral",
+    "name": "giro de la lumbares",
     "target": "abdominales",
     "sets": "4x10"
   },
@@ -11057,7 +11057,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1364.gif",
     "id": 1364,
     "name": "inclinación pélvica de pie",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -11336,7 +11336,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3231.gif",
     "id": 3231,
     "name": "Toque de dos dedo del pie (hombre)",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -11354,7 +11354,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1366.gif",
     "id": 1366,
     "name": "perro hacia arriba",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {
@@ -11516,7 +11516,7 @@ export const exercises = [
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0835.gif",
     "id": 835,
     "name": "hiperextensión ponderada (en la bola de estabilidad)",
-    "target": "columna vertebral",
+    "target": "lumbares",
     "sets": "4x10"
   },
   {

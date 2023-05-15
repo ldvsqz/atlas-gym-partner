@@ -20,7 +20,7 @@ function ExerciseImage(props) {
     return (
         <div>
             <ListItemButton onClick={handleOpen}>
-                <ListItemText id={exercise.id} primary={exercise.name} />
+                <ListItemText primary={exercise.name} />
             </ListItemButton>
             <Dialog
                 open={open}

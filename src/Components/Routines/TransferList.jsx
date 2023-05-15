@@ -6,10 +6,9 @@ import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import ExerciseImage from '../../Components/ExerciseImage/ExerciseImage';
+import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
 import Util from '../../assets/Util';
 
 
@@ -22,7 +21,7 @@ function intersection(a, b) {
 }
 
 export default function TransferList(props) {
-    const { leftList, rightList, onTransferLeft, onTransferRight } = props;
+    const { leftList, rightList, onTransferLeft, onTransferRight, addAsADay } = props;
     const [checked, setChecked] = useState([]);
     const [left, setLeft] = useState([]);
     const [right, setRight] = useState([]);
@@ -36,7 +35,7 @@ export default function TransferList(props) {
     useEffect(() => {
         setLeft(leftList);
         setRight(rightList);
-    }, [])
+    }, [leftList, rightList])
 
     const leftChecked = intersection(checked, left);
     const rightChecked = intersection(checked, right);
@@ -86,40 +85,58 @@ export default function TransferList(props) {
         setChecked(not(checked, rightChecked));
     };
 
+    const handleAddDay = () => {
+        addAsADay(rightChecked)
+    }
 
-    const ExercisesList = (items) => (
-        <Paper sx={{ width: '500px', minWith: '40%', height: 400, overflow: 'auto', mt: 2 }}>
-            <List dense component="div" role="list">
-                {items.map((exercise) => {
-                    return (
-                        <ListItem
-                            key={exercise.id}
-                            secondaryAction={
-                                <Checkbox
-                                    edge="start"
-                                    onChange={handleToggle(exercise)}
-                                    checked={checked.indexOf(exercise) !== -1}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    inputProps={{
-                                        'aria-labelledby': exercise.id,
-                                    }}
-                                />
-                            }
-                        >
-                            <ExerciseImage exercise={exercise} />
-                        </ListItem>
-                    );
-                })}
-            </List>
-        </Paper>
+
+    const ExercisesList = () => (
+        <div>
+            <TextField label="Buscar ejercicio" variant="standard"
+                value={searchTerm}
+                onChange={
+                    (e) => {
+                        setSearchTerm(e.target.value);
+                        handleSearch(e);
+                    }}
+            />
+            <Paper sx={{ width: '500px', minWith: '40%', height: 400, overflow: 'auto', mt: 2 }}>
+                <List dense component="div" role="list">
+                    {
+
+                        left.map((exercise) => {
+                            return (
+                                <ListItem
+                                    key={exercise.id}
+                                    secondaryAction={
+                                        <Checkbox
+                                            edge="start"
+                                            onChange={handleToggle(exercise)}
+                                            checked={checked.indexOf(exercise) !== -1}
+                                            tabIndex={-1}
+                                            disableRipple
+                                            inputProps={{
+                                                'aria-labelledby': exercise.id,
+                                            }}
+                                        />
+                                    }
+                                >
+                                    <ExerciseImage exercise={exercise} />
+                                </ListItem>
+                            );
+                        })
+                    }
+
+                </List>
+            </Paper>
+        </div>
     );
 
 
-    const RoutineList = (items) => (
+    const RoutineList = () => (
         <Paper sx={{ width: '500px', minWith: '40%', height: 400, overflow: 'auto', mt: 2 }}>
             <List dense component="div" role="list">
-                {items.map((exercise, index) => {
+                {right.map((exercise, index) => {
                     return (
                         <ListItem
                             key={exercise.id}
@@ -135,13 +152,13 @@ export default function TransferList(props) {
                                 />
                             }
                         >
-                            <TextField id="standard-basic" label="Sets" variant="outlined" sx={{ maxWidth: '65px', padding: '1' }}
+                            <TextField id="standard-basic" label="Sets" variant="outlined" sx={{ maxWidth: '65px', mr: 2 }}
                                 value={exercise.sets}
                                 onChange={(event) =>
                                     setRight((prevRight) => {
                                         const newRight = [...prevRight];  // create a new array to avoid mutating state directly
-                                        newRight[index] = {  // update the item at index with a new object
-                                            ...newRight[index],  // copy the original properties of the item
+                                        right[index] = {  // update the item at index with a new object
+                                            ...right[index],  // copy the original properties of the item
                                             sets: event.target.value,  // set the new value for the 'sets' property
                                         };
                                         return newRight;  // return the updated array to set the new state
@@ -158,45 +175,49 @@ export default function TransferList(props) {
 
 
     return (
-        <Grid container spacing={2} justifyContent="center" alignItems="center">
-            <Grid item>
-                <TextField label="Buscar ejercicio" variant="standard"
-                    value={searchTerm}
-                    onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        handleSearch(e);
-                    }}
-                />
-                {ExercisesList(left)}
-            </Grid>
-            <Grid item>
-                <Grid container direction="column" alignItems="center">
-                    <Button
-                        sx={{ my: 0.5, minWidth: '30px' }}
-                        variant="outlined"
-                        size="small"
-                        onClick={handleCheckedRight}
-                        disabled={leftChecked.length === 0}
-                        aria-label="move selected right"
-                    >
-                        &gt;
-                    </Button>
-                    <Button
-                        sx={{ my: 0.5, minWidth: '30px' }}
-                        variant="outlined"
-                        size="small"
-                        onClick={handleCheckedLeft}
-                        disabled={rightChecked.length === 0}
-                        aria-label="move selected left"
-                    >
-                        &lt;
-                    </Button>
-                </Grid>
-            </Grid>
-            <Grid item>
-                {right.length !== 0 && <Button>Agregar como rutina</Button>}
-                {RoutineList(right)}
-            </Grid>
-        </Grid>
+        <div>
+            {
+                left.length == 0 ? (
+                    <Box sx={{ width: '100%' }}>
+                        <LinearProgress />
+                    </Box>
+                ) : (
+                    <Grid container spacing={2} justifyContent="center" alignItems="center">
+                        <Grid item>
+
+                            {ExercisesList()}
+                        </Grid>
+                        <Grid item>
+                            <Grid container direction="column" alignItems="center">
+                                <Button
+                                    sx={{ my: 0.5, minWidth: '30px' }}
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={handleCheckedRight}
+                                    disabled={leftChecked.length === 0}
+                                    aria-label="move selected right"
+                                >
+                                    &gt;
+                                </Button>
+                                <Button
+                                    sx={{ my: 0.5, minWidth: '30px' }}
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={handleCheckedLeft}
+                                    disabled={rightChecked.length === 0}
+                                    aria-label="move selected left"
+                                >
+                                    &lt;
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid item>
+                            {right.length !== 0 && <Button onClick={handleAddDay}>Agregar día</Button>}
+                            {RoutineList(right)}
+                        </Grid>
+                    </Grid>
+                )
+            }
+        </div>
     );
 }

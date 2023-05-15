@@ -35,7 +35,6 @@ function Menu() {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
     }
-    console.log(rol);
     setMenu(open);
   };
 

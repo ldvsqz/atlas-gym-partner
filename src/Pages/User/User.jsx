@@ -15,6 +15,7 @@ import Menu from '../../Components/Menu/Menu';
 import SetUser from "./SetUser";
 import StatService from '../../../Firebase/statsService';
 import UserService from '../../../Firebase/userService';
+import RoutineService from '../../../Firebase/RoutineService';
 import Util from '../../assets/Util';
 import Alert from '../../Components/Alert/Alert';
 import Routines from '../../Components/Routines/Routines';
@@ -26,6 +27,7 @@ function User() {
   const location = useLocation();
   const [user, setUser] = useState({});
   const [stats, setStats] = useState({});
+  const [routine, setRoutine] = useState({});
   const [loading, setLoading] = useState(true);
   const util = new Util();
 
@@ -33,15 +35,28 @@ function User() {
     if (location.state) {
       const uid = location.state.uid;
       const fetchClient = async () => {
+        setLoading(true);
         const userData = await UserService.get(uid);
-        const userStats = await StatService.getLast(uid);
         setUser(userData);
+        setLoading(false);
+      };
+      const fetchStats = async () => {
+        setLoading(true);
+        const userStats = await StatService.getLast(uid);
         setStats(userStats);
         setLoading(false);
       };
+      const fetchRoutine = async () => {
+        setLoading(true);
+        const userRoutine = await RoutineService.getLast(uid);
+        setRoutine(userRoutine);
+        setLoading(false);
+      };
       fetchClient();
+      fetchStats();
+      fetchRoutine();
     }
-  }, [location.state, setUser, setStats]);
+  }, []);
 
 
 
@@ -54,6 +69,10 @@ function User() {
       setUser(refreshedUser);
       UserService.update(user.uid, refreshedUser);
     }
+  }
+  async function handleOnsetRoutine() {
+    const userRoutine = await RoutineService.getLast(user.uid);
+    setRoutine(userRoutine);
   }
 
 
@@ -138,8 +157,11 @@ function User() {
             </Grid>
 
 
-            <Routines uid={user.uid} />
-            <SetRoutine />
+            <Routines routine={routine} />
+            <SetRoutine uid={user.uid} onSaveRoutine={(newRoutine) => {
+              console.log(newRoutine);
+              setRoutine(newRoutine);
+            }} />
           </Box>
         )}
       </Container>
