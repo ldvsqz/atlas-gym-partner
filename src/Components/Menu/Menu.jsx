@@ -89,7 +89,9 @@ function Menu() {
         </ListItem>
 
         <Divider />
-        <Logout />
+        <ListItem key={"logout"} disablePadding>
+          <Logout />
+        </ListItem>
       </List>
     </Box >
   );
