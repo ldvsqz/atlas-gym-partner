@@ -1,12 +1,4 @@
-export const armsExercises = [{
-    "bodyPart": "brazos",
-    "equipment": "asistido",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0018.gif",
-    "id": 18,
-    "name": "Extensión de tríceps en pie asistida (con toalla)",
-    "target": "tríceps",
-    "sets": "4x10"
-},
+export const armsExercises = [
 {
     "bodyPart": "brazos",
     "equipment": "máquina",
@@ -21,7 +13,7 @@ export const armsExercises = [{
     "equipment": "banda",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0968.gif",
     "id": 968,
-    "name": "Curl alterno de biceps con banda",
+    "name": "Curl alternado de biceps con banda",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -75,17 +67,8 @@ export const armsExercises = [{
     "equipment": "banda",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1016.gif",
     "id": 1016,
-    "name": "Curl de muñeca con barra",
+    "name": "Curl de muñeca con banda",
     "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0023.gif",
-    "id": 23,
-    "name": "Curl de bíceps con barra",
-    "target": "bíceps",
     "sets": "4x10"
 },
 {
@@ -93,7 +76,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2407.gif",
     "id": 2407,
-    "name": "Curl de bíceps (arm blaster)",
+    "name": "Curl de bíceps barra plana (arm blaster)",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -120,7 +103,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0035.gif",
     "id": 35,
-    "name": "Press franses con barra",
+    "name": "Skull press declinado agarre cerrado",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -156,7 +139,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0052.gif",
     "id": 52,
-    "name": "Barra JM Bench Press",
+    "name": "Press banca JM con barra",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -165,7 +148,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1720.gif",
     "id": 1720,
-    "name": "barra se recostó de la cabeza la extensión del tríceps",
+    "name": "Press francés barra hiperextension de tricep",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -174,25 +157,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0055.gif",
     "id": 55,
-    "name": "Barbilla que se encuentra cerca de la prensa de agarre cerrado",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0056.gif",
-    "id": 56,
-    "name": "Barra se extiende la extensión de tríceps de agarre cerrado",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0057.gif",
-    "id": 57,
-    "name": "Extensión mentirosa de barra",
+    "name": "Press banca plano agarre cerrado",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -201,7 +166,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0059.gif",
     "id": 59,
-    "name": "Barra mentiroso predicador curl",
+    "name": "Curl predicador en banca plana",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -210,25 +175,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0061.gif",
     "id": 61,
-    "name": "Extensión de tríceps de barra y mentirosa",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0060.gif",
-    "id": 60,
-    "name": "Barra mentirosa Triceps Extension Crusher",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0065.gif",
-    "id": 65,
-    "name": "press de piso de un brazo de barra",
+    "name": "Press francés barra",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -237,7 +184,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1411.gif",
     "id": 1411,
-    "name": "Barra Palms Bown Wrist Curl sobre un banco",
+    "name": "Curl inverso de muñeca con barra",
     "target": "antebrazos",
     "sets": "4x10"
 },
@@ -246,17 +193,8 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1412.gif",
     "id": 1412,
-    "name": "Barra Palms Up Mode Curl sobre un banco",
+    "name": "Curl de muñeca con barra",
     "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1751.gif",
-    "id": 1751,
-    "name": "presas de pin de barra",
-    "target": "tríceps",
     "sets": "4x10"
 },
 {
@@ -264,7 +202,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0070.gif",
     "id": 70,
-    "name": "Barra Predicador Curl",
+    "name": "Curr predicador barra",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -273,17 +211,8 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0072.gif",
     "id": 72,
-    "name": "Barra Propone Ingine Curl",
+    "name": "Curl spider",
     "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0079.gif",
-    "id": 79,
-    "name": "Barra Revers Munda Curl v. 2",
-    "target": "antebrazos",
     "sets": "4x10"
 },
 {
@@ -291,7 +220,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2187.gif",
     "id": 2187,
-    "name": "Barbilla",
+    "name": "Press banca plano inverso agarre cerrado",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -300,7 +229,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0080.gif",
     "id": 80,
-    "name": "Barra Curl inverso",
+    "name": "curl barra prono",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -309,7 +238,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1721.gif",
     "id": 1721,
-    "name": "Barra Skullcrusher de empuñadura inversa",
+    "name": "Press francés barra supino",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -318,17 +247,8 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0081.gif",
     "id": 81,
-    "name": "Barra Reverse Predicer Curl",
+    "name": "Curl predicador barra prono",
     "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0082.gif",
-    "id": 82,
-    "name": "Barra Rizo de muñeca inversa",
-    "target": "antebrazos",
     "sets": "4x10"
 },
 {
@@ -336,7 +256,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1718.gif",
     "id": 1718,
-    "name": "Barbilla sentada Cerrar agarre detrás de la extensión de tríceps del cuello",
+    "name": "Extensión de tricep trasnuca barra",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -345,26 +265,8 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0089.gif",
     "id": 89,
-    "name": "Curl de concentración de agarre cerrado de barra con barra",
+    "name": "Curl concentrado con barra agarre cerrado",
     "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0092.gif",
-    "id": 92,
-    "name": "Barda Sentada Extensión de tríceps de la cabeza",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0104.gif",
-    "id": 104,
-    "name": "barra de pie de pie hacia espalda rizo de muñeca",
-    "target": "antebrazos",
     "sets": "4x10"
 },
 {
@@ -372,26 +274,8 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0106.gif",
     "id": 106,
-    "name": "barra de pie de pie cerca de agarre de agarre",
+    "name": "Curl con barra",
     "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2414.gif",
-    "id": 2414,
-    "name": "Curl de concentración de parada de barra",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0109.gif",
-    "id": 109,
-    "name": "barra de pie de pie sobre la extensión de los tríceps",
-    "target": "tríceps",
     "sets": "4x10"
 },
 {
@@ -399,7 +283,7 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0110.gif",
     "id": 110,
-    "name": "barra de parada de altura reversa",
+    "name": "Curl barra supino",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -408,35 +292,8 @@ export const armsExercises = [{
     "equipment": "barra con pesas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1629.gif",
     "id": 1629,
-    "name": "barra de pie de pie ancho de agarre bíceps rizo",
+    "name": "Curl barra agarre ancho",
     "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0113.gif",
-    "id": 113,
-    "name": "barra de pie de pie ancho rizo de agarre ancho",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0126.gif",
-    "id": 126,
-    "name": "rizo de muñeca con barra",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "barra con pesas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0125.gif",
-    "id": 125,
-    "name": "Barra Wrist Curl v. 2",
-    "target": "antebrazos",
     "sets": "4x10"
 },
 {
@@ -444,7 +301,7 @@ export const armsExercises = [{
     "equipment": "peso corporal",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0129.gif",
     "id": 129,
-    "name": "Banco de banca (rodillas dobladas)",
+    "name": "Fondos en banca (rodillas dobladas)",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -453,521 +310,188 @@ export const armsExercises = [{
     "equipment": "peso corporal",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1399.gif",
     "id": 1399,
-    "name": "Fondos de banco en el piso",
+    "name": "Fondos en banca (rodillas extendidas)",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "peso corporal",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1770.gif",
-    "id": 1770,
-    "name": "bíceps rizo de concentración de pierna",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "peso corporal",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0139.gif",
-    "id": 139,
-    "name": "pull-ups estrechos de bíceps",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "peso corporal",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0140.gif",
-    "id": 140,
-    "name": "pull-up bíceps",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "peso corporal",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0137.gif",
-    "id": 137,
-    "name": "cuerpo hacia arriba",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "peso corporal",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1771.gif",
-    "id": 1771,
-    "name": "Extensión de tríceps de peso corporal",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "peso corporal",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1769.gif",
-    "id": 1769,
-    "name": "lado corporal bíceps bíceps rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0149.gif",
     "id": 149,
-    "name": "Extensión de tríceps alternativo de cable",
+    "name": "Extensión de tríceps individual con polea",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1630.gif",
     "id": 1630,
-    "name": "Curl Curl de agarre de cable",
+    "name": "Curl biceps polea",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1631.gif",
     "id": 1631,
-    "name": "Curl de concentración de cables",
+    "name": "Curl concentrado con polea",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0152.gif",
-    "id": 152,
-    "name": "Extensión de concentración de cable (en la rodilla)",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0868.gif",
-    "id": 868,
-    "name": "rizo de cable",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1632.gif",
     "id": 1632,
-    "name": "rizo de arrastre de cable",
+    "name": "Curl de arrastre con polea",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0165.gif",
     "id": 165,
-    "name": "Hammer de cable Curl (con cuerda)",
+    "name": "Curl martillo en polea (con cuerda)",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1722.gif",
     "id": 1722,
-    "name": "Cable Extensión de tríceps de la polea alta en la polea",
+    "name": "Extensión de tríceps trasnuca con polea alta",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0173.gif",
-    "id": 173,
-    "name": "Extensión de tríceps de inclinación de cable",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0860.gif",
     "id": 860,
-    "name": "retroceso de cable",
+    "name": "Patada en polea",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0176.gif",
-    "id": 176,
-    "name": "Cable extensión de tríceps arrodillado",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1634.gif",
-    "id": 1634,
-    "name": "bicep de biceps de cable",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0182.gif",
-    "id": 182,
-    "name": "Cable de cable Curl de agarre cerrado",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0186.gif",
-    "id": 186,
-    "name": "Extensión de tríceps de cable v. 2",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0190.gif",
-    "id": 190,
-    "name": "Cable de un brazo de un brazo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1633.gif",
     "id": 1633,
-    "name": "cable de un brazo predicador rizo",
+    "name": "Curl predicador individual con polea",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1635.gif",
     "id": 1635,
-    "name": "Cable de un brazo Rizo de predicador inverso",
+    "name": "Curl predicador individual supino con polea",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1723.gif",
     "id": 1723,
-    "name": "Pushdown de tríceps de un brazo de un brazo",
+    "name": "Extensión de tricep individual en polea",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1636.gif",
     "id": 1636,
-    "name": "Curl Curl Curl",
+    "name": "Curl biceps polea alta",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1637.gif",
-    "id": 1637,
-    "name": "Cable de cable rizo en la bola de ejercicio",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0194.gif",
     "id": 194,
-    "name": "Extensión de tríceps de cable de cable (accesorio de cuerda)",
+    "name": "Extensión de tríceps trasnuca con polea baja",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0195.gif",
     "id": 195,
-    "name": "Predicador de cables Curl",
+    "name": "Curl predicador en polea",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1638.gif",
-    "id": 1638,
-    "name": "biceps de cable de cable rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0201.gif",
     "id": 201,
-    "name": "empuje de cable",
+    "name": "Extensión de triceps en polea barra",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0200.gif",
     "id": 200,
-    "name": "Pressaje de cable (con accesorio de cuerda)",
+    "name": "Extensión de triceps en polea cuerda",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0204.gif",
     "id": 204,
-    "name": "tracción trasera del cable",
+    "name": "Extensión de tricep individual polea alta",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0206.gif",
-    "id": 206,
-    "name": "cable de reverso",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2406.gif",
-    "id": 2406,
-    "name": "Pushdown de tríceps de empuñadura inversa de cable (barra sz) (con blaster del brazo)",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1413.gif",
-    "id": 1413,
-    "name": "cable reverso de un brazo rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0209.gif",
-    "id": 209,
-    "name": "cable de predicador inverso de cable rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0210.gif",
-    "id": 210,
-    "name": "Cable de muñeca inversa de cable",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0207.gif",
     "id": 207,
-    "name": "Pushdown de altura inversa de cable",
+    "name": "Extensión de tricep prono en polea",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1639.gif",
     "id": 1639,
-    "name": "Predicador de martillo de cuerda de cable curl",
+    "name": "Curl martillo predicador en polea",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1724.gif",
-    "id": 1724,
-    "name": "Cable de cable Polea alta Extensión tríceps",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1725.gif",
-    "id": 1725,
-    "name": "Extensión tríceps de la inclinación de la cuerda del cable",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1726.gif",
-    "id": 1726,
-    "name": "Cabina de cable que se encuentra en el piso Extensión de tríceps",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1640.gif",
-    "id": 1640,
-    "name": "Cable de cable un brazo de martillo predicador rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1641.gif",
-    "id": 1641,
-    "name": "Curl sentado por cable",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1642.gif",
-    "id": 1642,
-    "name": "Cable de concentración de una concentración de un brazo sentado",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1643.gif",
-    "id": 1643,
-    "name": "Cable de cable de cable de cable",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1644.gif",
-    "id": 1644,
-    "name": "Curl Curl en cuclillas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0224.gif",
-    "id": 224,
-    "name": "cable de pie hacia espalda rizo de muñeca",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0229.gif",
-    "id": 229,
-    "name": "Curl interno de pie de cable",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0231.gif",
     "id": 231,
-    "name": "Cable de pie un brazo Extensión tríceps",
+    "name": "Extensión de tricep individual prono en polea",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0232.gif",
-    "id": 232,
-    "name": "Cable de pie pulldown (con cuerda)",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1727.gif",
-    "id": 1727,
-    "name": "Cable de pie Agarra inversa de un brazo Extensión de tríceps por encima de la cabeza",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
+    "equipment": "polea",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0241.gif",
     "id": 241,
-    "name": "Pushdown de tríceps de cable (V-Bar)",
+    "name": "Extensión de tricep en polea (barra V)",
     "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2405.gif",
-    "id": 2405,
-    "name": "Pushdown de tríceps de cable (V-Bar) (con Brazo Blaster)",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1645.gif",
-    "id": 1645,
-    "name": "Cable de dos brazos en el banco de inclinación",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1728.gif",
-    "id": 1728,
-    "name": "Cable de dos brazos tríceps",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "cable",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0247.gif",
-    "id": 247,
-    "name": "rizo de muñeca de cable",
-    "target": "antebrazos",
     "sets": "4x10"
 },
 {
@@ -975,7 +499,7 @@ export const armsExercises = [{
     "equipment": "peso corporal",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0259.gif",
     "id": 259,
-    "name": "Push-up de agarre cerrado",
+    "name": "Push-up cerrado",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -984,7 +508,7 @@ export const armsExercises = [{
     "equipment": "peso corporal",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2398.gif",
     "id": 2398,
-    "name": "Push-up de agarre cerrado (en las rodillas)",
+    "name": "Push-up cerrado (de rodillas)",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -993,7 +517,7 @@ export const armsExercises = [{
     "equipment": "peso corporal",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0283.gif",
     "id": 283,
-    "name": "flexión de diamantes",
+    "name": "Push-up diamante",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -1002,16 +526,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0285.gif",
     "id": 285,
-    "name": "bíceps alternativo de mancuernas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2403.gif",
-    "id": 2403,
-    "name": "Curl de bíceps alternativo de mancuernas (con brazo bláster)",
+    "name": "Curl alternado mancuerna",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1020,7 +535,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1646.gif",
     "id": 1646,
-    "name": "Curl de predicador de martillo alternativo con mancuernas",
+    "name": "Curl martillo predicador mancuerna",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1029,7 +544,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1647.gif",
     "id": 1647,
-    "name": "Curl de predicador alternativo de mancuernas",
+    "name": "Curl predicador mancuerna",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1038,52 +553,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1648.gif",
     "id": 1648,
-    "name": "mancuernas alternativas de martillo sentado",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1649.gif",
-    "id": 1649,
-    "name": "Dumbbell Alterning Bicep Curl con pierna elevada en la pelota de ejercicio",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1650.gif",
-    "id": 1650,
-    "name": "mancuerna alternando alternando bíceps rizo en la pelota de ejercicios",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1651.gif",
-    "id": 1651,
-    "name": "Lavazos de curl de bíceps con muescas con movimiento de bolos",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1652.gif",
-    "id": 1652,
-    "name": "biceps de mancuernas en la bola de ejercicio con la pierna elevada",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1653.gif",
-    "id": 1653,
-    "name": "rizo de bíceps con mancuernas con postura de cigüeña",
+    "name": "Curl martillo sentado mancuerna",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1092,16 +562,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0294.gif",
     "id": 294,
-    "name": "rizo de bíceps con mancuernas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2401.gif",
-    "id": 2401,
-    "name": "rizo de bíceps con mancuernas (con brazo bláster)",
+    "name": "Curl biceps mancuerna",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1110,25 +571,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1654.gif",
     "id": 1654,
-    "name": "bíceps bíceps reverso",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1655.gif",
-    "id": 1655,
-    "name": "Bíceps bíceps sentadillas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1656.gif",
-    "id": 1656,
-    "name": "bíceps bíceps con mancuernas vs en bosu",
+    "name": "Curl biceps mancuerna supino",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1137,7 +580,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1731.gif",
     "id": 1731,
-    "name": "Press de agarre mordol",
+    "name": "Press banca plano agarre cerrado mancuernas",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -1153,18 +596,9 @@ export const armsExercises = [{
 {
     "bodyPart": "brazos",
     "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0297.gif",
-    "id": 297,
-    "name": "rizo de concentración de mancuernas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0298.gif",
     "id": 298,
-    "name": "Martillo cruzado de martillo de carrocería",
+    "name": "Curl martillo alternado",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1173,17 +607,8 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1657.gif",
     "id": 1657,
-    "name": "Martilla cruzada de martillo de cuerpo con pesas v. 2",
+    "name": "Curl martillo alternado cruzado",
     "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1617.gif",
-    "id": 1617,
-    "name": "Dumbbell Decline One Arm Hammer Press",
-    "target": "tríceps",
     "sets": "4x10"
 },
 {
@@ -1191,7 +616,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0306.gif",
     "id": 306,
-    "name": "extensión de tríceps de declive de mancuernas",
+    "name": "Press francés declinado mancuernas",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -1200,62 +625,8 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1437.gif",
     "id": 1437,
-    "name": "rizos de los dedos con mancuernas",
+    "name": "Curl con los dedos mancuernas",
     "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1732.gif",
-    "id": 1732,
-    "name": "Extensión del tríceps del alero delantero de la mancuerna",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0313.gif",
-    "id": 313,
-    "name": "rizo de martillo con mancuernas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1659.gif",
-    "id": 1659,
-    "name": "rizo de martillo con mancuernas en la bola de ejercicio",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0312.gif",
-    "id": 312,
-    "name": "Curl de martillo pescador v. 2",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2402.gif",
-    "id": 2402,
-    "name": "rizos de martillo de mancuernas (con brazo bláster)",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1664.gif",
-    "id": 1664,
-    "name": "mordedura de alto rizo",
-    "target": "bíceps",
     "sets": "4x10"
 },
 {
@@ -1263,7 +634,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0315.gif",
     "id": 315,
-    "name": "bíceps de inclinación de mancuernas",
+    "name": "Curl en banca inclinada mancuernas",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1272,16 +643,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0318.gif",
     "id": 318,
-    "name": "rizo de inclinación de mancuernas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0317.gif",
-    "id": 317,
-    "name": "Curl de inclinación de pesas v. 2",
+    "name": "Curl alternado en banca inclinada mancuernas",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1290,44 +652,8 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0320.gif",
     "id": 320,
-    "name": "Curl de martillo de inclinación de mancuernas",
+    "name": "Curl martillo en banca inclinada mancuernas",
     "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1618.gif",
-    "id": 1618,
-    "name": "Presiona el martillo de la inclinación de la mancuernas sobre la pelota de ejercicio",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0322.gif",
-    "id": 322,
-    "name": "pícaro inclinado bíceps interno rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1619.gif",
-    "id": 1619,
-    "name": "Presentación de martillo de un brazo de la mancuerna",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1620.gif",
-    "id": 1620,
-    "name": "mancuerna inclinar un brazo martillo presione en bola de ejercicio",
-    "target": "tríceps",
     "sets": "4x10"
 },
 {
@@ -1335,7 +661,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0330.gif",
     "id": 330,
-    "name": "Extensión de tríceps de inclinación de pesas",
+    "name": "Press francés en banca inclinada",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -1344,7 +670,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1733.gif",
     "id": 1733,
-    "name": "Dumbbell incline dos brazos",
+    "name": "Copa de triceps en banca inclinada",
     "target": "tríceps",
     "sets": "4x10"
 },
@@ -1353,143 +679,8 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0333.gif",
     "id": 333,
-    "name": "reembolso de mancuernas",
+    "name": "Patada con mancuerna",
     "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1734.gif",
-    "id": 1734,
-    "name": "sobornos con mancuernas en la pelota de ejercicios",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1660.gif",
-    "id": 1660,
-    "name": "Bola de ejercicio de bíceps de rodilla de rodillas de rodilla",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1658.gif",
-    "id": 1658,
-    "name": "establo de mancuernas con bíceps rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0337.gif",
-    "id": 337,
-    "name": "Extensión mentirosa de mancuernas (en la cara)",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1729.gif",
-    "id": 1729,
-    "name": "Extensión alternativa de mentalidad mental",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0338.gif",
-    "id": 338,
-    "name": "Dumbbell que mentirá el codo",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0344.gif",
-    "id": 344,
-    "name": "Mídica yacen un brazo extensión de tríceps pronunciada",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0346.gif",
-    "id": 346,
-    "name": "Mídica yacen un brazo extensión de tríceps supinado",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0347.gif",
-    "id": 347,
-    "name": "pronación mentiente",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2705.gif",
-    "id": 2705,
-    "name": "Pronación mordida en el piso",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1735.gif",
-    "id": 1735,
-    "name": "Extensión simple de mentalidad mental",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0349.gif",
-    "id": 349,
-    "name": "Supinación mentirosa",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2706.gif",
-    "id": 2706,
-    "name": "Supinación mentirosa en el piso",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1661.gif",
-    "id": 1661,
-    "name": "mancuernas mentirosa bíceps supina rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0350.gif",
-    "id": 350,
-    "name": "mancuernas mentirosa curl en supina",
-    "target": "bíceps",
     "sets": "4x10"
 },
 {
@@ -1497,161 +688,8 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0351.gif",
     "id": 351,
-    "name": "Extensión de tríceps mental",
+    "name": "Press francés",
     "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1662.gif",
-    "id": 1662,
-    "name": "mancuernas yacía",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0352.gif",
-    "id": 352,
-    "name": "press de banco de agarre neutral",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0353.gif",
-    "id": 353,
-    "name": "Dumbbell One Arm Concetation Curl (en Ball de estabilidad)",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1736.gif",
-    "id": 1736,
-    "name": "mancuerna un brazo prensa francesa sobre bola de ejercicio",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1663.gif",
-    "id": 1663,
-    "name": "mordedura de un martillo de martillo de brazo rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1621.gif",
-    "id": 1621,
-    "name": "mancuerna un martillo de brazo presione en bola de ejercicio",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0354.gif",
-    "id": 354,
-    "name": "mancuerna de un brazo de un brazo",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1665.gif",
-    "id": 1665,
-    "name": "mordedura de un brazo rizo propenso",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1666.gif",
-    "id": 1666,
-    "name": "mancuernas con un martillo de martillo de un brazo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0358.gif",
-    "id": 358,
-    "name": "muñeca de una muñeca para la muñeca de inversiones de un brazo",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1414.gif",
-    "id": 1414,
-    "name": "mancuerna un brazo reverse predicador rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1667.gif",
-    "id": 1667,
-    "name": "mordedura de un brazo rizo de araña inversa",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1668.gif",
-    "id": 1668,
-    "name": "mancuerna un brazo rizo de bíceps sentado en la pelota de ejercicios",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1669.gif",
-    "id": 1669,
-    "name": "mancuerna un brazo rizo de martillo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1415.gif",
-    "id": 1415,
-    "name": "muñeca con muñeca con muñeca neutra asentada",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1670.gif",
-    "id": 1670,
-    "name": "mancuerna un brazo de pie de pie",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1671.gif",
-    "id": 1671,
-    "name": "mancuerna un brazo de pie de pie rizo",
-    "target": "bíceps",
     "sets": "4x10"
 },
 {
@@ -1659,17 +697,8 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0362.gif",
     "id": 362,
-    "name": "Extensión de tríceps de un brazo con mancuernas (en el banco)",
+    "name": "Extensión de tríceps copa individual",
     "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0364.gif",
-    "id": 364,
-    "name": "muñeca con muñeca con muñeca",
-    "target": "antebrazos",
     "sets": "4x10"
 },
 {
@@ -1677,107 +706,8 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1672.gif",
     "id": 1672,
-    "name": "Mídica One Arm Zottman Predicador Curl",
+    "name": "Curl predicador individual en banca",
     "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0365.gif",
-    "id": 365,
-    "name": "mancuernas sobre banca rizo de muñeca neutral",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0366.gif",
-    "id": 366,
-    "name": "mancuerna sobre banco de un brazo rizo de muñeca neutral",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1441.gif",
-    "id": 1441,
-    "name": "mancuerna sobre banco un brazo rizo de muñeca inversa",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0367.gif",
-    "id": 367,
-    "name": "mancuernas sobre banco de una muñeca de muñeca",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0368.gif",
-    "id": 368,
-    "name": "mancuerna sobre la muñeca de revistas de banco",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0369.gif",
-    "id": 369,
-    "name": "mancuernas sobre la muñeca del banco",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1623.gif",
-    "id": 1623,
-    "name": "Palms de mancuernas en press de banca incline",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0370.gif",
-    "id": 370,
-    "name": "Curl de martillo de melocotón pescador",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0372.gif",
-    "id": 372,
-    "name": "Predicador de mancuernas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1673.gif",
-    "id": 1673,
-    "name": "Predicador de mancuernas sobre bola de ejercicio",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0373.gif",
-    "id": 373,
-    "name": "Extensión de tríceps de pronación de pronóstico con muesca",
-    "target": "tríceps",
     "sets": "4x10"
 },
 {
@@ -1785,7 +715,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0374.gif",
     "id": 374,
-    "name": "Curl de inclinación propensa a las mancuernas",
+    "name": "Curl spider mancuernas",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1794,7 +724,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1674.gif",
     "id": 1674,
-    "name": "mordedura de martillo de inclinación de mancuernas",
+    "name": "Curl spider martillo mancuernas",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1803,7 +733,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0382.gif",
     "id": 382,
-    "name": "revers de mancuernas Bíceps rizo",
+    "name": "Curl supino mancuernas",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -1819,396 +749,9 @@ export const armsExercises = [{
 {
     "bodyPart": "brazos",
     "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1675.gif",
-    "id": 1675,
-    "name": "Curl de araña inversa de mancuernas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0385.gif",
-    "id": 385,
-    "name": "rizo de muñeca inversa de muñeca",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1676.gif",
-    "id": 1676,
-    "name": "mancuernas con manchas alternativas de martillo en bola de ejercicio",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0389.gif",
-    "id": 389,
-    "name": "Extensión de banco sentado con mancuernas",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1730.gif",
-    "id": 1730,
-    "name": "mancuernas sentada doblada sobre sobornos alternados",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1737.gif",
-    "id": 1737,
-    "name": "mancuernas sentada doblada sobre extensión de tríceps",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1677.gif",
-    "id": 1677,
-    "name": "mordedura de bíceps",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0390.gif",
-    "id": 390,
-    "name": "Curl de bíceps asentados (en la bola de estabilidad)",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3547.gif",
-    "id": 3547,
-    "name": "mancuerna bíceps asentada rizo a la prensa de hombro",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0391.gif",
-    "id": 391,
-    "name": "mordedura",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1678.gif",
-    "id": 1678,
-    "name": "mordedura de martillo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0393.gif",
-    "id": 393,
-    "name": "mancuerna bíceps interna asentada rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0394.gif",
-    "id": 394,
-    "name": "mancuerna sentada",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0397.gif",
-    "id": 397,
-    "name": "muñeca con muñeca neutral asentada",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1679.gif",
-    "id": 1679,
-    "name": "mancuerna sentada un rizo de bíceps de un brazo en la bola de ejercicio con la pierna elevada",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0398.gif",
-    "id": 398,
-    "name": "mancuerna sentada un brazo de brazo",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0399.gif",
-    "id": 399,
-    "name": "mancuerna rota un brazo",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "antebrazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0401.gif",
-    "id": 401,
-    "name": "Palms asentadas con muñeca con muñeca",
-    "target": "antebrazos",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0402.gif",
-    "id": 402,
-    "name": "mancuerna para predicador sentado",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0403.gif",
-    "id": 403,
-    "name": "Curl de concentración de agarre de reverses sentadas con mancuernas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1738.gif",
-    "id": 1738,
-    "name": "Extensión de tríceps por encima de la mancuernas de empuñadura inversa de un brazo sobre el brazo",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2188.gif",
-    "id": 2188,
-    "name": "Extensión de tríceps asentados con mancuernas",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3560.gif",
-    "id": 3560,
-    "name": "Martilla de martillo alternativo de pie de pie y presione",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1739.gif",
-    "id": 1739,
-    "name": "mancuerna",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1740.gif",
-    "id": 1740,
-    "name": "Vidumber de pie doblada sobre una extensión de tríceps de un brazo",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1741.gif",
-    "id": 1741,
-    "name": "mancuerna de pie doblada sobre dos brazos extensión de tríceps",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0416.gif",
-    "id": 416,
-    "name": "bíceps en pie de mancuerna rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0418.gif",
-    "id": 418,
-    "name": "Curl de concentración de pie de mancuerna",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2321.gif",
-    "id": 2321,
-    "name": "mancuerna de bíceps interno de pie v. 2",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0420.gif",
-    "id": 420,
-    "name": "mancuerna",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0421.gif",
-    "id": 421,
-    "name": "mancuerna de pie de pie de concentración de brazo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0422.gif",
-    "id": 422,
-    "name": "Dumbbell Standing One Arm Curl (sobre Banco de inclinación)",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1680.gif",
-    "id": 1680,
-    "name": "mancuerna de pie un brazo rizado sobre el banco inclinado",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0423.gif",
-    "id": 423,
-    "name": "Dumbbell Standing One Arm Extension",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0425.gif",
-    "id": 425,
-    "name": "mancuerna de pie un brazo rizo inversa",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0428.gif",
-    "id": 428,
-    "name": "Predicador de permanencia de mancuernas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0429.gif",
-    "id": 429,
-    "name": "mancuerna",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0430.gif",
-    "id": 430,
-    "name": "Extensión de tríceps en pie de mancuernas",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2293.gif",
-    "id": 2293,
-    "name": "Mídica Predicador de Zottman de pie CURL",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1684.gif",
-    "id": 1684,
-    "name": "A la mancuerna,Balance de una sola pierna con bíceps rizo",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0436.gif",
-    "id": 436,
-    "name": "Dumbbell Tate Press",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1742.gif",
-    "id": 1742,
-    "name": "Moda con mancuernas con postura de cigüeña",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1743.gif",
-    "id": 1743,
-    "name": "press de banco de giro de mancuernas",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/5201.gif",
     "id": 5201,
-    "name": "bíceps bíceps de mierda",
+    "name": "curl de mesero",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -2217,16 +760,7 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0439.gif",
     "id": 439,
-    "name": "Curl de Zottman de mancuernas",
-    "target": "bíceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2294.gif",
-    "id": 2294,
-    "name": "Pedador de Zottman Predicador de mancuernas",
+    "name": "Curl de Zottman",
     "target": "bíceps",
     "sets": "4x10"
 },
@@ -2235,202 +769,157 @@ export const armsExercises = [{
     "equipment": "mancuernas",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2189.gif",
     "id": 2189,
-    "name": "Dumbbells Extensión de tríceps sentados",
+    "name": "Extensión de tricep sentado mancuernas",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "peso corporal",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/3287.gif",
-    "id": 3287,
-    "name": "Fondos de codo",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "bola de estabilidad",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1744.gif",
-    "id": 1744,
-    "name": "Bola de ejercicio Dip",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "bola de estabilidad",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1745.gif",
-    "id": 1745,
-    "name": "Bola de ejercicio Sentido Triceps Estiramiento",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "mancuernas",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1746.gif",
-    "id": 1746,
-    "name": "Bola de ejercicio Extensión de tríceps supino",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "EZ Barra",
-    "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1747.gif",
-    "id": 1747,
-    "name": "Ez Bar French Press en Bola de ejercicio",
-    "target": "tríceps",
-    "sets": "4x10"
-},
-{
-    "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1748.gif",
     "id": 1748,
-    "name": "EZ Bar y minera extensión de tríceps de agarre detrás de la cabeza",
+    "name": "Press francés barra Z",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1682.gif",
     "id": 1682,
-    "name": "EZ Bar sentada Crosta de concentración de agarre de agarre",
+    "name": "Curl concentrado barra Z",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1749.gif",
     "id": 1749,
-    "name": "Ez Bar de pie de prensa francesa",
+    "name": "Press frances de pie barra Z",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1627.gif",
     "id": 1627,
-    "name": "Ez Barra Close Grip Predicer Curl",
+    "name": "barra Z Close Grip Predicer Curl",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0446.gif",
     "id": 446,
-    "name": "Ez Barra Curl de agarre cerrado",
+    "name": "barra Z Curl de agarre cerrado",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0447.gif",
     "id": 447,
-    "name": "Ez Barra Curl",
+    "name": "barra Z Curl",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0448.gif",
     "id": 448,
-    "name": "Ez Barra Decline Close Grip Face Press",
+    "name": "barra Z Decline Close Grip Face Press",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2186.gif",
     "id": 2186,
-    "name": "Ez Barra Decline Tropeps Extensión",
+    "name": "barra Z Decline Tropeps Extensión",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0449.gif",
     "id": 449,
-    "name": "Ez Barra incline la extensión tríceps",
+    "name": "barra Z incline la extensión tríceps",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0450.gif",
     "id": 450,
-    "name": "Ez Barra JM Bench Press",
+    "name": "barra Z JM Bench Press",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0451.gif",
     "id": 451,
-    "name": "Ez Barra Rizo de agarre inverso",
+    "name": "barra Z Rizo de agarre inverso",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0452.gif",
     "id": 452,
-    "name": "Ez Barra RESCURA DEL PREDICADOR DE ARROLES VIENTOS",
+    "name": "barra Z RESCURA DEL PREDICADOR DE ARROLES VIENTOS",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1458.gif",
     "id": 1458,
-    "name": "Ez Barra Sented Curls",
+    "name": "barra Z Sented Curls",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0453.gif",
     "id": 453,
-    "name": "Ez Barra Sentada Triceps Extensión",
+    "name": "barra Z Sentada Triceps Extensión",
     "target": "tríceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/0454.gif",
     "id": 454,
-    "name": "Ez Barra Spider Curl",
+    "name": "barra Z Spider Curl",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/1628.gif",
     "id": 1628,
-    "name": "Ez Barra Spider Curl",
+    "name": "barra Z Spider Curl",
     "target": "bíceps",
     "sets": "4x10"
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2404.gif",
     "id": 2404,
     "name": "EZ-BAR BICEPS CURL (con brazo bláster)",
@@ -2439,7 +928,7 @@ export const armsExercises = [{
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2432.gif",
     "id": 2432,
     "name": "press",
@@ -2448,7 +937,7 @@ export const armsExercises = [{
 },
 {
     "bodyPart": "brazos",
-    "equipment": "EZ Barra",
+    "equipment": "barra Z",
     "gifUrl": "http://d205bpvrqc9yn1.cloudfront.net/2741.gif",
     "id": 2741,
     "name": "Ez-Barra de pie ancho de agarre anchos bíceps rizo",
