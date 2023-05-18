@@ -39,8 +39,11 @@ function ExerciseImage(props) {
                             alt=""
                         />
                         <CardContent>
+                            <Typography variant="body3" color="text.secondary">
+                                {exercise.bodyPart}
+                            </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                Objetivo: {exercise.bodyPart}/{exercise.target}
+                                Objetivo: {exercise.target}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                                 Equipo: {exercise.equipment}

@@ -25,8 +25,6 @@ export default function TransferList(props) {
     const [checked, setChecked] = useState([]);
     const [left, setLeft] = useState([]);
     const [right, setRight] = useState([]);
-    const [openView, setOpenView] = useState(false);
-    const [selectedExercise, setSelectedExercise] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState('');
     const util = new Util();
