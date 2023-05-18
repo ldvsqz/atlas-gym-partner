@@ -20,9 +20,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-function Routines(props) {
-  const { routine } = props;
-  const [routineState, setRoutineState] = useState(routine);
+function Routines({ routine }) {
   const util = new Util();
 
   return (
@@ -31,12 +29,12 @@ function Routines(props) {
         Rutina
       </Typography>
       <Box sx={{ width: '100%' }}>
-        {routineState ? (<div>
+        {routine ? (<div>
           <Typography variant="subtitle1" gutterBottom>
-            {routineState.objective}
+            {routine.objective}
           </Typography>
           {
-            routineState.routine.map((day, indexD) => (
+            routine.routine.map((day, indexD) => (
               <Accordion sx={{ margin: 1 }} key={indexD}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}

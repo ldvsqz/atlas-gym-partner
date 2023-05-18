@@ -15,27 +15,27 @@ import Dialog from '@mui/material/Dialog';
 import './SetStats.css';
 
 
-function SetStats(props) {
-  const { stats = new StatsModel(), uid = '', isEditing = false, onSave } = props;
-  if (!isEditing) {
-    stats.uid = uid;
-    stats.date = isEditing ? stats.date : new Date().toString();
-  }
-
-  const [statsState, setStatsState] = useState(stats);
+function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSave }) {
+  const [statsState, setStatsState] = useState(new StatsModel());
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    setStatsState(statsState)
+    if (!!stats && isEditing) {
+      setStatsState(stats)
+    } else {
+      const stats = new StatsModel()
+      stats.date = new Date().toString();
+      stats.uid = uid;
+      setStatsState(stats)
+    }
   }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const updatedStats = { ...statsState };
     handleClose();
-    console.log(updatedStats);
     if (isEditing) {
       StatsService.update(updatedStats.id, updatedStats);
     } else {

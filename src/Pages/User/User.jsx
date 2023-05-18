@@ -22,6 +22,7 @@ import Routines from '../../Components/Routines/Routines';
 import SetRoutine from "../../Components/Routines/SetRoutine";
 import SetStats from '../../Components/Stats/SetStats';
 import Stats from '../../Components/Stats/Stats';
+import AtlasSnackbar from "../../Components/snackbar/AtlasSnackbar";
 
 function User() {
   const location = useLocation();
@@ -29,6 +30,7 @@ function User() {
   const [stats, setStats] = useState({});
   const [routine, setRoutine] = useState({});
   const [loading, setLoading] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const util = new Util();
 
   useEffect(() => {
@@ -48,6 +50,15 @@ function User() {
   }, []);
 
 
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const handleShowSnackbar = () => {
+    setSnackbarOpen(true);
+  };
+
+
 
   function handleOnRenew(response) {
     if (response) {
@@ -56,11 +67,14 @@ function User() {
       const refreshedUser = user;
       refreshedUser['until'] = nextMonth.toString();
       setUser(refreshedUser);
-      UserService.update(user.uid, refreshedUser);
+      UserService.update(user.uid, refreshedUser).then(() => {
+        handleShowSnackbar()
+      });
     }
   }
   async function handleOnsetRoutine() {
     const userRoutine = await RoutineService.getLast(user.uid);
+    console.log(userRoutine);
     setRoutine(userRoutine);
   }
 
@@ -146,11 +160,11 @@ function User() {
 
             <Routines routine={routine} />
             <SetRoutine uid={user.uid} onSaveRoutine={(newRoutine) => {
-              console.log(newRoutine);
-              setRoutine(newRoutine);
+              handleOnsetRoutine()
             }} />
           </Box>
         )}
+        <AtlasSnackbar message="Correo o contraseña inválidos" open={snackbarOpen} severity="info" handleClose={handleSnackbarClose} />
       </Container>
     </div>
   );
