@@ -51,15 +51,6 @@ function Menu() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        <ListItem key={"Inicio"} disablePadding>
-          <ListItemButton component={Link} to="/">
-            <ListItemIcon>
-              <HomeIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Inicio"} />
-          </ListItemButton>
-        </ListItem>
-
         <ListItem key={"Mi perfil"} disablePadding>
           <ListItemButton onClick={() => handleOnNavigate()}>
             <ListItemIcon>
