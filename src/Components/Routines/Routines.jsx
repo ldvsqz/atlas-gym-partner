@@ -60,9 +60,9 @@ function Routines(props) {
                       <TableBody>
                         {day.day.map((exercise, indexE) => (
                           <TableRow key={indexE} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px' }}>
-                            <TableCell sx={{ padding: '10px' }} ><ExerciseImage exercise={exercise} /></TableCell>
-                            <TableCell sx={{ padding: '10px' }} >{exercise.sets}</TableCell>
-                            <TableCell sx={{ padding: '10px' }} >{exercise.bodyPart}/{exercise.target}</TableCell>
+                            <TableCell sx={{ padding: '5px' }} ><ExerciseImage exercise={exercise} /></TableCell>
+                            <TableCell sx={{ padding: '5px' }} >{exercise.sets}</TableCell>
+                            <TableCell sx={{ padding: '5px' }} >{exercise.bodyPart}/{exercise.target}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

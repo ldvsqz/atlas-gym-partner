@@ -70,13 +70,11 @@ function User() {
       <Menu />
       <Container fixed>
         {loading ? (
-          <Stack spacing={1} sx={{ mt: 4 }}>
-            {/* For variant="text", adjust the height via font-size */}
-            <Skeleton variant="rectangular" width={210} height={20} />
-            {/* For other variants, adjust the size with `width` and `height` */}
-            <Skeleton variant="circular" width={40} height={40} />
-            <Skeleton variant="rectangular" width={210} height={60} />
-            <Skeleton variant="rounded" width={210} height={60} />
+          <Stack spacing={1} sx={{ width: '100%', mt: 4 }}>
+            <Skeleton animation="wave" variant="rectangular" height={60} />
+            <Skeleton animation="wave" variant="rectangular" height={40} />
+            <Skeleton animation="wave" variant="rectangular" height={40} />
+            <Skeleton animation="wave" variant="rectangular" height={40} />
           </Stack>
         ) : (
           <Box sx={{ width: '100%', mt: 4 }}>
