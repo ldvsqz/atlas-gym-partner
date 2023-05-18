@@ -21,9 +21,9 @@ class UserService {
     async add(user) {
         const userRef = doc(db, 'users', user.uid);
         try {
-            await setDoc(userRef, user);
+            return await setDoc(userRef, user);
         } catch (error) {
-            console.error('Error trying to insert user:', error);
+            return error;
         }
     }
 
@@ -41,7 +41,7 @@ class UserService {
                 return user;
             }
         } catch (error) {
-            console.error('Error al obtener el usuario:', error);
+            return error;
         }
     }
 
@@ -51,7 +51,7 @@ class UserService {
             const documentSnapshot = await getDoc(userRef);
             return documentSnapshot.exists();
         } catch (error) {
-            console.error('Error al obtener el usuario:', error);
+            return error;
         }
     }
 
@@ -70,7 +70,7 @@ class UserService {
             });
             return users;
         } catch (error) {
-            console.error('Error al obtener los usuarios:', error);
+            return error;
         }
     }
 
@@ -79,10 +79,9 @@ class UserService {
     async delete(uid) {
         const userRef = doc(db, 'users', uid);
         try {
-            await deleteDoc(userRef);
-            console.log('User deleted successfully');
+            return await deleteDoc(userRef);
         } catch (error) {
-            console.error('Error trying to delete user:', error);
+            return error
         }
     }
 
@@ -91,10 +90,9 @@ class UserService {
     async update(uid, newData) {
         const userRef = doc(db, 'users', uid);
         try {
-            await updateDoc(userRef, newData);
-            console.log('User data updated successfully');
+            return await updateDoc(userRef, newData);
         } catch (error) {
-            console.error('Error trying to update user data:', error);
+            return error;
         }
     }
 

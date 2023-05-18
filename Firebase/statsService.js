@@ -83,7 +83,6 @@ class StatService {
         const statsRef = doc(db, 'stats', id);
         try {
             await updateDoc(statsRef, newStats);
-            console.log('stats data updated successfully');
         } catch (error) {
             console.error('Error trying to update stats data:', error);
         }
@@ -95,16 +94,17 @@ class StatService {
         }
         const statsRef = collection(db, 'stats');
         const statsQuery = await query(statsRef, where('uid', '==', uid), orderBy('date', 'desc'), limit(1));
-        const querySnapshot = await getDocs(statsQuery);
-        if (querySnapshot.docs) {
-            const documentSnapshot = querySnapshot.docs[0];
-            const stats = {
-                id: documentSnapshot.id,
-                ...documentSnapshot.data()
-            };
-            return stats;
-        } else {
-            console.log(`no hay stats para este usuario`);
+        try {
+            const querySnapshot = await getDocs(statsQuery);
+            if (querySnapshot.docs) {
+                const documentSnapshot = querySnapshot.docs[0];
+                const stats = {
+                    id: documentSnapshot.id,
+                    ...documentSnapshot.data()
+                };
+                return stats;
+            }
+        } catch (error) {
             return null;
         }
     }
