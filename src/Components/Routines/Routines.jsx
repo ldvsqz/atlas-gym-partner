@@ -43,7 +43,7 @@ function Routines({ routine }) {
                 </AccordionSummary>
                 <AccordionDetails>
                   <TableContainer component={Paper} sx={{ mt: 4 }}>
-                    <Table sx={{ minWidth: '100%' }} aria-label="simple table">
+                    <Table sx={{ minWidth: '100%' }} aria-label="simple table" size="small">
                       <TableHead>
                         <TableRow>
                           <TableCell >Ejercicio</TableCell>
