@@ -100,7 +100,7 @@ export default function TransferList(props) {
                         handleSearch(e);
                     }}
             />
-            <Paper sx={{ width: '500px', minWith: '40%', height: 400, overflow: 'auto', mt: 2 }}>
+            <Paper sx={{ maxWidth: 500, minWidth: 250, height: 400, overflow: 'auto', mt: 2 }}>
                 <List dense component="div" role="list">
                     {
 
@@ -134,7 +134,7 @@ export default function TransferList(props) {
 
 
     const RoutineList = () => (
-        <Paper sx={{ width: '500px', minWith: '40%', height: 400, overflow: 'auto', mt: 2 }}>
+        <Paper sx={{ maxWidth: 500, minWidth: 250, height: 400, overflow: 'auto', mt: 2 }}>
             <List dense component="div" role="list">
                 {right.map((exercise, index) => {
                     return (
@@ -152,7 +152,7 @@ export default function TransferList(props) {
                                 />
                             }
                         >
-                            <TextField id="standard-basic" label="Sets" variant="outlined" sx={{ maxWidth: '65px', mr: 2 }}
+                            <TextField id="standard-basic" label="Sets" variant="outlined" sx={{ maxWidth: '75px', mr: 2 }}
                                 value={exercise.sets}
                                 onChange={(event) =>
                                     setRight((prevRight) => {

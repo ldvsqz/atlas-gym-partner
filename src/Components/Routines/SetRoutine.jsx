@@ -15,6 +15,7 @@ import { deltsExercises } from '../../assets/exercises/delts-exercises';
 import { coreExercises } from '../../assets/exercises/core-exercises';
 import { armsExercises } from '../../assets/exercises/arms-exercises';
 import { legsExercises } from '../../assets/exercises/legs-exercises';
+import { cardioExercises } from '../../assets/exercises/cardio-exercises';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -37,6 +38,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExerciseImage from "../../Components/ExerciseImage/ExerciseImage";
 import RoutineService from '../../../Firebase/RoutineService';
 import Routines from "../Routines/Routines";
+import Alert from "../../Components/Alert/Alert";
 
 
 
@@ -55,6 +57,7 @@ function SetRoutine(props) {
     const [absExercisesState, setAbsExercises] = useState(coreExercises);
     const [armsExercisesState, setArmsExercises] = useState(armsExercises);
     const [legsExercisesState, setLegsExercises] = useState(legsExercises);
+    const [cardioExercisesState, setCardioExercises] = useState(cardioExercises);
     const [value, setValue] = useState('1');
 
     const util = new Util();
@@ -78,11 +81,13 @@ function SetRoutine(props) {
         setExercisesList(updatedList);
     }
 
-    function handleSaveRoutine() {
-        const newRoutineState = { ...routineState, date: new Date() };
-        RoutineService.add(newRoutineState);
-        onSaveRoutine(routineState);
-        handleCleanRoutine();
+    function handleSaveRoutine(response) {
+        if (response) {
+            const newRoutineState = { ...routineState, date: new Date() };
+            RoutineService.add(newRoutineState);
+            onSaveRoutine(routineState);
+            handleCleanRoutine();
+        }
     }
 
 
@@ -96,6 +101,7 @@ function SetRoutine(props) {
         setAbsExercises(coreExercises);
         setArmsExercises(armsExercises);
         setLegsExercises(legsExercises);
+        setCardioExercises(cardioExercises);
     }
 
     const restoreExercise = (newList) => {
@@ -119,6 +125,9 @@ function SetRoutine(props) {
                     break;
                 case 'piernas':
                     setLegsExercises((prevExercises) => [...prevExercises, exercise]);
+                    break;
+                case 'cardio':
+                    setCardioExercises((prevExercises) => [...prevExercises, exercise]);
                     break;
                 default:
                     break;
@@ -151,6 +160,7 @@ function SetRoutine(props) {
                                     <Tab label="Abdomen" value="4" />
                                     <Tab label="Brazos" value="5" />
                                     <Tab label="Pierna" value="6" />
+                                    <Tab label="Cardio" value="7" />
                                 </TabList>
                             </Box>
                             <TabPanel value="1">
@@ -249,6 +259,22 @@ function SetRoutine(props) {
                                         handleAddDay()
                                     }} />
                             </TabPanel>
+                            <TabPanel value="7">
+                                <TransferList leftList={cardioExercises} rightList={exercisesList}
+                                    onTransferRight={(newList) => {
+                                        setExercisesList(exercisesList.concat(newList))
+                                        setCardioExercises(cardioExercises.filter((ex) => !newList.includes(ex)))
+                                    }}
+                                    onTransferLeft={(newList) => {
+                                        removeExercise(newList)
+                                        restoreExercise(newList)
+                                    }}
+                                    addAsADay={() => {
+                                        removeExercise(exercisesList)
+                                        restoreExercise(exercisesList)
+                                        handleAddDay()
+                                    }} />
+                            </TabPanel>
                         </TabContext>
                     </Box>
                 </AccordionDetails>
@@ -296,7 +322,10 @@ function SetRoutine(props) {
                     }
                     <Grid container sx={{ color: 'text.primary' }}>
                         <Grid item xs={6}>
-                            <Button onClick={handleSaveRoutine}>Guardar rutina</Button>
+                            <Alert buttonName={"Guardar rutina"}
+                                title={"Guardar rutina"}
+                                message={`¿Desea guardar esta rutina como la actual?`}
+                                onResponse={(response) => handleSaveRoutine(response)} />
                         </Grid>
                         <Grid item xs={6}>
                             <Button onClick={handleCleanRoutine}>Limpiar</Button>
