@@ -11,6 +11,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import StatsHistory from "../../Components/Stats/StatsHistory";
 import Util from '../../assets/Util';
 import './SetStats.css';
 
@@ -191,7 +192,7 @@ function Stats({ stats }) {
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={() => setOpen(false)}>Cancelar</Button>
-                            <Button onClick={() => setOpen(false)}>Historial</Button>
+                            <StatsHistory uid={stats.uid} />
                             <SetStats stats={stats} uid={stats.uid} isEditing={true} onSave={(updatedStats) => setStats(updatedStats)} />
                         </DialogActions>
 

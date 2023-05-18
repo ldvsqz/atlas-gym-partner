@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+// services and utilities
 import UserService from '../../../Firebase/userService';
-import Menu from '../../Components/Menu/Menu';
-import CircularProgress from '@mui/material/CircularProgress';
-import Backdrop from '@mui/material/Backdrop';
+import Util from '../../assets/Util';
+//MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,15 +12,14 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
-import Util from '../../assets/Util';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+//components
+import Menu from '../../Components/Menu/Menu';
 
 function User() {
   const [Users, setUsers] = useState([]);
@@ -104,18 +103,14 @@ function User() {
                     <TableCell>Nombre</TableCell>
                     <TableCell align="center">Teléfono</TableCell>
                     <TableCell align="center">Estado</TableCell>
-                    <TableCell align="center">Detalles</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {filteredUsers.map((user) => (
-                    <TableRow key={user.uid} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px' }}>
+                    <TableRow key={user.uid} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px', cursor: 'pointer' }} onClick={() => handleViewProfile(user.uid)}>
                       <TableCell sx={{ padding: '10px' }} >{user.name}, {getAge(user.birthday)}</TableCell>
                       <TableCell sx={{ padding: '10px' }} align="center">{user.phone}</TableCell>
                       <TableCell sx={{ padding: '10px' }} align="center">{util.formatDateShort(user.until)}</TableCell>
-                      <TableCell sx={{ padding: '10px' }} align="center">
-                        <Button onClick={() => handleViewProfile(user.uid)}>Ver</Button>
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

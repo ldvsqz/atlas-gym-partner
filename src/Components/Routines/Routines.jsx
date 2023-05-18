@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Typography from '@mui/material/Typography';
-import RoutineService from '../../../Firebase/RoutineService';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
-import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,7 +9,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
 import Util from '../../assets/Util';
 import ExerciseImage from "../../Components/ExerciseImage/ExerciseImage";
 import Accordion from '@mui/material/Accordion';
@@ -47,7 +43,7 @@ function Routines({ routine }) {
                 </AccordionSummary>
                 <AccordionDetails>
                   <TableContainer component={Paper} sx={{ mt: 4 }}>
-                    <Table sx={{ minWidth: '100%' }} aria-label="simple table">
+                    <Table sx={{ minWidth: '100%' }} aria-label="simple table" size="small">
                       <TableHead>
                         <TableRow>
                           <TableCell >Ejercicio</TableCell>

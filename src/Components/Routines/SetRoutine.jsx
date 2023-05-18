@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
+//MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+
+// Services and utilities
 import { backExercises } from '../../assets/exercises/back-exercises';
 import { chestExercises } from '../../assets/exercises/chest-exercises';
 import { deltsExercises } from '../../assets/exercises/delts-exercises';
@@ -16,35 +28,12 @@ import { coreExercises } from '../../assets/exercises/core-exercises';
 import { armsExercises } from '../../assets/exercises/arms-exercises';
 import { legsExercises } from '../../assets/exercises/legs-exercises';
 import { cardioExercises } from '../../assets/exercises/cardio-exercises';
-import Grid from '@mui/material/Grid';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import TransferList from './TransferList';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import Box from '@mui/material/Box';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import Typography from '@mui/material/Typography';
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExerciseImage from "../../Components/ExerciseImage/ExerciseImage";
 import RoutineService from '../../../Firebase/RoutineService';
-import Routines from "../Routines/Routines";
-import Alert from "../../Components/Alert/Alert";
-
-
-
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
 import Util from '../../assets/Util';
+
+import TransferList from './TransferList';
+import ExerciseImage from "../../Components/ExerciseImage/ExerciseImage";
+import Alert from "../../Components/Alert/Alert";
 
 
 function SetRoutine(props) {
@@ -145,7 +134,7 @@ function SetRoutine(props) {
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                 >
-                    <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                    <Typography>
                         Agregar rutina
                     </Typography>
                 </AccordionSummary>

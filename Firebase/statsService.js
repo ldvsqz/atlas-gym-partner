@@ -109,23 +109,31 @@ class StatService {
         }
     }
 
-    async getByDni(dni) {
+    async getAllByUID(uid) {
+        if (!uid) {
+            return [];
+        }
+
         const statsRef = collection(db, 'stats');
-        const query = query(statsRef, where('dni', '==', dni));
-        const querySnapshot = await getDocs(query);
+        const statsQuery = query(statsRef, where('uid', '==', uid), orderBy('date', 'desc'));
 
-        const stats = [];
+        try {
+            const querySnapshot = await getDocs(statsQuery);
 
-        querySnapshot.forEach((doc) => {
-            if (doc.exists()) {
-                stats.push({
-                    id: doc.id,
-                    ...doc.data()
-                });
-            }
-        });
+            const statsList = querySnapshot.docs.map((documentSnapshot) => {
+                const stats = {
+                    id: documentSnapshot.id,
+                    ...documentSnapshot.data()
+                };
 
-        return stats;
+                return stats;
+            });
+
+            return statsList;
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+            return [];
+        }
     }
 
 

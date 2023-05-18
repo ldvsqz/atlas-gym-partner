@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+// MUI
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -10,19 +11,20 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
-
+//components
 import Menu from '../../Components/Menu/Menu';
 import SetUser from "./SetUser";
-import StatService from '../../../Firebase/statsService';
-import UserService from '../../../Firebase/userService';
-import RoutineService from '../../../Firebase/RoutineService';
-import Util from '../../assets/Util';
 import Alert from '../../Components/Alert/Alert';
 import Routines from '../../Components/Routines/Routines';
 import SetRoutine from "../../Components/Routines/SetRoutine";
 import SetStats from '../../Components/Stats/SetStats';
 import Stats from '../../Components/Stats/Stats';
 import AtlasSnackbar from "../../Components/snackbar/AtlasSnackbar";
+//serives and utilities
+import StatService from '../../../Firebase/statsService';
+import UserService from '../../../Firebase/userService';
+import RoutineService from '../../../Firebase/RoutineService';
+import Util from '../../assets/Util';
 
 function User() {
   const location = useLocation();
