@@ -25,8 +25,7 @@ const signInWithGoogle = async () => {
             })
         }
     } catch (err) {
-        console.error(err);
-        alert(err.message);
+        return err
     }
 };
 
@@ -54,28 +53,19 @@ const registerWithEmailAndPassword = async (dni, birthday, phone, name, email, p
                 email
             })
         } catch (err) {
-            console.error(err);
-            alert(err.message);
+            return err
         }
     } else {
-        console.error("el usuario ya existe");
-        alert("el usuario ya existe");
+        return err
     }
 };
 
 const sendPasswordReset = async (email) => {
-    try {
-        await sendPasswordResetEmail(auth, email);
-        alert("Password reset link sent!");
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
-    }
+    return await sendPasswordResetEmail(auth, email);
 };
 
 const logout = () => {
     signOut(auth);
-    console.log("here!")
 };
 
 

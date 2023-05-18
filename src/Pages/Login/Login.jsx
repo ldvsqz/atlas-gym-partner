@@ -14,7 +14,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const [openSnack, setOpen] = useState(false);
-  const [erroMessage, setErrorMessage] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const navigate = useNavigate();
 
 
@@ -36,20 +36,24 @@ function Login() {
   }, [user, loading]);
 
 
-  const handleOpenSnack = (message) => {
-    setErrorMessage(message);
-    setOpen(true);
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
+  const handleShowSnackbar = () => {
+    setSnackbarOpen(true);
+  };
 
 
   return (
     <Container maxWidth="sm" sx={{ mt: 12 }}>
       <Typography variant="h4" align="center" gutterBottom>
-        Iniciar sesión
+        Atlas
       </Typography>
       <TextField
         label="Correo electrocnico"
+        type="email"
+        placeholder="Correo electrocnico"
         fullWidth
         margin="normal"
         value={email}
@@ -57,6 +61,7 @@ function Login() {
       />
       <TextField
         label="Contraseña"
+        placeholder="Contraseña"
         fullWidth
         type="password"
         value={password}
@@ -65,7 +70,7 @@ function Login() {
       <Button sx={{ mt: 2 }} type="submit" variant="contained" color="primary" fullWidth onClick={
         () => signInWithEmailAndPassword(auth, email, password)
           .catch(err => {
-            handleOpenSnack(err.message);
+            handleShowSnackbar();
           })}
       >
         Iniciar sesión
@@ -82,7 +87,7 @@ function Login() {
       <Typography variant="body1" align="center" gutterBottom>
         ¿No tienes cuenta? <Link to="/register">Registrar</Link>.
       </Typography>
-      <AtlasSnackbar severity={"error"} message={erroMessage} openSnack={openSnack} />
+      <AtlasSnackbar message="Correo o contraseña inválidos" open={snackbarOpen} severity="error" handleClose={handleSnackbarClose}/>
     </Container >
   );
 }
