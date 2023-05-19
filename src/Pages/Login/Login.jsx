@@ -67,15 +67,21 @@ function Login() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <Button sx={{ mt: 2 }} type="submit" variant="contained" color="primary" fullWidth onClick={
-        () => signInWithEmailAndPassword(auth, email, password)
-          .catch(err => {
-            handleShowSnackbar();
-          })}
+      <Button sx={{ mt: 2 }} type="submit" variant="contained" color="primary" fullWidth
+        onClick={() =>
+          signInWithEmailAndPassword(auth, email, password)
+            .catch(() => {
+              handleShowSnackbar();
+            })}
       >
         Iniciar sesión
       </Button>
-      <Button type="submit" variant="contained" color="primary" fullWidth onClick={signInWithGoogle} sx={{ mt: 2 }}>
+      <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}
+        onClick={() =>
+          signInWithGoogle()
+            .catch(() => {
+              handleShowSnackbar();
+            })} >
         <ListItemIcon>
           <GoogleIcon />
         </ListItemIcon>
@@ -87,7 +93,7 @@ function Login() {
       <Typography variant="body1" align="center" gutterBottom>
         ¿No tienes cuenta? <Link to="/register">Registrar</Link>.
       </Typography>
-      <AtlasSnackbar message="Correo o contraseña inválidos" open={snackbarOpen} severity="error" handleClose={handleSnackbarClose}/>
+      <AtlasSnackbar message="Correo o contraseña inválidos" open={snackbarOpen} severity="error" handleClose={handleSnackbarClose} />
     </Container >
   );
 }

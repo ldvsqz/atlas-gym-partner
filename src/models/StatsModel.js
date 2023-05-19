@@ -2,7 +2,7 @@ class StatsModel {
     constructor() {
       this.id = '';
       this.uid = '';
-      this.date = '';
+      this.date = new Date();
       this.habits = {
         smoke: false,
         drink: false,

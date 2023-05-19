@@ -25,8 +25,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
     if (!!stats && isEditing) {
       setStatsState(stats)
     } else {
-      const stats = new StatsModel()
-      stats.date = new Date().toString();
+      const stats = new StatsModel();
       stats.uid = uid;
       setStatsState(stats)
     }

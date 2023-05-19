@@ -8,13 +8,19 @@ import {
 } from "./../../../Firebase/authFunctions";
 import "./Register.css";
 import ResetPassword from "../ResetPassword/ResetPassword";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import AtlasSnackbar from "../../Components/snackbar/AtlasSnackbar";
+import dayjs from 'dayjs';
+
+const today = dayjs();
 
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [birthday, setBirthday] = useState("");
+  const [birthday, setBirthday] = useState(new Date());
   const [dni, setDni] = useState("");
   const [phone, setPhone] = useState("");
   const [user, loading, error] = useAuthState(auth);
@@ -28,16 +34,24 @@ function Register() {
     if (!name) {
       handleShowSnackbar();
     }
-    registerWithEmailAndPassword(dni, birthday, phone, name, email, password).catch(err => {
-      handleShowSnackbar();
-    })
+    registerWithEmailAndPassword(dni, birthday.toString(), phone, name, email, password).catch(() => {
+        handleShowSnackbar();
+      })
   };
 
 
 
   useEffect(() => {
-    if (loading) return;
-    if (user) navigate(`/user/${uid}`, { state: { uid } });
+    if (loading) {
+      // maybe trigger a loading screen
+      return;
+    }
+    if (user) {
+      const uid = user.uid
+      localStorage.setItem('UID', uid);
+      localStorage.setItem('ROL', 1);
+      navigate(`/user/${uid}`, { state: { uid } });
+    }
   }, [user, loading]);
 
   const handleSnackbarClose = () => {
@@ -69,14 +83,14 @@ function Register() {
         onChange={(e) => setName(e.target.value)}
         placeholder="Nombre completo"
       />
-      <TextField
-        label="Fecha de nacimiento"
-        fullWidth
-        margin="normal"
-        value={birthday}
-        onChange={(e) => setBirthday(e.target.value)}
-        placeholder="Fecha de nacimiento"
-      />
+      <LocalizationProvider dateAdapter={AdapterDayjs} >
+        <DatePicker
+          label="Fecha de nacimiento"
+          align="center"
+          fullWidth
+          maxDate={today}
+          onChange={(newDate) => setBirthday(newDate)} />
+      </LocalizationProvider>
       <TextField
         label="Número de teléfono"
         fullWidth

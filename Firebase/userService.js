@@ -29,8 +29,8 @@ class UserService {
 
 
     //get user data from a single user by ID
-    async get(userId) {
-        const userRef = doc(db, 'users', userId);
+    async get(uid) {
+        const userRef = doc(db, 'users', uid);
         try {
             const documentSnapshot = await getDoc(userRef);
             if (documentSnapshot.exists()) {

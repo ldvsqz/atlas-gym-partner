@@ -11,6 +11,8 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
 //components
 import Menu from '../../Components/Menu/Menu';
 import SetUser from "./SetUser";
@@ -33,6 +35,7 @@ function User() {
   const [routine, setRoutine] = useState({});
   const [loading, setLoading] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [currentRol, setRol] = useState(localStorage.getItem("ROL"))
   const util = new Util();
 
   useEffect(() => {
@@ -96,74 +99,72 @@ function User() {
           <Box sx={{ width: '100%', mt: 4 }}>
 
             <Grid container sx={{ color: 'text.primary' }}>
-              <Grid item xs={10}>
+              <Grid item xs={6}>
                 <Stack direction="row" spacing={2}>
                   <Avatar alt={user.name} src="" />
-                  <Typography variant="h5" gutterBottom>
+                  <Typography variant="subtitle1" gutterBottom>
                     {user.name}, {util.getAge(user.birthday)}
                   </Typography>
                 </Stack>
 
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={6}>
                 <SetUser user={user}
                   onSave={(updatedUser) =>
                     setUser(updatedUser)
                   } />
               </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h6" gutterBottom>
+              <Grid item xs={6}>
+                <Typography variant="subtitle1" gutterBottom>
                   Activo hasta: {util.formatDate(user.until)}
                 </Typography>
               </Grid>
-              <Grid item xs={2}>
-                <Alert buttonName={<AutorenewIcon />}
+              <Grid item xs={currentRol == 0 ? 6 : 12}>
+                {currentRol == 0 && <Alert
+                  buttonName={"Renovar suscripción"}
                   title={"Renovar suscripción"}
                   message={`¿Desea renovar la suscripciónde: ${user.name}?`}
                   onResponse={(response) =>
                     handleOnRenew(response)} />
-              </Grid>
-            </Grid>
-
-
-
-            <Grid container sx={{ color: 'text.primary' }}>
-              <Grid item xs={1}>
-                <PhoneIcon />
-              </Grid>
-              <Grid item xs={11}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {user.phone}
-                </Typography>
-              </Grid>
-              <Grid item xs={1}>
-                <AlternateEmailIcon />
-              </Grid>
-              <Grid item xs={11}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {user.email}
-                </Typography>
-              </Grid>
-            </Grid>
-            <Typography variant="h6" gutterBottom>
-              Medidas
-            </Typography>
-            <Grid container sx={{ color: 'text.primary' }}>
-              <Grid item xs={6}>
-                <Stats stats={stats} />
-              </Grid>
-              <Grid item xs={6}>
-                {user.rol == 0 && <SetStats stats={stats} uid={user.uid} isEditing={false} onSave={(updatedStats) =>
-                  setStats(updatedStats)} />
                 }
               </Grid>
             </Grid>
 
 
+
+            <Grid container sx={{ color: 'text.primary' }}>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1">
+                  {user.phone}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1">
+                  {user.email}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Divider />
+            <Typography variant="h6" align='center'>
+              Medidas
+            </Typography>
+            <Grid container sx={{ color: 'text.primary' }}>
+              <Grid item xs={currentRol == 0 ? 6 : 12}>
+                <Stats stats={stats} />
+              </Grid>
+              <Grid item xs={6}>
+                {currentRol == 0 && <SetStats stats={stats} uid={user.uid} isEditing={false} onSave={(updatedStats) =>
+                  setStats(updatedStats)} />
+                }
+              </Grid>
+            </Grid>
+
+            <Divider />
             <Routines routine={routine} />
-            <SetRoutine uid={user.uid} onSaveRoutine={(newRoutine) => {
+            {currentRol == 0 && <SetRoutine uid={user.uid} onSaveRoutine={(newRoutine) => {
               handleOnsetRoutine()
             }} />
+            }
           </Box>
         )}
         <AtlasSnackbar message="Correo o contraseña inválidos" open={snackbarOpen} severity="info" handleClose={handleSnackbarClose} />
