@@ -108,11 +108,8 @@ function StatsHistory({ uid }) {
                     </Dialog>
                 </div >
             ) : (
-                <Stack spacing={1} sx={{ width: '100%', mt: 4 }}>
-                    <Skeleton animation="wave" variant="rectangular" height={60} />
-                    <Skeleton animation="wave" variant="rectangular" height={40} />
-                    <Skeleton animation="wave" variant="rectangular" height={40} />
-                    <Skeleton animation="wave" variant="rectangular" height={40} />
+                <Stack spacing={1} sx={{ width: '100%', mt: 2 }}>
+                    <Skeleton animation="wave" variant="rectangular" height={10} />
                 </Stack>
             )
             }

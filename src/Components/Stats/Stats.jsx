@@ -13,9 +13,10 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import StatsHistory from "../../Components/Stats/StatsHistory";
 import Util from '../../assets/Util';
+import StatsModel from '../../models/StatsModel'
 import './SetStats.css';
 
-function Stats({ stats }) {
+function Stats({ stats = new StatsModel()}) {
     const [open, setOpen] = useState(false);
     const [statsState, setStats] = useState(stats);
     const [expanded, setExpanded] = useState(true);

@@ -10,7 +10,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Util from '../../assets/Util';
-import ExerciseImage from "../../Components/ExerciseImage/ExerciseImage";
+import ExerciseImage from '../../Components/ExerciseImage/ExerciseImage';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -21,12 +21,12 @@ function Routines({ routine }) {
 
   return (
     <Container fixed>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant='h6' align='center'>
         Rutina
       </Typography>
       <Box sx={{ width: '100%' }}>
         {routine ? (<div>
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography variant='subtitle1' gutterBottom>
             {routine.objective}
           </Typography>
           {
@@ -34,8 +34,8 @@ function Routines({ routine }) {
               <Accordion sx={{ margin: 1 }} key={indexD}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1bh-content"
-                  id="panel1bh-header"
+                  aria-controls='panel1bh-content'
+                  id='panel1bh-header'
                 >
                   <Typography sx={{ width: '33%', flexShrink: 0 }}>
                     Día {indexD + 1}
@@ -43,7 +43,7 @@ function Routines({ routine }) {
                 </AccordionSummary>
                 <AccordionDetails>
                   <TableContainer component={Paper} sx={{ mt: 4 }}>
-                    <Table sx={{ minWidth: '100%' }} aria-label="simple table" size="small">
+                    <Table sx={{ minWidth: '100%' }} aria-label='simple table' size='small'>
                       <TableHead>
                         <TableRow>
                           <TableCell >Ejercicio</TableCell>
@@ -68,7 +68,7 @@ function Routines({ routine }) {
           }
         </div>
         ) : (
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography variant='subtitle1' gutterBottom>
             No tiene rutinas registradas
           </Typography>)
         }
