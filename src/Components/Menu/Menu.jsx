@@ -26,7 +26,7 @@ import "./Menu.css";
 
 function Menu() {
 
-  const [currentUid, setUid] = useState(localStorage.getItem("UID"))
+  const [uid, setUid] = useState(localStorage.getItem("UID"))
   const [currentRol, setRol] = useState(localStorage.getItem("ROL"))
   const [showMenu, setMenu] = useState(false);
   const navigate = useNavigate();
@@ -39,7 +39,8 @@ function Menu() {
   };
 
   const handleOnNavigate = () => {
-    navigate(`/user/${currentUid}`, { state: { currentUid } });
+    setUid(localStorage.getItem("UID"))<
+    navigate(`/user/${uid}`, { state: { uid } });
   }
 
 

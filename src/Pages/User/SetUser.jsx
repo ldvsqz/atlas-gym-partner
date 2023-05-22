@@ -7,16 +7,19 @@ import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
+import 'dayjs/locale/es';
+import dayjs from 'dayjs';
+import "./user.css";
 
 
-function SetUser(props) {
-  const { user, onSave } = props;
+const today = dayjs();
+
+function SetUser({ user, onSave }) {
   const [userState, setUserState] = useState(user);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -71,12 +74,17 @@ function SetUser(props) {
                 )} />
             </Grid>
             <Grid item xs={12} mt={2}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker label="Fecha de nacimiento"
+              <LocalizationProvider
+                adapterLocale="es-ES"
+                dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  format="LL"
+                  label="Fecha de nacimiento"
+                  maxDate={today}
                   onChange={(newDate) => setUserState(
                     {
                       ...userState,
-                      birthday: newDate.toString(),
+                      birthday: newDate,
                     }
                   )} />
               </LocalizationProvider>

@@ -12,6 +12,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import AtlasSnackbar from "../../Components/snackbar/AtlasSnackbar";
+import { esES } from '@mui/x-date-pickers/locales';
 import dayjs from 'dayjs';
 
 const today = dayjs();
@@ -35,8 +36,8 @@ function Register() {
       handleShowSnackbar();
     }
     registerWithEmailAndPassword(dni, birthday.toString(), phone, name, email, password).catch(() => {
-        handleShowSnackbar();
-      })
+      handleShowSnackbar();
+    })
   };
 
 
@@ -83,8 +84,11 @@ function Register() {
         onChange={(e) => setName(e.target.value)}
         placeholder="Nombre completo"
       />
-      <LocalizationProvider dateAdapter={AdapterDayjs} >
+      <LocalizationProvider
+        adapterLocale="es-ES"
+        dateAdapter={AdapterDayjs} >
         <DatePicker
+          format="LL"
           label="Fecha de nacimiento"
           align="center"
           fullWidth
