@@ -42,6 +42,7 @@ function User() {
     if (location.state) {
       const uid = location.state.uid;
       const fechClientData = async () => {
+        setLoading(true);
         const userData = await UserService.get(uid);
         const userStats = await StatService.getLast(uid);
         const userRoutine = await RoutineService.getLast(uid);
@@ -52,7 +53,7 @@ function User() {
       };
       fechClientData();
     }
-  }, []);
+  }, [location.state]);
 
 
   const handleSnackbarClose = () => {
@@ -120,7 +121,7 @@ function User() {
                 </Typography>
               </Grid>
               <Grid item xs={currentRol == 0 ? 6 : 12}>
-                {currentRol == 0 && <Alert
+                {currentRol == 0 && (new Date(user.until).getDate() > new Date().getDate())  && <Alert
                   buttonName={"Renovar suscripción"}
                   title={"Renovar suscripción"}
                   message={`¿Desea renovar la suscripciónde: ${user.name}?`}

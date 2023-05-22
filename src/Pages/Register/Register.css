@@ -31,3 +31,7 @@
   .register div {
     margin-top: 7px;
   }
+
+  .css-cyfsxc-MuiPickersCalendarHeader-labelContainer {
+    margin-right: 0px !important;
+  }
