@@ -151,7 +151,7 @@ function User() {
             </Typography>
             <Grid container sx={{ color: 'text.primary' }}>
               <Grid item xs={currentRol == 0 ? 6 : 12}>
-                <Stats stats={stats} />
+                <Stats stats={stats} sx={{ width: '100%'}}/>
               </Grid>
               <Grid item xs={6}>
                 {currentRol == 0 && <SetStats stats={stats} uid={user.uid} isEditing={false} onSave={(updatedStats) =>
