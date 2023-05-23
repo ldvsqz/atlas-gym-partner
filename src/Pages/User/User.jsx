@@ -121,7 +121,7 @@ function User() {
                 </Typography>
               </Grid>
               <Grid item xs={currentRol == 0 ? 6 : 12}>
-                {currentRol == 0 && (new Date(user.until).getDate() > new Date().getDate())  && <Alert
+                {currentRol == 0 && (new Date(user.until).getDate() < new Date().getDate())  && <Alert
                   buttonName={"Renovar suscripción"}
                   title={"Renovar suscripción"}
                   message={`¿Desea renovar la suscripciónde: ${user.name}?`}
