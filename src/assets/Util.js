@@ -13,6 +13,11 @@ class Util {
         return `${day}/${month}/${year}`;
     }
 
+    getDateFromFirebase(_date) {
+        const milliseconds = _date.seconds * 1000 + Math.floor(_date.nanoseconds / 1e6);
+        return new Date(milliseconds);
+    }
+
     getAge(birthdayString) {
         const birthday = new Date(birthdayString);
         const ageDiffMs = Date.now() - birthday.getTime();

@@ -80,7 +80,7 @@ function StatsHistory({ uid }) {
                                     <TableBody>
                                         {allStats.map((stat, indexE) => (
                                             <TableRow key={indexE} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px' }}>
-                                                <TableCell sx={{ padding: '5px' }} align="left">{util.formatDateShort(stat.date)}</TableCell>
+                                                <TableCell sx={{ padding: '5px' }} align="left">{util.formatDateShort(util.getDateFromFirebase(stat.date))}</TableCell>
                                                 <TableCell sx={{ padding: '5px' }} align="right">{stat.weight_kg}kg</TableCell>
                                                 <TableCell sx={{ padding: '5px' }} align="right">{stat.Height_cm}cm</TableCell>
                                                 <TableCell sx={{ padding: '5px' }} align="right">{stat.IMC}</TableCell>

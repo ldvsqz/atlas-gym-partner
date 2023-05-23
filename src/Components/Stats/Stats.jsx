@@ -16,11 +16,11 @@ import Util from '../../assets/Util';
 import StatsModel from '../../models/StatsModel'
 import './SetStats.css';
 
-function Stats({ stats = new StatsModel()}) {
+function Stats({ stats = new StatsModel() }) {
+    const util = new Util();
     const [open, setOpen] = useState(false);
     const [statsState, setStats] = useState(stats);
     const [expanded, setExpanded] = useState(true);
-    const util = new Util();
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -32,7 +32,7 @@ function Stats({ stats = new StatsModel()}) {
         <div>
             {stats ? (
                 <div>
-                    <Button onClick={handleOpen}>Ver medidas</Button>
+                    <Button align="center" onClick={handleOpen}>Ver medidas</Button>
                     <Dialog
                         open={open}
                         onClose={handleClose}
@@ -40,7 +40,7 @@ function Stats({ stats = new StatsModel()}) {
                         aria-describedby="modal-modal-description"
                     >
                         <DialogTitle id="alert-dialog-title">
-                            Medidas del {util.formatDate(statsState.date)}
+                            Medidas del {util.formatDate(util.getDateFromFirebase(stats.date))}
                         </DialogTitle>
                         <DialogContent>
                             <Accordion>
