@@ -4,6 +4,7 @@ import { db } from "./firebase"
 import { app } from "./firebase"
 import UserService from './userService';
 import UserModel from "../src/models/UserModel";
+import { Timestamp } from 'firebase/firestore';
 
 const auth = getAuth(app)
 const googleProvider = new GoogleAuthProvider();
@@ -13,17 +14,18 @@ const signInWithGoogle = () => {
     return new Promise(async (resolve, reject) => {
         try {
             const res = await signInWithPopup(auth, googleProvider);
-            const user = res.user;
-            const userExists = await UserService.exists(user.uid);
+            const userExists = await UserService.exists(res.user.uid);
             if (!userExists) {
-                UserService.add({
+                const user = new UserModel({
                     uid: user.uid,
                     dni: '',
                     birthday: user.birthday,
                     phone: user.phoneNumber,
                     name: user.displayName,
-                    email: user.email
+                    email: user.email,
+                    until: Timestamp.now(),
                 });
+                UserService.add(user);
             }
             resolve(user);
         } catch (error) {
@@ -50,24 +52,15 @@ const registerWithEmailAndPassword = (dni, birthday, phone, name, email, passwor
         try {
             const userExists = await UserService.exists(dni);
             if (!userExists) {
-                try {
-                    const res = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = res.user;
+                createUserWithEmailAndPassword(auth, email, password).then((res) => {
                     // Verificar si el usuario ya existe, crearlo en caso contrario
-                    UserService.add({
-                        uid: user.uid,
-                        dni,
-                        birthday,
-                        phone,
-                        name,
-                        email,
-                        until: new Date().toString(),
-                        rol: 1
-                    });
+                    const user = new UserModel(birthday, dni, email, name, phone, res.user.uid, Timestamp.now());
+                    UserService.add(user);
                     resolve(user);
-                } catch (err) {
+                }).catch((err) => {
+                    console.log(err);
                     reject(err);
-                }
+                });
             } else {
                 resolve(null); // Usuario ya existe, devolver null
             }

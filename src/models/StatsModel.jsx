@@ -1,8 +1,10 @@
+import { Timestamp } from 'firebase/firestore';
+
 class StatsModel {
     constructor() {
       this.id = '';
       this.uid = '';
-      this.date = new Date();
+      this.date = Timestamp.now(),
       this.habits = {
         smoke: false,
         drink: false,

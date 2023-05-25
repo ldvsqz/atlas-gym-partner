@@ -51,13 +51,6 @@ function User() {
   };
 
 
-  const getAge = (birthdayString) => {
-    const birthday = new Date(birthdayString);
-    const ageDiffMs = Date.now() - birthday.getTime();
-    const ageDate = new Date(ageDiffMs);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
-  };
-
   const handleViewProfile = (uid) => {
     navigate(`/user/${uid}`, { state: { uid } });
   };
@@ -102,15 +95,15 @@ function User() {
                   <TableRow>
                     <TableCell>Nombre</TableCell>
                     <TableCell align="center">Teléfono</TableCell>
-                    <TableCell align="center">Estado</TableCell>
+                    <TableCell align="center">Membresía hasta</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {filteredUsers.map((user) => (
                     <TableRow key={user.uid} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px', cursor: 'pointer' }} onClick={() => handleViewProfile(user.uid)}>
-                      <TableCell sx={{ padding: '10px' }} >{user.name}, {getAge(user.birthday)}</TableCell>
+                      <TableCell sx={{ padding: '10px' }} >{user.name}</TableCell>
                       <TableCell sx={{ padding: '10px' }} align="center">{user.phone}</TableCell>
-                      <TableCell sx={{ padding: '10px' }} align="center">{util.formatDateShort(user.until)}</TableCell>
+                      <TableCell className={util.getMembershipClass(util.getDateFromFirebase(user.until))} sx={{ padding: '10px' }} align="center">{util.formatDateShort(util.getDateFromFirebase(user.until))}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

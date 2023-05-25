@@ -45,7 +45,7 @@ function StatsHistory({ uid }) {
         <div>
             {allStats.length != 0 ? (
                 <div>
-                    <Button onClick={handleOpen}>Historial</Button>
+                    <Button onClick={handleOpen} fullWidth>Historial</Button>
                     <Dialog
                         open={open}
                         onClose={handleClose}

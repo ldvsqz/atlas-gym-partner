@@ -21,6 +21,7 @@ function Stats({ stats = new StatsModel() }) {
     const [open, setOpen] = useState(false);
     const [statsState, setStats] = useState(stats);
     const [expanded, setExpanded] = useState(true);
+    const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -32,7 +33,7 @@ function Stats({ stats = new StatsModel() }) {
         <div>
             {stats ? (
                 <div>
-                    <Button align="center" onClick={handleOpen}>Ver medidas</Button>
+                    <Button align="center" onClick={handleOpen} sx={{ width: '100%' }}>Ver medidas</Button>
                     <Dialog
                         open={open}
                         onClose={handleClose}
@@ -187,14 +188,14 @@ function Stats({ stats = new StatsModel() }) {
                                         </Grid>
                                     </Grid>
                                 </AccordionDetails>
+                            <StatsHistory uid={stats.uid} />
                             </Accordion>
 
 
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={() => setOpen(false)}>Cancelar</Button>
-                            <StatsHistory uid={stats.uid} />
-                            <SetStats stats={stats} uid={stats.uid} isEditing={true} onSave={(updatedStats) => setStats(updatedStats)} />
+                            <Button onClick={() => setOpen(false)} fullWidth>Cancelar</Button>
+                            {currentRol == 0 && <SetStats stats={stats} uid={stats.uid} isEditing={true} onSave={(updatedStats) => setStats(updatedStats)} />}
                         </DialogActions>
 
                     </Dialog>

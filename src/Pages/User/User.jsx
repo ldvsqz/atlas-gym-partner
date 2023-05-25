@@ -27,16 +27,19 @@ import StatService from '../../../Firebase/statsService';
 import UserService from '../../../Firebase/userService';
 import RoutineService from '../../../Firebase/RoutineService';
 import Util from '../../assets/Util';
+import UserModel from "../../models/UserModel";
+import { Timestamp } from 'firebase/firestore';
+import 'firebase/firestore';
 
 function User() {
   const location = useLocation();
-  const [user, setUser] = useState({});
+  const util = new Util();
+  const [user, setUser] = useState(new UserModel());
   const [stats, setStats] = useState({});
   const [routine, setRoutine] = useState({});
   const [loading, setLoading] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [currentRol, setRol] = useState(localStorage.getItem("ROL"))
-  const util = new Util();
+  const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
 
   useEffect(() => {
     if (location.state) {
@@ -68,10 +71,11 @@ function User() {
 
   function handleOnRenew(response) {
     if (response) {
-      const today = new Date(); // fecha actual
-      const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+      const oldUntil = new Date(util.getDateFromFirebase(user.until)); // fecha actual
+      const newUntil = new Date(oldUntil.getFullYear(), oldUntil.getMonth() + 1, oldUntil.getDate());
+      const newFirebaseUntil = Timestamp.fromDate(newUntil);
       const refreshedUser = user;
-      refreshedUser['until'] = nextMonth.toString();
+      refreshedUser.until = newFirebaseUntil;
       setUser(refreshedUser);
       UserService.update(user.uid, refreshedUser).then(() => {
         handleShowSnackbar()
@@ -80,8 +84,12 @@ function User() {
   }
   async function handleOnsetRoutine() {
     const userRoutine = await RoutineService.getLast(user.uid);
-    console.log(userRoutine);
     setRoutine(userRoutine);
+  }
+
+  async function handleOnSaveStats() {
+    const userStats = await StatService.getLast(user.uid);
+    setStats(userStats)
   }
 
 
@@ -104,7 +112,7 @@ function User() {
                 <Stack direction="row" spacing={2}>
                   <Avatar alt={user.name} src="" />
                   <Typography variant="subtitle1" gutterBottom>
-                    {user.name}, {util.getAge(user.birthday)}
+                    {user.name}, {util.getAge(util.getDateFromFirebase(user.birthday))}
                   </Typography>
                 </Stack>
 
@@ -116,15 +124,18 @@ function User() {
                   } />
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="subtitle1" gutterBottom>
-                  Activo hasta: {util.formatDate(user.until)}
+                <Typography variant="subtitle1" gutterBottom >
+                  Activo hasta:
+                  <div className={util.getMembershipClass(util.getDateFromFirebase(user.until))}>
+                    {util.formatDate(util.getDateFromFirebase(user.until))}
+                  </div>
                 </Typography>
               </Grid>
               <Grid item xs={currentRol == 0 ? 6 : 12}>
-                {currentRol == 0 && (new Date(user.until).getDate() < new Date().getDate())  && <Alert
-                  buttonName={"Renovar suscripción"}
-                  title={"Renovar suscripción"}
-                  message={`¿Desea renovar la suscripciónde: ${user.name}?`}
+                {currentRol == 0 && <Alert
+                  buttonName={"Renovar membresía"}
+                  title={"Renovar membresía"}
+                  message={`¿Desea renovar la membresía de: ${user.name}?`}
                   onResponse={(response) =>
                     handleOnRenew(response)} />
                 }
@@ -151,11 +162,12 @@ function User() {
             </Typography>
             <Grid container sx={{ color: 'text.primary' }}>
               <Grid item xs={currentRol == 0 ? 6 : 12}>
-                <Stats stats={stats} sx={{ width: '100%'}}/>
+                <Stats stats={stats} />
               </Grid>
               <Grid item xs={6}>
-                {currentRol == 0 && <SetStats stats={stats} uid={user.uid} isEditing={false} onSave={(updatedStats) =>
-                  setStats(updatedStats)} />
+                {currentRol == 0 && <SetStats stats={stats} uid={user.uid} isEditing={false} onSave={(updatedStats) => {
+                  handleOnSaveStats()
+                }} />
                 }
               </Grid>
             </Grid>
@@ -168,7 +180,7 @@ function User() {
             }
           </Box>
         )}
-        <AtlasSnackbar message="Correo o contraseña inválidos" open={snackbarOpen} severity="info" handleClose={handleSnackbarClose} />
+        <AtlasSnackbar message="Membresía actualizada" open={snackbarOpen} severity="info" handleClose={handleSnackbarClose} />
       </Container>
     </div>
   );
