@@ -123,13 +123,10 @@ function User() {
                     setUser(updatedUser)
                   } />
               </Grid>
-              <Grid item xs={6}>
-                <Typography variant="subtitle1" gutterBottom >
-                  Activo hasta:
-                  <div className={util.getMembershipClass(util.getDateFromFirebase(user.until))}>
-                    {util.formatDate(util.getDateFromFirebase(user.until))}
-                  </div>
-                </Typography>
+              <Grid item xs={6} sx={{ display: 'flex' }}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Activo hasta:{util.formatDate(util.getDateFromFirebase(user.until))}
+                </Typography>{util.getStateIcon(util.getDateFromFirebase(user.until))}
               </Grid>
               <Grid item xs={currentRol == 0 ? 6 : 12}>
                 {currentRol == 0 && <Alert
