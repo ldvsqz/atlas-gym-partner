@@ -1,3 +1,8 @@
+import ReportIcon from '@mui/icons-material/Report';
+import DangerousIcon from '@mui/icons-material/Dangerous';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
+
 class Util {
     formatDate(_date) {
         const date = new Date(_date);
@@ -28,14 +33,14 @@ class Util {
         }
     };
 
-    getMembershipClass(_date) {
+    getStateIcon(_date) {
         const daysLeft = new Date(_date) - new Date();
-        if (daysLeft >= 10) {
-            return "safe-state"
-        } else if (daysLeft >= 5) {
-            return "close-state"
+        if (daysLeft <= 5) {
+            return <DangerousIcon sx={{ color: 'red' }} />
+        } else if (daysLeft <= 10) {
+            return <ReportIcon sx={{ color: 'orange' }} />
         } else {
-            return "expired-state"
+            return <CheckCircleIcon sx={{ color: 'green' }} />;
         }
     }
 
