@@ -18,9 +18,6 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
-import ReportIcon from '@mui/icons-material/Report';
-import DangerousIcon from '@mui/icons-material/Dangerous';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 //components
 import Menu from '../../Components/Menu/Menu';
 
