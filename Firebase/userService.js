@@ -20,12 +20,15 @@ class UserService {
     //add a user to firebase
     async add(user) {
         const userRef = doc(db, 'users', user.uid);
+        const userData = { ...user }; // Convert UserModel object to plain JavaScript object
         try {
-            return await setDoc(userRef, user);
+            await setDoc(userRef, userData);
+            return true;
         } catch (error) {
-            return error;
+            console.log(error);
         }
     }
+    
 
 
     //get user data from a single user by ID
@@ -87,14 +90,20 @@ class UserService {
 
 
     //Update user data by passing user ID and new Data
-    async update(uid, newData) {
-        const userRef = doc(db, 'users', uid);
-        try {
-            return await updateDoc(userRef, newData);
-        } catch (error) {
-            return error;
-        }
+    update(uid, newData) {
+        return new Promise((resolve, reject) => {
+            const userRef = doc(db, 'users', uid);
+            const userData = { ...newData }; // Convert UserModel object to plain JavaScript object
+            updateDoc(userRef, userData)
+                .then(() => {
+                    resolve(); // Resolves the promise without any value
+                })
+                .catch((error) => {
+                    reject(error); // Rejects the promise with the error
+                });
+        });
     }
+
 
     async getByEMail(email) {
         const statsRef = collection(db, 'users');

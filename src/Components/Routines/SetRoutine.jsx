@@ -34,6 +34,7 @@ import Util from '../../assets/Util';
 import TransferList from './TransferList';
 import ExerciseImage from "../../Components/ExerciseImage/ExerciseImage";
 import Alert from "../../Components/Alert/Alert";
+import { Timestamp } from 'firebase/firestore';
 
 
 function SetRoutine(props) {
@@ -72,7 +73,7 @@ function SetRoutine(props) {
 
     function handleSaveRoutine(response) {
         if (response) {
-            const newRoutineState = { ...routineState, date: new Date() };
+            const newRoutineState = { ...routineState, date: Timestamp.now() };
             RoutineService.add(newRoutineState);
             onSaveRoutine(routineState);
             handleCleanRoutine();
@@ -143,13 +144,13 @@ function SetRoutine(props) {
                         <TabContext value={value}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <TabList onChange={handleChange} aria-label="lab API tabs example" variant="scrollable">
-                                    <Tab label="Espalda" value="1" />
-                                    <Tab label="Pecho" value="2" />
-                                    <Tab label="Hombro" value="3" />
-                                    <Tab label="Abdomen" value="4" />
-                                    <Tab label="Brazos" value="5" />
-                                    <Tab label="Pierna" value="6" />
-                                    <Tab label="Cardio" value="7" />
+                                    <Tab label="Espalda" value="1" sx={{ width: '50%' }}/>
+                                    <Tab label="Pecho" value="2" sx={{ width: '50%' }}/>
+                                    <Tab label="Hombro" value="3" sx={{ width: '50%' }}/>
+                                    <Tab label="Abdomen" value="4" sx={{ width: '50%' }}/>
+                                    <Tab label="Brazos" value="5" sx={{ width: '50%' }}/>
+                                    <Tab label="Pierna" value="6" sx={{ width: '50%' }}/>
+                                    <Tab label="Cardio" value="7" sx={{ width: '50%' }}/>
                                 </TabList>
                             </Box>
                             <TabPanel value="1">
@@ -249,10 +250,10 @@ function SetRoutine(props) {
                                     }} />
                             </TabPanel>
                             <TabPanel value="7">
-                                <TransferList leftList={cardioExercises} rightList={exercisesList}
+                                <TransferList leftList={cardioExercisesState} rightList={exercisesList}
                                     onTransferRight={(newList) => {
                                         setExercisesList(exercisesList.concat(newList))
-                                        setCardioExercises(cardioExercises.filter((ex) => !newList.includes(ex)))
+                                        setCardioExercises(cardioExercisesState.filter((ex) => !newList.includes(ex)))
                                     }}
                                     onTransferLeft={(newList) => {
                                         removeExercise(newList)

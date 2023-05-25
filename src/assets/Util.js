@@ -18,12 +18,26 @@ class Util {
         return new Date(milliseconds);
     }
 
-    getAge(birthdayString) {
-        const birthday = new Date(birthdayString);
-        const ageDiffMs = Date.now() - birthday.getTime();
-        const ageDate = new Date(ageDiffMs);
-        return Math.abs(ageDate.getUTCFullYear() - 1970);
+    getAge(_date) {
+        if (!isNaN(_date)) {
+            const birthday = new Date(_date);
+            const ageDiffMs = Date.now() - birthday.getTime();
+            const ageDate = new Date(ageDiffMs);
+            const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+            return age
+        }
     };
+
+    getMembershipClass(_date) {
+        const daysLeft = new Date(_date) - new Date();
+        if (daysLeft >= 10) {
+            return "safe-state"
+        } else if (daysLeft >= 5) {
+            return "close-state"
+        } else {
+            return "expired-state"
+        }
+    }
 
     removeAccents(str) {
         return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');

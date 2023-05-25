@@ -16,3 +16,14 @@
   justify-content: center;
   font-size: 3rem;
 }
+
+
+.safe-state {
+    color:rgb(0, 59, 0) !important;
+}
+.close-state {
+    color: rgb(119, 119, 0) !important;
+}
+.expired-state {
+    color: rgb(151, 0, 0) !important;
+}

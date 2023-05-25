@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UserService from '../../../Firebase/userService';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -12,9 +10,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
+import AtlasSnackbar from "../../Components/snackbar/AtlasSnackbar";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Timestamp } from 'firebase/firestore';
 import 'dayjs/locale/es';
 import dayjs from 'dayjs';
 import "./user.css";
+import UserModel from '../../models/UserModel';
 
 
 const today = dayjs();
@@ -25,18 +28,42 @@ function SetUser({ user, onSave }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const [openBackdrop, setOpenBackDrop] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
 
   useEffect(() => {
     setUserState(userState)
   }, []);
 
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const handleShowSnackbar = () => {
+    setSnackbarOpen(true);
+  };
+
+  const handleCloseBackDrop = () => {
+    setOpenBackDrop(false);
+  };
+  const handleOpenBackDrop = () => {
+    setOpenBackDrop(true);
+  };
+
 
   const handleSubmit = (event) => {
+    handleOpenBackDrop();
     event.preventDefault();
-    const updatedUser = { ...userState };
-    UserService.update(updatedUser.uid, updatedUser);
-    onSave(updatedUser);
-    handleClose();
+    const updatedUser = new UserModel(userState.birthday, userState.dni, userState.email, userState.name, userState.phone, userState.uid, userState.until);
+    UserService.update(updatedUser.uid, updatedUser).then(() => {
+      onSave(updatedUser);
+      handleClose();
+      handleCloseBackDrop();
+    }).catch(() => {
+      handleCloseBackDrop();
+      handleShowSnackbar();
+    });
   };
 
   return (
@@ -84,12 +111,16 @@ function SetUser({ user, onSave }) {
                   onChange={(newDate) => setUserState(
                     {
                       ...userState,
-                      birthday: newDate,
+                      birthday: Timestamp.fromDate(new Date(newDate)),
                     }
                   )} />
               </LocalizationProvider>
             </Grid>
           </Grid>
+          <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+          <AtlasSnackbar message="Error al actualizar" open={snackbarOpen} severity="error" handleClose={handleSnackbarClose} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancelar</Button>

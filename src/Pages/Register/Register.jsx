@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { TextField, Button, Typography, Container } from '@mui/material';
-import {
-  auth,
-  registerWithEmailAndPassword,
-} from "./../../../Firebase/authFunctions";
+import { auth, registerWithEmailAndPassword } from "./../../../Firebase/authFunctions";
 import "./Register.css";
 import ResetPassword from "../ResetPassword/ResetPassword";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import AtlasSnackbar from "../../Components/snackbar/AtlasSnackbar";
-import { esES } from '@mui/x-date-pickers/locales';
+import { Timestamp } from 'firebase/firestore';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import dayjs from 'dayjs';
 
 const today = dayjs();
@@ -21,13 +20,13 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [birthday, setBirthday] = useState(new Date());
+  const [birthday, setBirthday] = useState(Timestamp.now());
   const [dni, setDni] = useState("");
   const [phone, setPhone] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [openBackdrop, setOpenBackDrop] = useState(false);
   const navigate = useNavigate();
-
 
 
 
@@ -35,25 +34,29 @@ function Register() {
     if (!name) {
       handleShowSnackbar();
     }
-    registerWithEmailAndPassword(dni, birthday.toString(), phone, name, email, password).catch(() => {
+    handleOpenBackDrop()
+    registerWithEmailAndPassword(dni, birthday, phone, name, email, password).catch(() => {
       handleShowSnackbar();
     })
   };
 
+  const handleCloseBackDrop = () => {
+    setOpenBackDrop(false);
+  };
+  const handleOpenBackDrop = () => {
+    setOpenBackDrop(true);
+  };
 
 
   useEffect(() => {
-    if (loading) {
-      // maybe trigger a loading screen
-      return;
-    }
     if (user) {
       const uid = user.uid
       localStorage.setItem('UID', uid);
       localStorage.setItem('ROL', 1);
       navigate(`/user/${uid}`, { state: { uid } });
+      handleCloseBackDrop();
     }
-  }, [user, loading]);
+  }, [user]);
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -93,7 +96,7 @@ function Register() {
           align="center"
           fullWidth
           maxDate={today}
-          onChange={(newDate) => setBirthday(newDate)} />
+          onChange={(newDate) => setBirthday(Timestamp.fromDate(new Date(newDate)))} />
       </LocalizationProvider>
       <TextField
         label="Número de teléfono"
@@ -127,6 +130,9 @@ function Register() {
         ¿Ya tienes cuenta? <Link to="/">Iniciar sesión</Link>.
       </Typography>
       <AtlasSnackbar message="Datos inválidos" open={snackbarOpen} severity="error" handleClose={handleSnackbarClose} />
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Container >
   );
 }

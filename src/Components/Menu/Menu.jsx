@@ -27,7 +27,7 @@ import "./Menu.css";
 function Menu() {
 
   const [uid, setUid] = useState(localStorage.getItem("UID"))
-  const [currentRol, setRol] = useState(localStorage.getItem("ROL"))
+  const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
   const [showMenu, setMenu] = useState(false);
   const navigate = useNavigate();
 
