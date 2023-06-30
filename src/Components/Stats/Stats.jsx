@@ -133,17 +133,17 @@ function Stats({ stats = new StatsModel() }) {
                                         </Grid>
                                         <Grid item xs={6} sx={{ mt: 1 }}>
                                             <Typography variant="subtitle1">
-                                                <b>Grasa corp:</b> %{statsState.body_fat}
+                                                <b>Grasa corp:</b> {statsState.body_fat}%
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={6} sx={{ mt: 1 }}>
                                             <Typography variant="subtitle1">
-                                                <b>Musculo:</b> %{statsState.muscle}
+                                                <b>Musculo:</b> {statsState.muscle}%
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={6} sx={{ mt: 1 }}>
                                             <Typography variant="subtitle1">
-                                                <b>Grasa viceral:</b> %{statsState.visceral_fat}
+                                                <b>Grasa viceral:</b> {statsState.visceral_fat}%
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={6} sx={{ mt: 1 }}>

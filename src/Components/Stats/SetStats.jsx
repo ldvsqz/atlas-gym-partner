@@ -12,6 +12,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
+import Util from '../../assets/Util';
 import './SetStats.css';
 
 
@@ -20,6 +21,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const util = new Util();
 
   useEffect(() => {
     if (!!stats && isEditing) {
@@ -43,11 +45,6 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
     onSave(updatedStats);
   };
 
-  function calculateIMC(weight_kg, Height_cm) {
-    const HeightMeters = Height_cm / 10;
-    const imc = weight_kg / (HeightMeters ** 2);
-    return imc.toFixed(2);
-  }
 
   return (
     <>
@@ -175,7 +172,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
                   setStatsState({
                     ...statsState,
                     weight_kg: event.target.value,
-                    IMC: calculateIMC(statsState.weight_kg, statsState.Height_cm),
+                    IMC: util.calculateIMC(statsState.weight_kg, statsState.Height_cm),
                   })
                 }
               />
@@ -187,7 +184,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
                   setStatsState({
                     ...statsState,
                     Height_cm: event.target.value,
-                    IMC: calculateIMC(statsState.weight_kg, statsState.Height_cm),
+                    IMC: util.calculateIMC(statsState.weight_kg, statsState.Height_cm),
                   })
                 }
               />
