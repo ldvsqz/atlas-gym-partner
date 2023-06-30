@@ -48,9 +48,45 @@ class Util {
         return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     };
 
+    calculateProximityColor(current, goal) {
+        const diferencia = Math.abs(current - goal);
+        const proximidad = diferencia === 0 ? 0 : (diferencia / 10);
+        const verde = Math.round(255 * (1 - proximidad));
+        const rojo = Math.round(255 * proximidad);
+        const azul = 0;
+        return proximidad === 0 ? `rgb(255, 0, 0)` : `rgb(${rojo}, ${verde}, ${azul})`;
+    };
 
-    genId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    calculateIMC(weight_kg, Height_cm) {
+        const HeightMeters = Height_cm / 10;
+        const imc = weight_kg / (HeightMeters ** 2);
+        return imc.toFixed(2);
+    }
+
+    idealWeight(height, gender) {
+        const idealWeight = gender === 0
+            ? (height - 100) - ((height - 100) * 0.1)
+            : gender === 1
+                ? (height - 100) - ((height - 100) * 0.15)
+                : null;
+
+        return idealWeight;
+    }
+
+
+    idealBodyFat(IMC, age, gender) {
+        return (1.2 * IMC) + (0.23 * age) - (10.8 * gender) - 5.4;
+    }
+
+
+
+
+    genId(data) {
+        const timestamp = Date.now().toString(36);
+        const randomString = Math.random().toString(36).substr(2);
+        const additionalData = data.toString();
+        const uniqueId = `${timestamp}-${randomString}-${additionalData}`;
+        return uniqueId;
     };
 }
 

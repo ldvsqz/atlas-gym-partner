@@ -21,7 +21,9 @@ import StatService from '../../../Firebase/statsService';
 import Util from '../../assets/Util';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+import Divider from "@mui/material/Divider";
 import Paper from '@mui/material/Paper';
+import { List, ListItem, ListItemText } from '@material-ui/core';
 import './SetStats.css';
 
 function StatsHistory({ uid }) {
@@ -40,7 +42,6 @@ function StatsHistory({ uid }) {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-
     return (
         <div>
             {allStats.length != 0 ? (
@@ -56,50 +57,108 @@ function StatsHistory({ uid }) {
                             Historial de medidas
                         </DialogTitle>
                         <DialogContent>
-                            <TableContainer component={Paper} sx={{ mt: 4 }}>
-                                <Table sx={{ minWidth: '100%' }} aria-label="simple table" size="small">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Fecha</TableCell>
-                                            <TableCell align="right">Peso</TableCell>
-                                            <TableCell align="right">Estatura</TableCell>
-                                            <TableCell align="right">IMC</TableCell>
-                                            <TableCell align="right">Grasa corp</TableCell>
-                                            <TableCell align="right">Musculo</TableCell>
-                                            <TableCell align="right">Grasa viceral</TableCell>
-                                            <TableCell align="right">Edad met</TableCell>
-                                            <TableCell align="right">Kcal</TableCell>
-                                            <TableCell align="right">Torso</TableCell>
-                                            <TableCell align="right">Cintura</TableCell>
-                                            <TableCell align="right">Cadera</TableCell>
-                                            <TableCell align="right">Brazo</TableCell>
-                                            <TableCell align="right">Pierna</TableCell>
-                                            <TableCell align="right">Pantorrilla</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {allStats.map((stat, indexE) => (
-                                            <TableRow key={indexE} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px' }}>
-                                                <TableCell sx={{ padding: '5px' }} align="left">{util.formatDateShort(util.getDateFromFirebase(stat.date))}</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">{stat.weight_kg}kg</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">{stat.Height_cm}cm</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">{stat.IMC}</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">%{stat.body_fat}</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">%{stat.muscle}</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">%{stat.visceral_fat}</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">{stat.metabolic_age}</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">{stat.kcal}</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">{stat.chest_back_cm}cm</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">{stat.waist_cm}cm</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">{stat.hip_cm}cm</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">{stat.l_amr_cm}/{stat.r_amr_cm}cm</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">{stat.l_quad_cm}/{stat.r_quad_cm}cm</TableCell>
-                                                <TableCell sx={{ padding: '5px' }} align="right">{stat.l_calf_cm}/{stat.r_calf_cm}cm</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                            <div style={{ display: 'flex', overflowX: 'auto' }}>
+                                <List sx={{ whiteSpace: 'nowrap' }} style={{ whiteSpace: 'nowrap' }} dense>
+                                    <ListItem key={"Fecha"}>
+                                        <ListItemText primary={`Fecha: `} />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem key={"Peso"}>
+                                        <ListItemText primary={`Peso: `} />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem key={"IMC"}>
+                                        <ListItemText primary={`IMC: `} />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem key={"Grasa corp"}>
+                                        <ListItemText primary={`Grasa corp: `} />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem key={"Musculo"}>
+                                        <ListItemText primary={`Musculo: `} />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem key={"Grasa visceral"}>
+                                        <ListItemText primary={`Grasa visceral: `} />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem key={"Torso"}>
+                                        <ListItemText primary={`Torso: `} />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem key={"Cintura"}>
+                                        <ListItemText primary={`Cintura: `} />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem key={"Cadera"}>
+                                        <ListItemText primary={`Cadera: `} />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText primary={`Brazo: `} />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText primary={`Pierna: `} />
+                                    </ListItem>
+                                    <Divider />
+                                    <ListItem>
+                                        <ListItemText primary={`Pantorrilla: `} />
+                                    </ListItem>
+                                </List>
+                                {allStats.map((stat, indexE) => (
+                                    <List key={{ indexE }} sx={{ minWidth: '3%' }} style={{ color: indexE === 0 ? '#ff5722' : 'inherit' }} dense>
+                                        <ListItem key={indexE}>
+                                            <ListItemText primary={util.formatDateShort(util.getDateFromFirebase(stat.date))} />
+                                        </ListItem>
+                                        <Divider />
+                                        <ListItem >
+                                            <ListItemText primary={`${stat.weight_kg}kg`} />
+                                        </ListItem>
+                                        <Divider />
+                                        <ListItem >
+                                            <ListItemText primary={`${stat.IMC}`} />
+                                        </ListItem>
+                                        <Divider />
+                                        <ListItem >
+                                            <ListItemText primary={`${stat.body_fat}%`} />
+                                        </ListItem>
+                                        <Divider />
+                                        <ListItem >
+                                            <ListItemText primary={`${stat.muscle}%`} />
+                                        </ListItem>
+                                        <Divider />
+                                        <ListItem >
+                                            <ListItemText primary={`${stat.visceral_fat}%`} />
+                                        </ListItem>
+                                        <Divider />
+                                        <ListItem >
+                                            <ListItemText primary={`${stat.chest_back_cm}cm`} />
+                                        </ListItem>
+                                        <Divider />
+                                        <ListItem >
+                                            <ListItemText primary={`${stat.waist_cm}cm`} />
+                                        </ListItem>
+                                        <Divider />
+                                        <ListItem >
+                                            <ListItemText primary={`${stat.hip_cm}cm`} />
+                                        </ListItem>
+                                        <Divider />
+                                        <ListItem >
+                                            <ListItemText primary={`${stat.l_amr_cm}/${stat.r_amr_cm}cm`} />
+                                        </ListItem>
+                                        <Divider />
+                                        <ListItem >
+                                            <ListItemText primary={`${stat.l_quad_cm}/${stat.r_quad_cm}cm`} />
+                                        </ListItem>
+                                        <Divider />
+                                        <ListItem >
+                                            <ListItemText primary={`${stat.l_calf_cm}/${stat.r_calf_cm}cm`} />
+                                        </ListItem>
+                                    </List>
+                                ))}
+                            </div>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={() => setOpen(false)}>Aceptar</Button>
@@ -113,7 +172,7 @@ function StatsHistory({ uid }) {
                 </Stack>
             )
             }
-        </div>
+        </div >
     )
 }
 
