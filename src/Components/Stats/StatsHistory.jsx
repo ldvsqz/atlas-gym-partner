@@ -23,7 +23,9 @@ import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Divider from "@mui/material/Divider";
 import Paper from '@mui/material/Paper';
-import { List, ListItem, ListItemText } from '@material-ui/core';
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 import './SetStats.css';
 
 function StatsHistory({ uid }) {
