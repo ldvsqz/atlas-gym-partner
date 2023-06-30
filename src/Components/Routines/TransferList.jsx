@@ -98,7 +98,7 @@ export default function TransferList(props) {
                         handleSearch(e);
                     }}
             />
-            <Paper sx={{ maxWidth: 500, minWidth: 250, height: 400, overflow: 'auto', mt: 2 }}>
+            <Paper sx={{ maxWidth: "100%", height: 400, overflow: 'auto', mt: 2 }}>
                 <List dense component="div" role="list">
                     {
 
@@ -132,7 +132,7 @@ export default function TransferList(props) {
 
 
     const RoutineList = () => (
-        <Paper sx={{ maxWidth: 500, minWidth: 250, height: 400, overflow: 'auto', mt: 2 }}>
+        <Paper sx={{ maxWidth: "100%", height: 400, overflow: 'auto', mt: 2 }}>
             <List dense component="div" role="list">
                 {right.map((exercise, index) => {
                     return (
@@ -181,11 +181,10 @@ export default function TransferList(props) {
                     </Box>
                 ) : (
                     <Grid container spacing={2} justifyContent="center" alignItems="center">
-                        <Grid item>
-
+                        <Grid item xs={12} sm={5.5}>
                             {ExercisesList()}
                         </Grid>
-                        <Grid item>
+                        <Grid item xs={12} sm={1} sx={{ display: 'flex', flexDirection: 'column' }}>
                             <Grid container direction="column" alignItems="center">
                                 <Button
                                     sx={{ my: 0.5, minWidth: '30px' }}
@@ -209,7 +208,7 @@ export default function TransferList(props) {
                                 </Button>
                             </Grid>
                         </Grid>
-                        <Grid item>
+                        <Grid item xs={12} sm={5.5}>
                             {right.length !== 0 && <Button onClick={handleAddDay}>Agregar día</Button>}
                             {RoutineList(right)}
                         </Grid>

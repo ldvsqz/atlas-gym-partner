@@ -95,7 +95,7 @@ function User() {
 
   return (
     <div>
-      <Menu header={user.name}/>
+      <Menu header={user.name} />
       <Container fixed>
         {loading ? (
           <Stack spacing={1} sx={{ width: '100%', mt: 4 }}>

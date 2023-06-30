@@ -1,4 +1,4 @@
-import './App.css'
+// import './App.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Pages/Login/Login";
 import Register from "./Pages/Register/Register";
@@ -10,7 +10,7 @@ import Exercises from "./Pages/Exercises/Exercises";
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
 import { colors } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-
+import CssBaseline from '@mui/material/CssBaseline';
 
 const theme = createTheme({
   palette: {
@@ -19,9 +19,17 @@ const theme = createTheme({
   },
 });
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: colors.deepOrange,
+  },
+});
+
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
       <Router>
         <Routes>
           <Route path='/' exact element={<Login />} />

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './setRoutine.css'
 //MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -19,6 +20,9 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Dialog from '@mui/material/Dialog';
 
 // Services and utilities
 import { backExercises } from '../../assets/exercises/back-exercises';
@@ -49,6 +53,10 @@ function SetRoutine(props) {
     const [legsExercisesState, setLegsExercises] = useState(legsExercises);
     const [cardioExercisesState, setCardioExercises] = useState(cardioExercises);
     const [value, setValue] = useState('1');
+
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const util = new Util();
 
@@ -129,28 +137,25 @@ function SetRoutine(props) {
 
     return (
         <div>
-            <Accordion sx={{ mt: 1 }}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1bh-content"
-                    id="panel1bh-header"
-                >
-                    <Typography>
-                        Agregar rutina
-                    </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Box sx={{ width: '100%', typography: 'body1' }}>
+            <Button align="center" onClick={handleOpen} sx={{ width: '100%' }}>Agregar rutina</Button>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                className='setRoutine'
+            >
+                <DialogContent >
                         <TabContext value={value}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <TabList onChange={handleChange} aria-label="lab API tabs example" variant="scrollable">
-                                    <Tab label="Espalda" value="1" sx={{ width: '50%' }}/>
-                                    <Tab label="Pecho" value="2" sx={{ width: '50%' }}/>
-                                    <Tab label="Hombro" value="3" sx={{ width: '50%' }}/>
-                                    <Tab label="Abdomen" value="4" sx={{ width: '50%' }}/>
-                                    <Tab label="Brazos" value="5" sx={{ width: '50%' }}/>
-                                    <Tab label="Pierna" value="6" sx={{ width: '50%' }}/>
-                                    <Tab label="Cardio" value="7" sx={{ width: '50%' }}/>
+                                    <Tab label="Espalda" value="1" sx={{ width: '50%', '&:hover': { backgroundColor: '#ff5722', color: 'white' } }} />
+                                    <Tab label="Pecho" value="2" sx={{ width: '50%', '&:hover': { backgroundColor: '#ff5722', color: 'white' } }} />
+                                    <Tab label="Hombro" value="3" sx={{ width: '50%', '&:hover': { backgroundColor: '#ff5722', color: 'white' } }} />
+                                    <Tab label="Abdomen" value="4" sx={{ width: '50%', '&:hover': { backgroundColor: '#ff5722', color: 'white' } }} />
+                                    <Tab label="Brazos" value="5" sx={{ width: '50%', '&:hover': { backgroundColor: '#ff5722', color: 'white' } }} />
+                                    <Tab label="Pierna" value="6" sx={{ width: '50%', '&:hover': { backgroundColor: '#ff5722', color: 'white' } }} />
+                                    <Tab label="Cardio" value="7" sx={{ width: '50%', '&:hover': { backgroundColor: '#ff5722', color: 'white' } }} />
                                 </TabList>
                             </Box>
                             <TabPanel value="1">
@@ -266,64 +271,66 @@ function SetRoutine(props) {
                                     }} />
                             </TabPanel>
                         </TabContext>
-                    </Box>
-                </AccordionDetails>
-            </Accordion>
-            {routineState.routine.length !== 0 &&
-                <Grid container sx={{ color: 'text.primary' }}>
-                    {
-                        routineState.routine.map((day, indexD) => (
-                            <Grid item xs={12} key={indexD} sx={{ mt: 1 }}>
-                                <Accordion >
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1bh-content"
-                                        id="panel1bh-header"
-                                    >
-                                        <Typography sx={{ width: '33%', flexShrink: 0 }}>
-                                            Día {indexD + 1}
-                                        </Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <TableContainer component={Paper} sx={{ mt: 4 }}>
-                                            <Table sx={{ minWidth: '100%' }} aria-label="simple table">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell>Ejercicio</TableCell>
-                                                        <TableCell>Series</TableCell>
-                                                        <TableCell>Objetivo</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {day.day.map((exercise, indexE) => (
-                                                        <TableRow key={exercise.id} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px' }}>
-                                                            <TableCell sx={{ padding: '10px' }} ><ExerciseImage exercise={exercise} /></TableCell>
-                                                            <TableCell sx={{ padding: '10px' }} >{exercise.sets}</TableCell>
-                                                            <TableCell sx={{ padding: '10px' }} >{exercise.bodyPart}/{exercise.target}</TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    </AccordionDetails>
-                                </Accordion>
+                    {routineState.routine.length !== 0 &&
+                        <Grid container sx={{ color: 'text.primary' }}>
+                            {
+                                routineState.routine.map((day, indexD) => (
+                                    <Grid item xs={12} key={indexD} sx={{ mt: 1 }}>
+                                        <Accordion >
+                                            <AccordionSummary
+                                                expandIcon={<ExpandMoreIcon />}
+                                                aria-controls="panel1bh-content"
+                                                id="panel1bh-header"
+                                            >
+                                                <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                                                    Día {indexD + 1}
+                                                </Typography>
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+                                                <TableContainer component={Paper} sx={{ mt: 4 }}>
+                                                    <Table sx={{ minWidth: '100%' }} aria-label="simple table">
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell>Ejercicio</TableCell>
+                                                                <TableCell>Series</TableCell>
+                                                                <TableCell>Objetivo</TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            {day.day.map((exercise, indexE) => (
+                                                                <TableRow key={exercise.id} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px' }}>
+                                                                    <TableCell sx={{ padding: '10px' }} ><ExerciseImage exercise={exercise} /></TableCell>
+                                                                    <TableCell sx={{ padding: '10px' }} >{exercise.sets}</TableCell>
+                                                                    <TableCell sx={{ padding: '10px' }} >{exercise.bodyPart}/{exercise.target}</TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </AccordionDetails>
+                                        </Accordion>
+                                    </Grid>
+                                ))
+                            }
+                            <Grid container sx={{ color: 'text.primary' }}>
+                                <Grid item xs={6}>
+                                    <Alert buttonName={"Guardar rutina"}
+                                        title={"Guardar rutina"}
+                                        message={`¿Desea guardar esta rutina como la actual?`}
+                                        onResponse={(response) => handleSaveRoutine(response)} />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Button onClick={handleCleanRoutine}>Limpiar</Button>
+                                </Grid>
                             </Grid>
-                        ))
+                        </Grid>
                     }
-                    <Grid container sx={{ color: 'text.primary' }}>
-                        <Grid item xs={6}>
-                            <Alert buttonName={"Guardar rutina"}
-                                title={"Guardar rutina"}
-                                message={`¿Desea guardar esta rutina como la actual?`}
-                                onResponse={(response) => handleSaveRoutine(response)} />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Button onClick={handleCleanRoutine}>Limpiar</Button>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            }
-        </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)} fullWidth>Cancelar</Button>
+                </DialogActions>
+            </Dialog>
+        </div >
     );
 
 }
