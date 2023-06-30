@@ -52,7 +52,7 @@ function ExerciseImage(props) {
                     </Card>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Aceptar</Button>
+                    <Button onClick={handleClose} sx={{width: "100%"}}>Aceptar</Button>
                 </DialogActions>
             </Dialog>
         </div>
