@@ -5,33 +5,35 @@ import Register from "./Pages/Register/Register";
 import Events from "./Pages/Events";
 import Users from "./Pages/User/Users";
 import User from "./Pages/User/User";
+import Settings from "./Pages/Settings/Settings";
+import Exercises from "./Pages/Exercises/Exercises";
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
-import { blue, teal } from '@mui/material/colors';
+import { colors } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+
 const theme = createTheme({
   palette: {
-    primary: {
-      main: blue[500],
-    },
-    secondary: {
-      main: teal[500],
-    },
+    primary: colors.deepOrange,
+    secondary: colors.teal,
   },
 });
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-    <Router>
-      <Routes>
-          <Route path='/' exact element={<Login/>} />
-          <Route path='/reset' exact element={<ResetPassword/>} />
-          <Route path='/register' element={<Register/>} />
-          <Route path='/events' element={<Events/>} />
-          <Route path='/users' element={<Users/>} />
-          <Route path='/user/:uid' element={<User/>} />
-      </Routes>
-    </Router>
+      <Router>
+        <Routes>
+          <Route path='/' exact element={<Login />} />
+          <Route path='/reset' exact element={<ResetPassword />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/events' element={<Events />} />
+          <Route path='/users' element={<Users />} />
+          <Route path='/settings' element={<Settings />} />
+          <Route path='/exercises' element={<Exercises />} />
+          <Route path='/user/:uid' element={<User />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   )
 }

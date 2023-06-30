@@ -26,7 +26,7 @@ function Logout() {
       <ListItemIcon>
         <LogoutIcon />
       </ListItemIcon>
-      <ListItemText primary={"Log out"} />
+      <ListItemText primary={"Cerrar sesión"} />
     </ListItemButton>
   )
 }

@@ -1,18 +1,18 @@
 import React from 'react';
+import Menu from '../../Components/Menu/Menu';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import Menu from '../../Components/Menu/Menu';
 
 
-function Settings() {
+function Exercises() {
 
   return (
     <div>
-      <Menu header={"Configuraciones"}/>
+      <Menu header={"Ejercicios"}/>
         <Container fixed>
       </Container>
     </div>
   );
 }
 
-export default Settings;
+export default Exercises;
