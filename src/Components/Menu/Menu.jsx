@@ -15,18 +15,18 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import HomeIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import SettingsIcon from '@mui/icons-material/Settings';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { auth } from "../../../Firebase/authFunctions";
 import "./Menu.css";
 
 
 
 
-function Menu() {
+function Menu({header}) {
 
   const [uid, setUid] = useState(localStorage.getItem("UID"))
   const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
@@ -66,6 +66,12 @@ function Menu() {
     navigate(`/user/${uid}`, { state: { uid } });
   }
 
+  const handleOnchangePage = (_header) => {
+    console.log(_header);
+    setHeader(_header);
+    console.log(header);
+  }
+
 
   const list = () => (
     <Box
@@ -83,6 +89,7 @@ function Menu() {
             <ListItemText primary={"Mi perfil"} />
           </ListItemButton>
         </ListItem>
+
         {currentRol == 0 && <ListItem key={"Personas"} disablePadding>
           <ListItemButton component={Link} to="/users">
             <ListItemIcon>
@@ -113,6 +120,16 @@ function Menu() {
         </ListItem>
         }
 
+        {currentRol == 0 && <ListItem key={"Ejercicios"} disablePadding>
+          <ListItemButton component={Link} to="/exercises">
+            <ListItemIcon>
+              <FitnessCenterIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Ejercicios"} />
+          </ListItemButton>
+        </ListItem>
+        }
+
         <Divider />
         <ListItem key={"logout"} disablePadding>
           <Logout />
@@ -133,12 +150,12 @@ function Menu() {
               color="inherit"
               edge="start"
               aria-label="menu"
-              sx={{ mr: 2 }}
+              sx={{ mr: 2, width: "20%" }}
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Atlas
+            <Typography variant="h6" component="div">
+              {header}
             </Typography>
           </Toolbar>
         </AppBar>

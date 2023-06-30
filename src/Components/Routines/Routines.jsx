@@ -48,7 +48,6 @@ function Routines({ routine }) {
                         <TableRow>
                           <TableCell >Ejercicio</TableCell>
                           <TableCell>Series</TableCell>
-                          <TableCell>Objetivo</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -56,7 +55,6 @@ function Routines({ routine }) {
                           <TableRow key={indexE} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px' }}>
                             <TableCell sx={{ padding: '5px' }} ><ExerciseImage exercise={exercise} /></TableCell>
                             <TableCell sx={{ padding: '5px' }} >{exercise.sets}</TableCell>
-                            <TableCell sx={{ padding: '5px' }} >{exercise.bodyPart}/{exercise.target}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

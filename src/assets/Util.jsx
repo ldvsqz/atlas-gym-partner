@@ -8,7 +8,7 @@ class Util {
         const date = new Date(_date);
         const formattedDate = date.toLocaleString('es-ES', { month: 'long', day: 'numeric', year: 'numeric' });
         return formattedDate;
-    }
+    };
 
     formatDateShort(_date) {
         const date = new Date(_date);
@@ -16,12 +16,12 @@ class Util {
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear().toString();
         return `${day}/${month}/${year}`;
-    }
+    };
 
     getDateFromFirebase(_date) {
         const milliseconds = _date.seconds * 1000 + Math.floor(_date.nanoseconds / 1e6);
         return new Date(milliseconds);
-    }
+    };
 
     getAge(_date) {
         if (!isNaN(_date)) {
@@ -42,7 +42,7 @@ class Util {
         } else {
             return <CheckCircleIcon sx={{ color: 'green' }} />;
         }
-    }
+    };
 
     removeAccents(str) {
         return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -51,7 +51,7 @@ class Util {
 
     genId() {
         return Date.now().toString(36) + Math.random().toString(36).substr(2);
-    }
+    };
 }
 
 

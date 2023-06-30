@@ -8,11 +8,8 @@ function Events() {
 
   return (
     <div>
-      <Menu />
+      <Menu header={"Eventos"}/>
       <Container fixed>
-        <Typography variant="h5" gutterBottom >
-          Eventos
-        </Typography>
       </Container>
     </div>
   );
