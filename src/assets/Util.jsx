@@ -78,6 +78,13 @@ class Util {
         return (1.2 * IMC) + (0.23 * age) - (10.8 * gender) - 5.4;
     }
 
+    copyToClipboard(newClip) {
+        if (!navigator.clipboard) {
+            console.error('El navegador no admite la API del portapapeles.');
+            return;
+        }
+        return navigator.clipboard.writeText(newClip);
+    }
 
 
 

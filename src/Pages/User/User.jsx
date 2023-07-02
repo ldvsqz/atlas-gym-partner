@@ -4,15 +4,18 @@ import { useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import PhoneIcon from '@mui/icons-material/Phone';
 import Grid from '@mui/material/Grid';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
 //components
 import Menu from '../../Components/Menu/Menu';
 import SetUser from "./SetUser";
@@ -39,6 +42,7 @@ function User() {
   const [routine, setRoutine] = useState({});
   const [loading, setLoading] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarNumberOpen, setsnackbarNumberOpen] = useState(false);
   const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
 
   useEffect(() => {
@@ -67,6 +71,14 @@ function User() {
     setSnackbarOpen(true);
   };
 
+  const handleSnackbarCloseNumber = () => {
+    setsnackbarNumberOpen(false);
+  };
+
+  const handleShowSnackbarNumber = () => {
+    setsnackbarNumberOpen(true);
+  };
+
 
 
   function handleOnRenew(response) {
@@ -92,6 +104,14 @@ function User() {
     setStats(userStats)
   }
 
+  function handleOnCopyNumber(number) {
+    util.copyToClipboard(number).then(() => {
+      handleShowSnackbarNumber();
+    }).catch(error => {
+      console.log(error);
+    })
+  }
+
 
   return (
     <div>
@@ -106,27 +126,29 @@ function User() {
           </Stack>
         ) : (
           <Box sx={{ width: '100%', mt: 4 }}>
-
+            <List>
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar alt={util.getStateIcon(util.getDateFromFirebase(user.until))} src="" />
+                </ListItemAvatar>
+                <ListItemText primary={`${user.name}, ${util.getAge(util.getDateFromFirebase(user.birthday))}`} secondary={`Activo hasta: ${util.formatDateShort(util.getDateFromFirebase(user.until))}`} />
+              </ListItem>
+              {
+                user.phone &&
+                <ListItemButton onClick={() => handleOnCopyNumber(user.phone)}>
+                  <ListItemIcon>
+                    <WhatsAppIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={user.phone} />
+                </ListItemButton>
+              }
+            </List>
             <Grid container sx={{ color: 'text.primary' }}>
-              <Grid item xs={6}>
-                <Stack direction="row" spacing={2}>
-                  <Avatar alt={user.name} src="" />
-                  <Typography variant="subtitle1" gutterBottom>
-                    {user.name}, {util.getAge(util.getDateFromFirebase(user.birthday))}
-                  </Typography>
-                </Stack>
-
-              </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={currentRol == 0 ? 6 : 12}>
                 <SetUser user={user}
                   onSave={(updatedUser) =>
                     setUser(updatedUser)
                   } />
-              </Grid>
-              <Grid item xs={6} sx={{ display: 'flex' }}>
-                <Typography variant="subtitle1" gutterBottom>
-                  Activo hasta:{util.formatDate(util.getDateFromFirebase(user.until))}
-                </Typography>{util.getStateIcon(util.getDateFromFirebase(user.until))}
               </Grid>
               <Grid item xs={currentRol == 0 ? 6 : 12}>
                 {currentRol == 0 && <Alert
@@ -136,21 +158,6 @@ function User() {
                   onResponse={(response) =>
                     handleOnRenew(response)} />
                 }
-              </Grid>
-            </Grid>
-
-
-
-            <Grid container sx={{ color: 'text.primary' }}>
-              <Grid item xs={12}>
-                <Typography variant="subtitle1">
-                  {user.phone}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="subtitle1">
-                  {user.email}
-                </Typography>
               </Grid>
             </Grid>
             <Divider />
@@ -178,8 +185,9 @@ function User() {
           </Box>
         )}
         <AtlasSnackbar message="Membresía actualizada" open={snackbarOpen} severity="info" handleClose={handleSnackbarClose} />
+        <AtlasSnackbar message="Número copaido al cortapapeles" open={snackbarNumberOpen} severity="info" handleClose={handleSnackbarCloseNumber} />
       </Container>
-    </div>
+    </div >
   );
 }
 
