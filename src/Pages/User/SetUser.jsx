@@ -68,7 +68,7 @@ function SetUser({ user, onSave }) {
 
   return (
     <div>
-      <Button onClick={handleOpen}>Editar datos</Button>
+      <Button sx={{width:"100%"}} onClick={handleOpen}>Editar datos</Button>
       <Dialog
         open={open}
         onClose={handleClose}
