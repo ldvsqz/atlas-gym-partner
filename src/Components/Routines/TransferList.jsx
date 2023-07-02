@@ -176,7 +176,7 @@ export default function TransferList(props) {
         <div>
             {
                 left.length == 0 ? (
-                    <Box sx={{ width: '100%' }}>
+                    <Box sx={{ width: '100%', height: 400 }}>
                         <LinearProgress />
                     </Box>
                 ) : (

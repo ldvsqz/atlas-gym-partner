@@ -1,28 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import SetStats from './SetStats';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import StatService from '../../../Firebase/statsService';
 import Util from '../../assets/Util';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Divider from "@mui/material/Divider";
-import Paper from '@mui/material/Paper';
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -110,7 +96,7 @@ function StatsHistory({ uid }) {
                                     </ListItem>
                                 </List>
                                 {allStats.map((stat, indexE) => (
-                                    <List key={{ indexE }} sx={{ minWidth: '3%' }} style={{ color: indexE === 0 ? '#ff5722' : 'inherit' }} dense>
+                                    <List key={{ indexE }} sx={{ minWidth: '15%' }} style={{ color: indexE === 0 ? '#ff5722' : 'inherit' }} dense>
                                         <ListItem key={indexE}>
                                             <ListItemText primary={util.formatDateShort(util.getDateFromFirebase(stat.date))} />
                                         </ListItem>
