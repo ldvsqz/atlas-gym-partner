@@ -44,6 +44,7 @@ function User() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarNumberOpen, setsnackbarNumberOpen] = useState(false);
   const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
+  const [currentUid, setCurrentUid] = useState(localStorage.getItem("UID"));
 
   useEffect(() => {
     if (location.state) {
@@ -105,17 +106,13 @@ function User() {
   }
 
   function handleOnCopyNumber(number) {
-    util.copyToClipboard(number).then(() => {
-      handleShowSnackbarNumber();
-    }).catch(error => {
-      console.log(error);
-    })
+    util.openWAChat(number);
   }
 
 
   return (
     <div>
-      <Menu header={user.name} />
+      <Menu header={"Atlas"} />
       <Container fixed>
         {loading ? (
           <Stack spacing={1} sx={{ width: '100%', mt: 4 }}>
@@ -129,12 +126,12 @@ function User() {
             <List>
               <ListItem>
                 <ListItemAvatar>
-                  <Avatar alt={util.getStateIcon(util.getDateFromFirebase(user.until))} src="" />
+                  <Avatar/>
                 </ListItemAvatar>
                 <ListItemText primary={`${user.name}, ${util.getAge(util.getDateFromFirebase(user.birthday))}`} secondary={`Activo hasta: ${util.formatDateShort(util.getDateFromFirebase(user.until))}`} />
               </ListItem>
               {
-                user.phone &&
+                user.phone && currentUid != user.uid &&
                 <ListItemButton onClick={() => handleOnCopyNumber(user.phone)}>
                   <ListItemIcon>
                     <WhatsAppIcon />

@@ -33,15 +33,15 @@ class Util {
         }
     };
 
-    getStateIcon(_date) {
+    dateExpireColor(_date) {
         const daysLeft = new Date(_date) - new Date();
-        if (daysLeft <= 5) {
-            return <DangerousIcon sx={{ color: 'red' }} />
-        } else if (daysLeft <= 10) {
-            return <ReportIcon sx={{ color: 'orange' }} />
+        if (daysLeft <= 0){
+            return `red`;
+        }else if (daysLeft <= 7) {
+            return `orange`
         } else {
-            return <CheckCircleIcon sx={{ color: 'green' }} />;
-        }
+            return `green`
+        } 
     };
 
     removeAccents(str) {
@@ -95,6 +95,18 @@ class Util {
         const uniqueId = `${timestamp}-${randomString}-${additionalData}`;
         return uniqueId;
     };
+
+
+    openWAChat(phoneNumber) {
+        const formattedNumber = encodeURIComponent(`506${phoneNumber}`);
+        const url = "https://api.whatsapp.com/send?phone=" + formattedNumber;
+        window.open(url);
+    }
+
+    openURL(url){
+        window.open(url);
+    }
+
 }
 
 

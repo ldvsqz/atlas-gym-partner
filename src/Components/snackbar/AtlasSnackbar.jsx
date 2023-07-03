@@ -1,6 +1,5 @@
 import React from 'react';
-import { Snackbar, SnackbarContent, IconButton } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Snackbar} from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 
 const Alert = React.forwardRef(function Alert(props, ref) {

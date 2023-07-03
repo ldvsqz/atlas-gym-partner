@@ -20,13 +20,14 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import SettingsIcon from '@mui/icons-material/Settings';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import InfoIcon from '@mui/icons-material/Info';
 import { auth } from "../../../Firebase/authFunctions";
 import "./Menu.css";
 
 
 
 
-function Menu({header}) {
+function Menu({ header }) {
 
   const [uid, setUid] = useState(localStorage.getItem("UID"))
   const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
@@ -129,6 +130,14 @@ function Menu({header}) {
           </ListItemButton>
         </ListItem>
         }
+        <ListItem key={"Sobre nosotros"} disablePadding>
+          <ListItemButton component={Link} to="/aboutus">
+            <ListItemIcon>
+              <InfoIcon sx={{color: "#ff5722"}}/>
+            </ListItemIcon>
+            <ListItemText primary={"Sobre nosotros"} />
+          </ListItemButton>
+        </ListItem>
 
         <Divider />
         <ListItem key={"logout"} disablePadding>

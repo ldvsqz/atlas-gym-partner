@@ -7,6 +7,7 @@ import Users from "./Pages/User/Users";
 import User from "./Pages/User/User";
 import Settings from "./Pages/Settings/Settings";
 import Exercises from "./Pages/Exercises/Exercises";
+import Aboutus from "./Pages/Aboutus/Aboutus";
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
 import { colors } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -39,6 +40,7 @@ function App() {
           <Route path='/users' element={<Users />} />
           <Route path='/settings' element={<Settings />} />
           <Route path='/exercises' element={<Exercises />} />
+          <Route path='/aboutus' element={<Aboutus />} />
           <Route path='/user/:uid' element={<User />} />
         </Routes>
       </Router>
