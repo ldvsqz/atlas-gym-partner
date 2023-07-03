@@ -112,7 +112,7 @@ function User() {
 
   return (
     <div>
-      <Menu header={user.name} />
+      <Menu header={"Atlas"} />
       <Container fixed>
         {loading ? (
           <Stack spacing={1} sx={{ width: '100%', mt: 4 }}>
@@ -126,7 +126,7 @@ function User() {
             <List>
               <ListItem>
                 <ListItemAvatar>
-                  <Avatar alt={util.getStateIcon(util.getDateFromFirebase(user.until))} src="" />
+                  <Avatar/>
                 </ListItemAvatar>
                 <ListItemText primary={`${user.name}, ${util.getAge(util.getDateFromFirebase(user.birthday))}`} secondary={`Activo hasta: ${util.formatDateShort(util.getDateFromFirebase(user.until))}`} />
               </ListItem>

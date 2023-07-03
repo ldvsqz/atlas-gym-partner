@@ -11,7 +11,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
@@ -61,7 +60,7 @@ function User() {
     <div>
       <Menu header={"Personas"} />
       <Container fixed sx={{ mt: 4 }}>
-        <TextField label="Buscar usuario" variant="standard"
+        <TextField label="Buscar" variant="standard"
           value={searchTerm}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
@@ -98,7 +97,7 @@ function User() {
                   {filteredUsers.map((user) => (
                     <TableRow key={user.uid} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px', cursor: 'pointer' }} onClick={() => handleViewProfile(user.uid)}>
                       <TableCell>{user.name}</TableCell>
-                      <TableCell>{util.formatDateShort(util.getDateFromFirebase(user.until))}</TableCell>
+                      <TableCell sx={{color: util.dateExpireColor(util.getDateFromFirebase(user.until))}}>{util.formatDateShort(util.getDateFromFirebase(user.until))}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
