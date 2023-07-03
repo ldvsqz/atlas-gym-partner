@@ -59,8 +59,8 @@ function User() {
   return (
 
     <div>
-      <Menu header={"Personas"}/>
-      <Container fixed sx={{mt: 4}}>
+      <Menu header={"Personas"} />
+      <Container fixed sx={{ mt: 4 }}>
         <TextField label="Buscar usuario" variant="standard"
           value={searchTerm}
           onFocus={() => setFocused(true)}
@@ -91,17 +91,14 @@ function User() {
                 <TableHead>
                   <TableRow>
                     <TableCell>Nombre</TableCell>
-                    <TableCell align="left">Membresía hasta</TableCell>
+                    <TableCell>Membresía hasta</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {filteredUsers.map((user) => (
                     <TableRow key={user.uid} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px', cursor: 'pointer' }} onClick={() => handleViewProfile(user.uid)}>
-                      <TableCell sx={{ padding: '10px' }} >{user.name}</TableCell>
-                      <TableCell sx={{ padding: '10px', display: 'flex' }} align="left">
-                        <Typography variant="body1">{util.formatDateShort(util.getDateFromFirebase(user.until))}</Typography>
-                        {util.getStateIcon(util.getDateFromFirebase(user.until))}
-                      </TableCell>
+                      <TableCell>{user.name}</TableCell>
+                      <TableCell>{util.formatDateShort(util.getDateFromFirebase(user.until))}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

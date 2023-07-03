@@ -44,6 +44,7 @@ function User() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarNumberOpen, setsnackbarNumberOpen] = useState(false);
   const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
+  const [currentUid, setCurrentUid] = useState(localStorage.getItem("UID"));
 
   useEffect(() => {
     if (location.state) {
@@ -105,11 +106,7 @@ function User() {
   }
 
   function handleOnCopyNumber(number) {
-    util.copyToClipboard(number).then(() => {
-      handleShowSnackbarNumber();
-    }).catch(error => {
-      console.log(error);
-    })
+    util.openWAChat(number);
   }
 
 
@@ -134,7 +131,7 @@ function User() {
                 <ListItemText primary={`${user.name}, ${util.getAge(util.getDateFromFirebase(user.birthday))}`} secondary={`Activo hasta: ${util.formatDateShort(util.getDateFromFirebase(user.until))}`} />
               </ListItem>
               {
-                user.phone &&
+                user.phone && currentUid != user.uid &&
                 <ListItemButton onClick={() => handleOnCopyNumber(user.phone)}>
                   <ListItemIcon>
                     <WhatsAppIcon />
