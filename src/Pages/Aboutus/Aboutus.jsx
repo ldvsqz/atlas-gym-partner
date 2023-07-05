@@ -15,7 +15,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import Util from '../../assets/Util';
 
-function Aboutus() {
+function Aboutus({ menu }) {
     const util = new Util();
     const coaches = [
         {
@@ -49,7 +49,7 @@ function Aboutus() {
 
     return (
         <div style={{ paddingBottom: '60px' }}>
-            <Menu header={"Sobre nosotros"} />
+            {menu}
             <Container fixed sx={{ mt: 4 }}>
                 <Grid container spacing={2} direction="row">
                     {coaches.map((c) => (

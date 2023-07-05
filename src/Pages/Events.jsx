@@ -4,11 +4,11 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 
-function Events() {
+function Events({ menu }) {
 
   return (
     <div>
-      <Menu header={"Eventos"}/>
+      {menu}
       <Container fixed>
       </Container>
     </div>

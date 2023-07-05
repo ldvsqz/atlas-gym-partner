@@ -21,17 +21,21 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import SettingsIcon from '@mui/icons-material/Settings';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import InfoIcon from '@mui/icons-material/Info';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import ToggleButton from '@mui/material/ToggleButton';
 import { auth } from "../../../Firebase/authFunctions";
 import "./Menu.css";
 
 
 
 
-function Menu({ header }) {
-
+function Menu({ header, toggleThemeMode, themeMode }) {
   const [uid, setUid] = useState(localStorage.getItem("UID"))
   const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
   const [showMenu, setMenu] = useState(false);
+  const dark = localStorage.getItem("THEME");
+  const [darkTheme, setDarkTheme] = useState(dark == 'dark');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,6 +59,13 @@ function Menu({ header }) {
     };
   }, []);
 
+
+  useEffect(() => {
+    const theme = darkTheme ? 'dark' : 'light';
+    localStorage.setItem("THEME", theme);
+  }, [darkTheme]);
+
+
   const toggleDrawer = (open) => (event) => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
@@ -67,10 +78,9 @@ function Menu({ header }) {
     navigate(`/user/${uid}`, { state: { uid } });
   }
 
-  const handleOnchangePage = (_header) => {
-    console.log(_header);
-    setHeader(_header);
-    console.log(header);
+  const handleOnswitchTheme = () => {
+    toggleThemeMode()
+    setDarkTheme(!darkTheme);
   }
 
 
@@ -133,7 +143,7 @@ function Menu({ header }) {
         <ListItem key={"Sobre nosotros"} disablePadding>
           <ListItemButton component={Link} to="/aboutus">
             <ListItemIcon>
-              <InfoIcon sx={{color: "#ff5722"}}/>
+              <InfoIcon sx={{ color: "#ff5722" }} />
             </ListItemIcon>
             <ListItemText primary={"Sobre nosotros"} />
           </ListItemButton>
@@ -152,20 +162,27 @@ function Menu({ header }) {
     <div>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static" >
-          <Toolbar sx={{ marginRight: "auto" }}>
+          <Toolbar >
             <IconButton
+              sx={{ width: 50 }}
               onClick={toggleDrawer(true)}
-              size="large"
-              color="inherit"
               edge="start"
               aria-label="menu"
-              sx={{ mr: 2, width: "20%" }}
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" component="div">
+            <Typography variant="h6" sx={{ marginRight: "auto" }}>
               {header}
             </Typography>
+            <div style={{ marginLeft: "auto" }}>
+              <ToggleButton
+                value=""
+                selected={darkTheme}
+                onChange={() => { handleOnswitchTheme(!darkTheme) }}
+              >
+                {darkTheme ? <DarkModeIcon /> : <LightModeIcon />}
+              </ToggleButton>
+            </div>
           </Toolbar>
         </AppBar>
       </Box>

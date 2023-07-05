@@ -11,11 +11,11 @@ import Grid from '@mui/material/Grid';
 import { allExercises } from "../../assets/exercises/all-exercises";
 
 
-function Exercises() {
+function Exercises({ menu }) {
 
   return (
     <div>
-      <Menu header={"Ejercicios"} />
+      {menu}
       <Container fixed sx={{ mt: 4 }}>
         <Grid container spacing={2} direction="row">
           {allExercises.map((ex) => (

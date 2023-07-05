@@ -34,7 +34,7 @@ import UserModel from "../../models/UserModel";
 import { Timestamp } from 'firebase/firestore';
 import 'firebase/firestore';
 
-function User() {
+function User({ menu }) {
   const location = useLocation();
   const util = new Util();
   const [user, setUser] = useState(new UserModel());
@@ -57,9 +57,10 @@ function User() {
         setUser(userData);
         setStats(userStats);
         setRoutine(userRoutine);
-        setLoading(false);
       };
-      fechClientData();
+      fechClientData().then(() => {
+        setLoading(false);
+      });
     }
   }, [location.state]);
 
@@ -112,7 +113,7 @@ function User() {
 
   return (
     <div>
-      <Menu header={"Atlas"} />
+      {menu}
       <Container fixed>
         {loading ? (
           <Stack spacing={1} sx={{ width: '100%', mt: 4 }}>
@@ -126,7 +127,7 @@ function User() {
             <List>
               <ListItem>
                 <ListItemAvatar>
-                  <Avatar/>
+                  <Avatar />
                 </ListItemAvatar>
                 <ListItemText primary={`${user.name}, ${util.getAge(util.getDateFromFirebase(user.birthday))}`} secondary={`Activo hasta: ${util.formatDateShort(util.getDateFromFirebase(user.until))}`} />
               </ListItem>
