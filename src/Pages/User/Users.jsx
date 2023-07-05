@@ -20,7 +20,7 @@ import Stack from '@mui/material/Stack';
 //components
 import Menu from '../../Components/Menu/Menu';
 
-function User() {
+function User({ menu }) {
   const [Users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -58,7 +58,7 @@ function User() {
   return (
 
     <div>
-      <Menu header={"Personas"} />
+      {menu}
       <Container fixed sx={{ mt: 4 }}>
         <TextField label="Buscar" variant="standard"
           value={searchTerm}
@@ -97,7 +97,7 @@ function User() {
                   {filteredUsers.map((user) => (
                     <TableRow key={user.uid} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px', cursor: 'pointer' }} onClick={() => handleViewProfile(user.uid)}>
                       <TableCell>{user.name}</TableCell>
-                      <TableCell sx={{color: util.dateExpireColor(util.getDateFromFirebase(user.until))}}>{util.formatDateShort(util.getDateFromFirebase(user.until))}</TableCell>
+                      <TableCell sx={{ color: util.dateExpireColor(util.getDateFromFirebase(user.until)) }}>{util.formatDateShort(util.getDateFromFirebase(user.until))}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

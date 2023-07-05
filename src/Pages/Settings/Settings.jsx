@@ -4,12 +4,12 @@ import Typography from '@mui/material/Typography';
 import Menu from '../../Components/Menu/Menu';
 
 
-function Settings() {
+function Settings({ menu }) {
 
   return (
     <div>
-      <Menu header={"Configuraciones"}/>
-        <Container fixed>
+      {menu}
+      <Container fixed>
       </Container>
     </div>
   );

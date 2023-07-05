@@ -96,7 +96,7 @@ function StatsHistory({ uid }) {
                                     </ListItem>
                                 </List>
                                 {allStats.map((stat, indexE) => (
-                                    <List key={{ indexE }} sx={{ minWidth: '15%' }} style={{ color: indexE === 0 ? '#ff5722' : 'inherit' }} dense>
+                                    <List key={{ indexE }} sx={{ minWidth: '15%' }} style={{ color: indexE === 0 ? 'green' : 'inherit' }} dense>
                                         <ListItem key={indexE}>
                                             <ListItemText primary={util.formatDateShort(util.getDateFromFirebase(stat.date))} />
                                         </ListItem>

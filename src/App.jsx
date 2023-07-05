@@ -1,5 +1,9 @@
-// import './App.css'
+import React, { useState, useEffect, useMemo } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { colors } from '@mui/material';
+import Menu from "./Components/Menu/Menu";
 import Login from "./Pages/Login/Login";
 import Register from "./Pages/Register/Register";
 import Events from "./Pages/Events";
@@ -9,43 +13,54 @@ import Settings from "./Pages/Settings/Settings";
 import Exercises from "./Pages/Exercises/Exercises";
 import Aboutus from "./Pages/Aboutus/Aboutus";
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
-import { colors } from '@mui/material';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 
-const theme = createTheme({
-  palette: {
-    primary: colors.deepOrange,
-    secondary: colors.teal,
-  },
-});
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: colors.deepOrange,
-  },
-});
 
 function App() {
+  const [themeMode, setThemeMode] = useState(localStorage.getItem("THEME") || 'light');
+
+  useEffect(() => {
+    localStorage.setItem("THEME", themeMode);
+  }, [themeMode]);
+
+
+  const toggleThemeMode = () => {
+    setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+  };
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: themeMode,
+          primary: themeMode == 'dark' ? colors.deepOrange : colors.blueGrey
+        },
+      }),
+    [themeMode]
+  );
+
+
+  const getMenu = (header = "Atlas") => (<Menu header={header} toggleThemeMode={toggleThemeMode} themeMode={themeMode} />);
+
+
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path='/' exact element={<Login />} />
-          <Route path='/reset' exact element={<ResetPassword />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/events' element={<Events />} />
-          <Route path='/users' element={<Users />} />
-          <Route path='/settings' element={<Settings />} />
-          <Route path='/exercises' element={<Exercises />} />
-          <Route path='/aboutus' element={<Aboutus />} />
-          <Route path='/user/:uid' element={<User />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/reset" element={<ResetPassword />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/events" element={<Events menu={getMenu("Eventos")} />} />
+          <Route path="/users" element={<Users menu={getMenu("Personas")}/>} />
+          <Route path="/settings" element={<Settings menu={getMenu("Configuración")}/>} />
+          <Route path="/exercises" element={<Exercises menu={getMenu("Ejercicios")}/>} />
+          <Route path="/aboutus" element={<Aboutus menu={getMenu("Sobre nosotros")}/>} />
+          <Route path="/user/:uid" element={<User menu={getMenu("Atlas")}/>} />
+          <Route path="*" element={<Login />} />
         </Routes>
       </Router>
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;
