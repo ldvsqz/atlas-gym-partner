@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { Timestamp } from 'firebase/firestore';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import DialogContent from '@mui/material/DialogContent';
@@ -24,7 +25,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
   const util = new Util();
 
   useEffect(() => {
-    if (!!stats && isEditing) {
+    if (!!stats) {
       setStatsState(stats)
     } else {
       const stats = new StatsModel();
@@ -33,6 +34,19 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
     }
   }, []);
 
+  useEffect(() => {
+    const weight = parseFloat(statsState.weight_kg) || 0;
+    const height = parseFloat(statsState.Height_cm) || 0;
+    
+    if (weight > 0 && height > 0) {
+      const newIMC = util.calculateIMC(weight, height);
+      setStatsState(prevState => ({
+        ...prevState,
+        IMC: newIMC,
+      }));
+    }
+  }, [statsState.weight_kg, statsState.Height_cm]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const updatedStats = { ...statsState };
@@ -40,6 +54,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
     if (isEditing) {
       StatsService.update(updatedStats.id, updatedStats);
     } else {
+      updatedStats.date = Timestamp.fromDate(new Date());
       StatsService.add(updatedStats);
     }
     onSave(updatedStats);
@@ -59,6 +74,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
           {isEditing ? 'Medidas actuales' : 'Nuevas medidas'}
         </DialogTitle>
         <DialogContent>
+          {/* Form fields for stats input 
           <Typography variant="h6" gutterBottom>
             Hábitos
           </Typography>
@@ -111,7 +127,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
                   }
                   label="Corre"
                 />
-              </Grid>
+              </Grid>. 
               <Grid item sx={{ mt: 2, marginLeft: '15px' }}>
                 <FormControlLabel
                   control={
@@ -130,11 +146,13 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
               </Grid>
             </Grid>
           </FormControl>
+          */}
 
           <Typography variant="h6" gutterBottom>
             Consideraciones
           </Typography>
           <Grid container sx={{ color: 'text.primary' }}>
+            {/*
             <Grid item xs={6} sx={{ mt: 2 }}>
               <TextField id="standard-basic" label="Cirugías recientes" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 type="text"
@@ -147,6 +165,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
                 }
               />
             </Grid>
+            */}
             <Grid item xs={6} sx={{ mt: 2 }}>
               <TextField id="standard-basic" label="Factores de riesgo" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 type="text"
@@ -166,40 +185,51 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
           </Typography>
           <Grid container sx={{ color: 'text.primary' }}>
             <Grid item xs={6} sx={{ mt: 2 }}>
-              <TextField id="standard-basic" label="Peso kg" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
-                value={statsState.weight_kg}
+              <TextField id="standard-basic" label="Peso base kg" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
+                value={statsState.weight_kg || ''}
                 onChange={(event) =>
                   setStatsState({
                     ...statsState,
                     weight_kg: event.target.value,
-                    IMC: util.calculateIMC(statsState.weight_kg, statsState.Height_cm),
                   })
                 }
               />
             </Grid>
+
+            <Grid item xs={6} sx={{ mt: 2 }}>
+              <TextField id="standard-basic" label="Peso salida kg" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
+                value={statsState.weight_kg_end || ''}
+                onChange={(event) =>
+                  setStatsState({
+                    ...statsState,
+                    weight_kg_end: event.target.value,
+                  })
+                }
+              />
+            </Grid>
+
+            
             <Grid item xs={6} sx={{ mt: 2 }}>
               <TextField id="standard-basic" label="Estatura cm" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
-                value={statsState.Height_cm}
+                value={statsState.Height_cm || ''}
                 onChange={(event) =>
                   setStatsState({
                     ...statsState,
                     Height_cm: event.target.value,
-                    IMC: util.calculateIMC(statsState.weight_kg, statsState.Height_cm),
                   })
                 }
               />
             </Grid>
+
             <Grid item xs={6} sx={{ mt: 2 }}>
               <TextField id="standard-basic" label="IMC" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
-                value={statsState.IMC}
-                onChange={(event) =>
-                  setStatsState({
-                    ...statsState,
-                    IMC: event.target.value,
-                  })
-                }
+                value={statsState.IMC || '0.00'}
+                disabled
+                inputProps={{ readOnly: true }}
               />
             </Grid>
+            {/* 
+            
             <Grid item xs={6} sx={{ mt: 2 }}>
               <TextField id="standard-basic" label="Grasa corp %" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 value={statsState.body_fat}
@@ -352,6 +382,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
                 }
               />
             </Grid>
+            */}
           </Grid>
         </DialogContent>
         <DialogActions>

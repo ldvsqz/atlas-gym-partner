@@ -111,7 +111,7 @@ function Menu({ header, toggleThemeMode, themeMode }) {
         </ListItem>
         }
 
-
+        {/* Added space for better readability 
         <ListItem key={"Eventos"} disablePadding>
           <ListItemButton component={Link} to="/events">
             <ListItemIcon>
@@ -140,6 +140,7 @@ function Menu({ header, toggleThemeMode, themeMode }) {
           </ListItemButton>
         </ListItem>
         }
+        */}
         <ListItem key={"Sobre nosotros"} disablePadding>
           <ListItemButton component={Link} to="/aboutus">
             <ListItemIcon>

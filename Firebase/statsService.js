@@ -19,6 +19,7 @@ class StatService {
 
     //add a stats to firebase
     async add(stats) {
+        console.info('Adding stats:', stats);
         try {
             const statsRef = collection(db, 'stats');
             const docRef = doc(statsRef);
@@ -80,6 +81,7 @@ class StatService {
 
     //Update stats data by passing stats ID and new Data
     async update(id, newStats) {
+        console.info('Updating stats:', stats);
         const statsRef = doc(db, 'stats', id);
         try {
             await updateDoc(statsRef, newStats);

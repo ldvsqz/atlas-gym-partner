@@ -20,21 +20,27 @@ function Aboutus({ menu }) {
     const coaches = [
         {
             id: 1,
-            name: "Alex Ruiz",
-            phone: "12345678",
-            gym: "Mae póngale gym center"
+            name: "Luis Carlos Vásquez Arce",
+            phone: "85856916",
+            gym: "Pulgas boxing"
         },
         {
             id: 2,
-            name: "Jessica Ruiz",
-            phone: "12345678",
-            gym: "Mae póngale gym center"
+            name: "Luis Diego Vásquez Arce",
+            phone: "85045886",
+            gym: "Pulgas boxing"
         },
         {
             id: 3,
-            name: "Sandra ",
-            phone: "12345678",
-            gym: "Mae póngale gym center"
+            name: "Luis David Vásquez Arce",
+            phone: "86221624",
+            gym: "Pulgas boxing"
+        },
+        {
+            id: 4,
+            name: "Pulgas boxing",
+            phone: "71699673",
+            gym: "Pulgas boxing"
         }
     ];
 
@@ -73,11 +79,11 @@ function Aboutus({ menu }) {
                             </List>
                         </Grid>
                     ))}
-                    <ListItemButton onClick={() => handleOnOpenInstagram("https://www.instagram.com/maepongale/")}>
+                    <ListItemButton onClick={() => handleOnOpenInstagram("https://www.instagram.com/pulgasboxingcr/")}>
                         <ListItemIcon>
                             <InstagramIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Mae póngale gym center" />
+                        <ListItemText primary="Pulgas boxing CR" />
                     </ListItemButton>
                 </Grid>
 

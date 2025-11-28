@@ -85,10 +85,9 @@ function User({ menu }) {
 
   function handleOnRenew(response) {
     if (response) {
-      const oldUntil = new Date(util.getDateFromFirebase(user.until)); // fecha actual
-      const newUntil = new Date(oldUntil.getFullYear(), oldUntil.getMonth() + 1, oldUntil.getDate());
-      const newFirebaseUntil = Timestamp.fromDate(newUntil);
-      const refreshedUser = user;
+      const newUntilDate = util.renewMembership(user.until);
+      const newFirebaseUntil = Timestamp.fromDate(newUntilDate);
+      const refreshedUser = { ...user };
       refreshedUser.until = newFirebaseUntil;
       setUser(refreshedUser);
       UserService.update(user.uid, refreshedUser).then(() => {
@@ -129,7 +128,10 @@ function User({ menu }) {
                 <ListItemAvatar>
                   <Avatar />
                 </ListItemAvatar>
-                <ListItemText primary={`${user.name}, ${util.getAge(util.getDateFromFirebase(user.birthday))}`} secondary={`Activo hasta: ${util.formatDateShort(util.getDateFromFirebase(user.until))}`} />
+                <ListItemText
+                  primary={`${user.name}, ${util.getAge(util.getDateFromFirebase(user.birthday))}`}
+                  secondary={currentUid === user.uid && currentRol == 0 ? '' : `Activo hasta: ${util.formatDateShort(util.getDateFromFirebase(user.until))}`}
+                />
               </ListItem>
               {
                 user.phone && currentUid != user.uid &&
@@ -149,7 +151,7 @@ function User({ menu }) {
                   } />
               </Grid>
               <Grid item xs={currentRol == 0 ? 6 : 12}>
-                {currentRol == 0 && <Alert
+                {currentRol == 0 && currentUid !== user.uid && <Alert
                   buttonName={"Renovar membresía"}
                   title={"Renovar membresía"}
                   message={`¿Desea renovar la membresía de: ${user.name}?`}
@@ -173,13 +175,25 @@ function User({ menu }) {
                 }
               </Grid>
             </Grid>
+            {/* 
+            <Grid container sx={{ color: 'text.primary' }}>
+              <Grid item xs={currentRol == 0 ? 6 : 12}>
+                <Stats stats={stats} />
+              </Grid>
+              <Grid item xs={6}>
+                {currentRol == 0 && <SetStats stats={stats} uid={user.uid} isEditing={false} onSave={(updatedStats) => {
+                  handleOnSaveStats()
+                }} />
+                }
+              </Grid>
+            </Grid>
 
             <Divider />
             <Routines routine={routine} />
             {currentRol == 0 && <SetRoutine uid={user.uid} onSaveRoutine={(newRoutine) => {
-              handleOnsetRoutine()
-            }} />
-            }
+             handleOnsetRoutine()
+             }} />
+            } */}
           </Box>
         )}
         <AtlasSnackbar message="Membresía actualizada" open={snackbarOpen} severity="info" handleClose={handleSnackbarClose} />

@@ -124,7 +124,7 @@ function Register() {
         placeholder="Contraseña"
       />
       <Button variant="contained" color="primary" fullWidth onClick={register}>
-        Register
+        Registrarse
       </Button>
       <Typography variant="body1" align="center" gutterBottom>
         ¿Ya tienes cuenta? <Link to="/">Iniciar sesión</Link>.

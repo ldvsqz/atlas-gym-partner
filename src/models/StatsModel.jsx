@@ -15,7 +15,8 @@ class StatsModel {
         recent_surgeries: '',
         risks_factors: ''
       };
-      this.weight_kg = 0;
+      this.weight_kg = 0.0;
+      this.weight_kg_end = 0.0;
       this.Height_cm = 0;
       this.IMC = 0;
       this.body_fat = 0;

@@ -58,7 +58,7 @@ class Util {
     };
 
     calculateIMC(weight_kg, Height_cm) {
-        const HeightMeters = Height_cm / 10;
+        const HeightMeters = Height_cm / 100;
         const imc = weight_kg / (HeightMeters ** 2);
         return imc.toFixed(2);
     }
@@ -105,6 +105,20 @@ class Util {
 
     openURL(url){
         window.open(url);
+    }
+
+    renewMembership(_date) {
+        const oldUntil = new Date(this.getDateFromFirebase(_date));
+        const today = new Date();
+        const oneWeekAgo = new Date(today);
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        
+        // If membership expired more than 1 week ago, use today's date
+        const baseDate = oldUntil < oneWeekAgo ? today : oldUntil;
+        
+        // Add 1 month to the base date
+        const newUntil = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, baseDate.getDate());
+        return newUntil;
     }
 
 }
