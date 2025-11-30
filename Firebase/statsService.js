@@ -1,7 +1,7 @@
 import { collection, deleteDoc, updateDoc, getDocs, doc, getDoc, addDoc, setDoc, query, where, orderBy, limit } from 'firebase/firestore';
 import { db } from "./firebase"
 
-
+const COLLECTION_NAME = 'stats';
 
 class StatService {
 
@@ -21,7 +21,7 @@ class StatService {
     async add(stats) {
         console.info('Adding stats:', stats);
         try {
-            const statsRef = collection(db, 'stats');
+            const statsRef = collection(db, COLLECTION_NAME);
             const docRef = doc(statsRef);
             stats['id'] = docRef.id;
             await setDoc(docRef, stats);
@@ -33,7 +33,7 @@ class StatService {
 
     //get stats data from a single stats by ID
     async get(statsId) {
-        const statsRef = doc(db, 'stats', statsId);
+        const statsRef = doc(db, COLLECTION_NAME, statsId);
         try {
             const documentSnapshot = await getDoc(statsRef);
             if (documentSnapshot.exists()) {
@@ -50,7 +50,7 @@ class StatService {
 
     //get all stats
     async getAll() {
-        const statsRef = collection(db, 'stats');
+        const statsRef = collection(db, COLLECTION_NAME);
         try {
             const querySnapshot = await getDocs(statsRef);
             const stats = [];
@@ -69,7 +69,7 @@ class StatService {
 
     //delete a single stats by ID
     async delete(dni) {
-        const statsRef = doc(db, 'stats', dni);
+        const statsRef = doc(db, COLLECTION_NAME, dni);
         try {
             await deleteDoc(statsRef);
             console.log('stats deleted successfully');
@@ -82,7 +82,7 @@ class StatService {
     //Update stats data by passing stats ID and new Data
     async update(id, newStats) {
         console.info('Updating stats:', stats);
-        const statsRef = doc(db, 'stats', id);
+        const statsRef = doc(db, COLLECTION_NAME, id);
         try {
             await updateDoc(statsRef, newStats);
         } catch (error) {
@@ -94,7 +94,7 @@ class StatService {
         if (!uid) {
             return null
         }
-        const statsRef = collection(db, 'stats');
+        const statsRef = collection(db, COLLECTION_NAME);
         const statsQuery = await query(statsRef, where('uid', '==', uid), orderBy('date', 'desc'), limit(1));
         try {
             const querySnapshot = await getDocs(statsQuery);
@@ -116,7 +116,7 @@ class StatService {
             return [];
         }
 
-        const statsRef = collection(db, 'stats');
+        const statsRef = collection(db, COLLECTION_NAME);
         const statsQuery = query(statsRef, where('uid', '==', uid), orderBy('date', 'desc'));
 
         try {
@@ -137,11 +137,6 @@ class StatService {
             return [];
         }
     }
-
-
-
-
-
 }
 
 

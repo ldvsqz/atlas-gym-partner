@@ -21,6 +21,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import SettingsIcon from '@mui/icons-material/Settings';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import InfoIcon from '@mui/icons-material/Info';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -111,36 +112,16 @@ function Menu({ header, toggleThemeMode, themeMode }) {
         </ListItem>
         }
 
-        {/* Added space for better readability 
-        <ListItem key={"Eventos"} disablePadding>
-          <ListItemButton component={Link} to="/events">
+        {currentRol == 0 && <ListItem key={"Finanzas"} disablePadding>
+          <ListItemButton component={Link} to="/finance">
             <ListItemIcon>
-              <EmojiEventsIcon />
+              <AttachMoneyIcon />
             </ListItemIcon>
-            <ListItemText primary={"Eventos"} />
-          </ListItemButton>
-        </ListItem>
-
-        {currentRol == 0 && <ListItem key={"Configuración"} disablePadding>
-          <ListItemButton component={Link} to="/settings">
-            <ListItemIcon>
-              <SettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Configuración"} />
+            <ListItemText primary={"Finanzas"} />
           </ListItemButton>
         </ListItem>
         }
 
-        {currentRol == 0 && <ListItem key={"Ejercicios"} disablePadding>
-          <ListItemButton component={Link} to="/exercises">
-            <ListItemIcon>
-              <FitnessCenterIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Ejercicios"} />
-          </ListItemButton>
-        </ListItem>
-        }
-        */}
         <ListItem key={"Sobre nosotros"} disablePadding>
           <ListItemButton component={Link} to="/aboutus">
             <ListItemIcon>
