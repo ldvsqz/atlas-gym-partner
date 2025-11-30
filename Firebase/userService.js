@@ -1,7 +1,7 @@
 import { collection, deleteDoc, updateDoc, getDocs, doc, getDoc, setDoc, query, where, limit } from 'firebase/firestore';
 import { db } from "./firebase"
 
-
+const COLLECTION_NAME = 'users';
 
 class UserService {
 
@@ -19,7 +19,7 @@ class UserService {
 
     //add a user to firebase
     async add(user) {
-        const userRef = doc(db, 'users', user.uid);
+        const userRef = doc(db, COLLECTION_NAME, user.uid);
         const userData = { ...user }; // Convert UserModel object to plain JavaScript object
         try {
             await setDoc(userRef, userData);
@@ -33,7 +33,7 @@ class UserService {
 
     //get user data from a single user by ID
     async get(uid) {
-        const userRef = doc(db, 'users', uid);
+        const userRef = doc(db, COLLECTION_NAME, uid);
         try {
             const documentSnapshot = await getDoc(userRef);
             if (documentSnapshot.exists()) {
@@ -50,7 +50,7 @@ class UserService {
 
     async exists(dni) {
         try {
-            const userRef = doc(db, 'users', dni);
+            const userRef = doc(db, COLLECTION_NAME, dni);
             const documentSnapshot = await getDoc(userRef);
             return documentSnapshot.exists();
         } catch (error) {
@@ -61,7 +61,7 @@ class UserService {
 
     //get all users
     async getAll() {
-        const usersRef = collection(db, 'users');
+        const usersRef = collection(db, COLLECTION_NAME);
         try {
             const querySnapshot = await getDocs(usersRef);
             const users = [];
@@ -80,7 +80,7 @@ class UserService {
 
     //delete a single user by ID
     async delete(uid) {
-        const userRef = doc(db, 'users', uid);
+        const userRef = doc(db, COLLECTION_NAME, uid);
         try {
             return await deleteDoc(userRef);
         } catch (error) {
@@ -92,7 +92,7 @@ class UserService {
     //Update user data by passing user ID and new Data
     update(uid, newData) {
         return new Promise((resolve, reject) => {
-            const userRef = doc(db, 'users', uid);
+            const userRef = doc(db, COLLECTION_NAME, uid);
             const userData = { ...newData }; // Convert UserModel object to plain JavaScript object
             updateDoc(userRef, userData)
                 .then(() => {
@@ -106,7 +106,7 @@ class UserService {
 
 
     async getByEMail(email) {
-        const statsRef = collection(db, 'users');
+        const statsRef = collection(db, COLLECTION_NAME);
         const querySnapshot = await query(statsRef, where('email', '==', email), limit(1));
         if (querySnapshot.docs) {
             const documentSnapshot = querySnapshot.docs[0];

@@ -1,0 +1,127 @@
+.finance-container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.finance-title {
+    margin-bottom: 1.5rem;
+}
+
+.summary-grid {
+    margin-bottom: 2rem;
+}
+
+.income-card {
+    background-color: #c8e6c9 !important;
+}
+
+.income-card .MuiCardContent-root {
+    padding: 24px !important;
+}
+
+.expense-card {
+    background-color: #ffccbc !important;
+}
+
+.expense-card .MuiCardContent-root {
+    padding: 24px !important;
+}
+
+.balance-card-positive {
+    background-color: #c8e6c9 !important;
+}
+
+.balance-card-positive .MuiCardContent-root {
+    padding: 24px !important;
+}
+
+.balance-card-negative {
+    background-color: #ffccbc !important;
+}
+
+.balance-card-negative .MuiCardContent-root {
+    padding: 24px !important;
+}
+
+.card-content {
+    padding: 24px !important;
+}
+
+.card-title {
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 0.5rem;
+}
+
+.card-amount {
+    font-size: 1.875rem;
+    font-weight: 500;
+}
+
+.add-button {
+    margin-bottom: 1rem;
+}
+
+.table-header {
+    background-color: #f5f5f5;
+}
+
+.table-header-cell {
+    font-weight: bold;
+}
+
+.income-row {
+    color: green !important;
+    font-weight: bold !important;
+}
+
+.expense-row {
+    color: red !important;
+    font-weight: bold !important;
+}
+
+.amount-cell {
+    text-align: right !important;
+    font-weight: bold !important;
+}
+
+/* MUI TableCell specific overrides */
+.MuiTableCell-root.income-row {
+    color: green !important;
+}
+
+.MuiTableCell-root.expense-row {
+    color: red !important;
+}
+
+.action-cell {
+    text-align: center;
+}
+
+.income-emoji::before {
+    content: "💰 ";
+}
+
+.expense-emoji::before {
+    content: "💸 ";
+}
+
+.no-data-cell {
+    text-align: center;
+}
+
+.dialog-content {
+    padding-top: 1rem;
+}
+
+.form-field {
+    margin-bottom: 1rem;
+    width: 150px;
+}
+
+.date-input {
+    margin-bottom: 0;
+}
+
+.loading-skeleton {
+    margin-bottom: 1rem;
+}

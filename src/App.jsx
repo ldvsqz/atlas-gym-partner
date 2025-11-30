@@ -13,6 +13,7 @@ import Settings from "./Pages/Settings/Settings";
 import Exercises from "./Pages/Exercises/Exercises";
 import Aboutus from "./Pages/Aboutus/Aboutus";
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
+import Finance from "./Pages/Finance/Finance";
 
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/events" element={<Events menu={getMenu("Eventos")} />} />
           <Route path="/users" element={<Users menu={getMenu("Personas")}/>} />
+          <Route path="/finance" element={<Finance menu={getMenu("Finanzas")}/>} />
           <Route path="/settings" element={<Settings menu={getMenu("Configuración")}/>} />
           <Route path="/exercises" element={<Exercises menu={getMenu("Ejercicios")}/>} />
           <Route path="/aboutus" element={<Aboutus menu={getMenu("Sobre nosotros")}/>} />

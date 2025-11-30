@@ -17,6 +17,10 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import Alert from '../../Components/Alert/Alert';
+import { Timestamp } from 'firebase/firestore';
+
 //components
 import Menu from '../../Components/Menu/Menu';
 
@@ -26,6 +30,8 @@ function User({ menu }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [focused, setFocused] = useState(false);
+  const [showRenewAlert, setShowRenewAlert] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const navigate = useNavigate();
   const util = new Util();
 
@@ -54,6 +60,26 @@ function User({ menu }) {
     navigate(`/user/${uid}`, { state: { uid } });
   };
 
+  const handleRenewMembership = (user) => {
+    setSelectedUser(user);
+    setShowRenewAlert(true);
+  };
+
+  const handleRenewResponse = async (response, user) => {
+    if (response) {
+      const newUntilDate = util.renewMembership(user.until);
+      const newFirebaseUntil = Timestamp.fromDate(newUntilDate);
+      const updatedUser = { ...user };
+      updatedUser.until = newFirebaseUntil;
+      
+      await UserService.update(user.uid, updatedUser);
+      
+      // Refresh the users list
+      const UsersData = await UserService.getAll();
+      setUsers(UsersData);
+      setFilteredUsers(UsersData);
+    }
+  };
 
   return (
 
@@ -91,14 +117,35 @@ function User({ menu }) {
                   <TableRow>
                     <TableCell>Nombre</TableCell>
                     <TableCell>Membresía hasta</TableCell>
+                    <TableCell>Acción</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {filteredUsers.map((user) => (
-                    <TableRow key={user.uid} sx={{ '&:last-child td, &:last-child th': { border: 0 }, padding: '4px', cursor: 'pointer' }} onClick={() => handleViewProfile(user.uid)}>
-                      <TableCell>{user.name}</TableCell>
-                      <TableCell sx={{ color: util.dateExpireColor(util.getDateFromFirebase(user.until)) }}>{util.formatDateShort(util.getDateFromFirebase(user.until))}</TableCell>
-                    </TableRow>
+                    user.rol !== 0 ? (
+                      <TableRow
+                        key={user.uid}
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 },
+                          padding: '4px',
+                          cursor: 'pointer'
+                        }}>
+                        <TableCell onClick={() => handleViewProfile(user.uid)} sx={{ cursor: 'pointer' }}>{user.name}</TableCell>
+                        <TableCell 
+                          onClick={() => handleViewProfile(user.uid)} 
+                          sx={{ color: util.dateExpireColor(util.getDateFromFirebase(user.until)), cursor: 'pointer' }}>
+                          {util.formatDateShort(util.getDateFromFirebase(user.until))}
+                        </TableCell>
+                        <TableCell>
+                          <Alert
+                            buttonName="Renovar"
+                            title="Renovar membresía"
+                            message={`¿Desea renovar la membresía de: ${user.name}?`}
+                            onResponse={(response) => handleRenewResponse(response, user)}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ) : null
                   ))}
                 </TableBody>
               </Table>
