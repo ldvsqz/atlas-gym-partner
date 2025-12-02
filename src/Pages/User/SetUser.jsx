@@ -68,7 +68,7 @@ function SetUser({ user, onSave }) {
 
   return (
     <div>
-      <Button sx={{width:"100%"}} onClick={handleOpen}>Editar datos</Button>
+      <Button sx={{ width: "100%" }} onClick={handleOpen}>Editar datos</Button>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -112,6 +112,21 @@ function SetUser({ user, onSave }) {
                     {
                       ...userState,
                       birthday: Timestamp.fromDate(new Date(newDate)),
+                    }
+                  )} />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} mt={2}>
+              <LocalizationProvider
+                adapterLocale="es-ES"
+                dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  format="LL"
+                  label="Suscripción hasta"
+                  onChange={(newDate) => setUserState(
+                    {
+                      ...userState,
+                      until: Timestamp.fromDate(new Date(newDate)),
                     }
                   )} />
               </LocalizationProvider>

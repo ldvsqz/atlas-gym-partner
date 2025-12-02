@@ -109,7 +109,7 @@ function Stats({ stats = new StatsModel() }) {
                                         */}
                                         <Grid item xs={12}>
                                             <Typography variant="subtitle1" gutterBottom>
-                                                <b>Factores de riesgo:</b> {statsState.considerations.risks_factors}
+                                                <b>Factores de riesgo:</b> {statsState.considerations?.risks_factors}
                                             </Typography>
                                         </Grid>
                                     </Grid>

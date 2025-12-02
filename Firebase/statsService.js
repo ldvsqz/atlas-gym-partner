@@ -44,7 +44,7 @@ class StatService {
                 return stats;
             }
         } catch (error) {
-            console.error('Error al obtener el usuario:', error);
+            console.error('Error al obtener estadisticas:', error);
         }
     }
 
@@ -81,7 +81,7 @@ class StatService {
 
     //Update stats data by passing stats ID and new Data
     async update(id, newStats) {
-        console.info('Updating stats:', stats);
+        console.info('Updating stats:', newStats);
         const statsRef = doc(db, COLLECTION_NAME, id);
         try {
             await updateDoc(statsRef, newStats);
