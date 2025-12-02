@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { Timestamp } from 'firebase/firestore';
 import {
     Container,
     Box,
@@ -35,6 +39,11 @@ import FinanceModel from '../../models/FinanceModel';
 import './Finance.css';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+
+import dayjs from 'dayjs';
+
+
+const today = dayjs();
 
 function Finance({ menu }) {
 
@@ -134,12 +143,12 @@ function Finance({ menu }) {
 
     const getFilteredFinances = () => {
         if (!startDate && !endDate) return finances;
-        
+
         return finances.filter(f => {
             const financeDate = f.date instanceof Date ? f.date : new Date(f.date.seconds * 1000);
             const start = startDate ? new Date(startDate) : new Date('1900-01-01');
             const end = endDate ? new Date(endDate) : new Date('2100-12-31');
-            
+
             return financeDate >= start && financeDate <= end;
         });
     };
@@ -147,14 +156,14 @@ function Finance({ menu }) {
     const downloadPDF = () => {
         const filteredData = getFilteredFinances();
         const doc = new jsPDF();
-        
+
         doc.setFontSize(16);
         doc.text('Reporte de Finanzas', 14, 15);
-        
+
         doc.setFontSize(10);
         doc.text(`Desde: ${startDate || 'Inicio'} | Hasta: ${endDate || 'Fin'}`, 14, 25);
         doc.text(`Generado: ${util.formatDate(new Date())}`, 14, 32);
-        
+
         const tableData = filteredData.map(f => [
             f.date instanceof Date ? util.formatDateShort(f.date) : util.formatDateShort(new Date(f.date.seconds * 1000)),
             f.type === 'income' ? 'Ingreso' : 'Gasto',
@@ -162,7 +171,7 @@ function Finance({ menu }) {
             f.description,
             `₡${parseFloat(f.amount).toFixed(2)}`
         ]);
-        
+
         doc.autoTable({
             head: [['Fecha', 'Tipo', 'Categoría', 'Descripción', 'Monto']],
             body: tableData,
@@ -171,7 +180,7 @@ function Finance({ menu }) {
             styles: { fontSize: 10 },
             headStyles: { fillColor: [41, 128, 185] }
         });
-        
+
         // Add totals
         const { totalIncome, totalExpense, balance } = calculateTotals();
         const finalY = doc.lastAutoTable.finalY + 10;
@@ -180,7 +189,7 @@ function Finance({ menu }) {
         doc.text(`Total Ingresos: ₡${totalIncome.toFixed(2)}`, 14, finalY);
         doc.text(`Total Gastos: ₡${totalExpense.toFixed(2)}`, 14, finalY + 7);
         doc.text(`Balance: ₡${balance.toFixed(2)}`, 14, finalY + 14);
-        
+
         doc.save('reporte-finanzas.pdf');
     };
 
@@ -247,32 +256,33 @@ function Finance({ menu }) {
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
                         <Button
-                            variant="contained"
-                            color="success"
+                            variant="outlined"
                             onClick={downloadPDF}
                         >
                             Descargar PDF
                         </Button>
                     </Grid>
                     <Grid item xs={12} sm={6} md={2}>
-                        <TextField
-                            type="date"
-                            label="Desde"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            InputLabelProps={{ shrink: true }}
-                            className="form-field"
-                        />
+                        <LocalizationProvider
+                            adapterLocale="es-ES"
+                            dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                format="LL"
+                                label="desde"
+                                maxDate={today}
+                                onChange={(date) => setEndDate(new Date(date))} />
+                        </LocalizationProvider>
                     </Grid>
                     <Grid item xs={12} sm={6} md={2}>
-                        <TextField
-                            type="date"
-                            label="Hasta"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            InputLabelProps={{ shrink: true }}
-                            className="form-field"
-                        />
+                        <LocalizationProvider
+                            adapterLocale="es-ES"
+                            dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                format="LL"
+                                label="hasta"
+                                maxDate={today}
+                                onChange={(date) => setEndDate(new Date(date))} />
+                        </LocalizationProvider>
                     </Grid>
                     <Grid item xs={12} sm={6} md={2}>
                         <Button
@@ -286,7 +296,7 @@ function Finance({ menu }) {
                         </Button>
                     </Grid>
                 </Grid>
-    
+
                 {/* Add/Edit Dialog */}
                 <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
                     <DialogTitle>
@@ -373,16 +383,14 @@ function Finance({ menu }) {
                         <Skeleton variant="rounded" height={40} className="loading-skeleton" />
                     </Stack>
                 ) : (
-                    <TableContainer component={Paper}>
-                        <Table>
+                    <TableContainer component={Paper} sx={{ mt: 4 }}>
+                        <Table sx={{ minWidth: '100%' }} aria-label="simple table">
                             <TableHead>
-                                <TableRow className="table-header">
-                                    <TableCell className="table-header-cell"><strong>Fecha</strong></TableCell>
-                                    <TableCell className="table-header-cell"><strong>Tipo</strong></TableCell>
-                                    <TableCell className="table-header-cell"><strong>Categoría</strong></TableCell>
-                                    <TableCell className="table-header-cell"><strong>Descripción</strong></TableCell>
-                                    <TableCell align="right" className="table-header-cell"><strong>Monto</strong></TableCell>
-                                    <TableCell align="center" className="table-header-cell"><strong>Acciones</strong></TableCell>
+                                <TableRow>
+                                    <TableCell>Fecha</TableCell>
+                                    <TableCell>Descripción</TableCell>
+                                    <TableCell align="right">Monto</TableCell>
+                                    <TableCell align="center">Acciones</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -394,10 +402,6 @@ function Finance({ menu }) {
                                                     ? util.formatDateShort(finance.date)
                                                     : util.formatDateShort(new Date(finance.date.seconds * 1000))}
                                             </TableCell>
-                                            <TableCell>
-                                                {finance.type === 'income' ? '💰 Ingreso' : '💸 Gasto'}
-                                            </TableCell>
-                                            <TableCell>{finance.category}</TableCell>
                                             <TableCell>{finance.description}</TableCell>
                                             <TableCell
                                                 align="right"

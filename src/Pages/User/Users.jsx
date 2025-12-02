@@ -265,12 +265,6 @@ function User({ menu }) {
                   maxDate={dayjs()}
                   value={newUser.birthday ? dayjs(newUser.birthday) : null}
                   onChange={(newDate) => handleAddUserChange('birthday', newDate ? Timestamp.fromDate(new Date(newDate)) : null)}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      variant: 'standard'
-                    }
-                  }}
                 />
               </LocalizationProvider>
             </Grid>

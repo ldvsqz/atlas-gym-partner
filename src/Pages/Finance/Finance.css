@@ -13,6 +13,7 @@
 
 .income-card {
     background-color: #c8e6c9 !important;
+    color:black !important
 }
 
 .income-card .MuiCardContent-root {
@@ -21,6 +22,7 @@
 
 .expense-card {
     background-color: #ffccbc !important;
+    color:black !important
 }
 
 .expense-card .MuiCardContent-root {
@@ -29,6 +31,7 @@
 
 .balance-card-positive {
     background-color: #c8e6c9 !important;
+    color:black !important
 }
 
 .balance-card-positive .MuiCardContent-root {
@@ -37,6 +40,7 @@
 
 .balance-card-negative {
     background-color: #ffccbc !important;
+    color:black !important
 }
 
 .balance-card-negative .MuiCardContent-root {
