@@ -22,26 +22,30 @@ function Aboutus({ menu }) {
             id: 1,
             name: "Luis Carlos Vásquez Arce",
             phone: "85856916",
+            instagram: "pulgasboxingcr",
             gym: "Pulgas boxing"
         },
         {
             id: 2,
             name: "Luis Diego Vásquez Arce",
             phone: "85045886",
+            instagram: "pulgasboxingcr",
             gym: "Pulgas boxing"
         },
         {
             id: 3,
             name: "Luis David Vásquez Arce",
             phone: "86221624",
+            instagram: "pulgasboxingcr",
             gym: "Pulgas boxing"
         },
         {
             id: 4,
             name: "Pulgas boxing",
             phone: "71699673",
+            instagram: "pulgasboxingcr",
             gym: "Pulgas boxing"
-        }
+        },
     ];
 
 
@@ -76,17 +80,19 @@ function Aboutus({ menu }) {
                                         <ListItemText primary={c.phone} />
                                     </ListItemButton>
                                 }
+                                {
+                                    c.instagram &&
+                                    <ListItemButton onClick={() => handleOnOpenInstagram("https://www.instagram.com/pulgasboxingcr/")}>
+                                        <ListItemIcon>
+                                            <InstagramIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="pulgasboxingcr" />
+                                    </ListItemButton>
+                                }
                             </List>
                         </Grid>
                     ))}
-                    <ListItemButton onClick={() => handleOnOpenInstagram("https://www.instagram.com/pulgasboxingcr/")}>
-                        <ListItemIcon>
-                            <InstagramIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Pulgas boxing CR" />
-                    </ListItemButton>
                 </Grid>
-
             </Container>
 
             <Box component="footer" sx={{ background: 'gray', padding: '20px', position: 'fixed', bottom: 0, width: '100%', textAlign: 'center' }}>

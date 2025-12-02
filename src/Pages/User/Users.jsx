@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { auth, registerWithEmailAndPassword } from "./../../../Firebase/authFunctions";
 // services and utilities
 import UserService from '../../../Firebase/userService';
 import Util from '../../assets/Util';
+import UserModel from '../../models/UserModel';
 //MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -18,11 +20,22 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Grid from '@mui/material/Grid';
 import Alert from '../../Components/Alert/Alert';
 import { Timestamp } from 'firebase/firestore';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+import 'dayjs/locale/es';
 
 //components
 import Menu from '../../Components/Menu/Menu';
+import userService from '../../../Firebase/userService';
 
 function User({ menu }) {
   const [Users, setUsers] = useState([]);
@@ -32,6 +45,14 @@ function User({ menu }) {
   const [focused, setFocused] = useState(false);
   const [showRenewAlert, setShowRenewAlert] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [openAddUserModal, setOpenAddUserModal] = useState(false);
+  const [newUser, setNewUser] = useState({
+    name: '',
+    phone: '',
+    birthday: null,
+    role: 1
+  });
+   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const navigate = useNavigate();
   const util = new Util();
 
@@ -45,6 +66,11 @@ function User({ menu }) {
     };
     fetchUsers();
   }, []);
+
+
+   const handleShowSnackbar = () => {
+    setSnackbarOpen(true);
+  };
 
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
@@ -71,13 +97,48 @@ function User({ menu }) {
       const newFirebaseUntil = Timestamp.fromDate(newUntilDate);
       const updatedUser = { ...user };
       updatedUser.until = newFirebaseUntil;
-      
+
       await UserService.update(user.uid, updatedUser);
-      
+
       // Refresh the users list
       const UsersData = await UserService.getAll();
       setUsers(UsersData);
       setFilteredUsers(UsersData);
+    }
+  };
+
+  const handleOpenAddUserModal = () => {
+    setOpenAddUserModal(true);
+  };
+
+  const handleCloseAddUserModal = () => {
+    setOpenAddUserModal(false);
+
+    setNewUser(new UserModel('', '', '', '', '', '', null));
+  };
+
+  const handleAddUserChange = (field, value) => {
+    setNewUser({
+      ...newUser,
+      [field]: value
+    });
+  };
+
+  const handleAddUserSubmit = async () => {
+    const formattedName = util.formatMailNanme(newUser.name);
+    const email = util.generateemail(formattedName);
+    try {
+      //const res = await registerWithEmailAndPassword(formattedName, newUser.birthday, newUser.phone, newUser.name, email, formattedName);
+      //console.log('Registered user:', res);
+      const user = new UserModel(newUser.birthday, formattedName, email, newUser.name, newUser.phone, formattedName, Timestamp.now());
+      await userService.add(user);
+      const UsersData = await UserService.getAll();
+      setUsers(UsersData);
+      setFilteredUsers(UsersData);
+      handleCloseAddUserModal();
+      handleShowSnackbar();
+    } catch (error) {
+      console.error('Error creating user:', error);
     }
   };
 
@@ -86,21 +147,32 @@ function User({ menu }) {
     <div>
       {menu}
       <Container fixed sx={{ mt: 4 }}>
-        <TextField label="Buscar" variant="standard"
-          value={searchTerm}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            handleSearch(e);
-          }}
-          InputProps={{
-            startAdornment: focused ? null : (
-              <InputAdornment position="start">
-              </InputAdornment>
-            ),
-          }}
-        />
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <TextField label="Buscar" variant="standard"
+            value={searchTerm}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              handleSearch(e);
+            }}
+            InputProps={{
+              startAdornment: focused ? null : (
+                <InputAdornment position="start">
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <Button
+            variant="contained"
+            onClick={handleOpenAddUserModal}
+            sx={{ ml: 2 }}
+          >
+            Agregar Usuario
+          </Button>
+
+        </Box>
         {loading ? (
           <Stack spacing={1}>
             <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
@@ -131,8 +203,8 @@ function User({ menu }) {
                           cursor: 'pointer'
                         }}>
                         <TableCell onClick={() => handleViewProfile(user.uid)} sx={{ cursor: 'pointer' }}>{user.name}</TableCell>
-                        <TableCell 
-                          onClick={() => handleViewProfile(user.uid)} 
+                        <TableCell
+                          onClick={() => handleViewProfile(user.uid)}
                           sx={{ color: util.dateExpireColor(util.getDateFromFirebase(user.until)), cursor: 'pointer' }}>
                           {util.formatDateShort(util.getDateFromFirebase(user.until))}
                         </TableCell>
@@ -153,7 +225,65 @@ function User({ menu }) {
           </Box>
         )}
       </Container>
-    </div >
+
+      <Dialog
+        open={openAddUserModal}
+        onClose={handleCloseAddUserModal}
+        aria-labelledby="add-user-dialog-title"
+      >
+        <DialogTitle id="add-user-dialog-title">
+          Agregar Nuevo Usuario
+        </DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Nombre completo"
+                variant="standard"
+                value={newUser.name}
+                onChange={(e) => handleAddUserChange('name', e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Número telefónico"
+                variant="standard"
+                value={newUser.phone}
+                onChange={(e) => handleAddUserChange('phone', e.target.value)}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <LocalizationProvider
+                adapterLocale="es-ES"
+                dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  format="LL"
+                  label="Fecha de nacimiento"
+                  maxDate={dayjs()}
+                  value={newUser.birthday ? dayjs(newUser.birthday) : null}
+                  onChange={(newDate) => handleAddUserChange('birthday', newDate ? Timestamp.fromDate(new Date(newDate)) : null)}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      variant: 'standard'
+                    }
+                  }}
+                />
+              </LocalizationProvider>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAddUserModal}>Cancelar</Button>
+          <Button onClick={handleAddUserSubmit} variant="contained">
+            Crear Usuario
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 }
 

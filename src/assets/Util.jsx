@@ -35,13 +35,13 @@ class Util {
 
     dateExpireColor(_date) {
         const daysLeft = new Date(_date) - new Date();
-        if (daysLeft <= 0){
+        if (daysLeft <= 0) {
             return `red`;
-        }else if (daysLeft <= 7) {
+        } else if (daysLeft <= 7) {
             return `orange`
         } else {
             return `green`
-        } 
+        }
     };
 
     removeAccents(str) {
@@ -103,7 +103,7 @@ class Util {
         window.open(url);
     }
 
-    openURL(url){
+    openURL(url) {
         window.open(url);
     }
 
@@ -112,16 +112,29 @@ class Util {
         const today = new Date();
         const oneWeekAgo = new Date(today);
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-        
+
         // If membership expired more than 1 week ago, use today's date
         const baseDate = oldUntil < oneWeekAgo ? today : oldUntil;
-        
+
         // Add 1 month to the base date
         const newUntil = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, baseDate.getDate());
         return newUntil;
     }
 
-}
+    generateemail(formattedName) {
+        return `${formattedName}@pulgasboxing.com`;
+    }
 
+    formatMailNanme(name) {
+        return name ? `${name
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '.') // spaces -> dots
+            .replace(/[^a-z0-9.]/g, '')}@example.com`
+            : `user${Date.now()}@pulgasboxing.com`
+
+    }
+}
 
 export default Util

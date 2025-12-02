@@ -22,6 +22,7 @@ function Login() {
 
 
   useEffect(() => {
+    setLoadingCircle(true);
     if (user) {
       UserService.get(user.uid).then(userData => {
         if (!!userData) {
@@ -29,7 +30,8 @@ function Login() {
           localStorage.setItem('UID', uid);
           localStorage.setItem('ROL', userData.rol);
           setLoadingCircle(false);
-          navigate(`/user/${uid}`, { state: { uid } });
+          // navigate(`/user/${uid}`, { state: { uid } });
+          navigate(`/users`, { state: { uid } });
         }
       });
     }
@@ -100,9 +102,12 @@ function Login() {
           <Typography variant="body1" align="center" gutterBottom>
             <Link to="/reset">Recuperar contraseña</Link>
           </Typography>
+          {/**
+           * 
           <Typography variant="body1" align="center" gutterBottom>
             ¿No tienes cuenta? <Link to="/register">Registrar</Link>.
           </Typography>
+          */}
           <AtlasSnackbar message="Correo o contraseña inválidos" open={snackbarOpen} severity="error" handleClose={handleSnackbarClose} />
         </div>
       )}

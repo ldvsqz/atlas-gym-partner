@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, version } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Logout from "../Logout/Logout";
@@ -153,8 +153,9 @@ function Menu({ header, toggleThemeMode, themeMode }) {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" sx={{ marginRight: "auto" }}>
-              {header}
+            <Typography variant="h6" sx={{ marginRight: "auto" }} className="header-text">
+              {header} 
+              <div class="version-text">{version}</div>
             </Typography>
             <div style={{ marginLeft: "auto" }}>
               <ToggleButton

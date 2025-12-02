@@ -14,6 +14,7 @@ import Exercises from "./Pages/Exercises/Exercises";
 import Aboutus from "./Pages/Aboutus/Aboutus";
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
 import Finance from "./Pages/Finance/Finance";
+import packageInfo from '../package.json';
 
 
 function App() {
@@ -39,8 +40,9 @@ function App() {
     [themeMode]
   );
 
-
-  const getMenu = (header = "Atlas") => (<Menu header={header} toggleThemeMode={toggleThemeMode} themeMode={themeMode} />);
+  const version = packageInfo.version;
+  console.log("App Version:", version);
+  const getMenu = (header = "Atlas") => (<Menu header={header} version={version} toggleThemeMode={toggleThemeMode} themeMode={themeMode} />);
 
 
   return (
@@ -52,12 +54,12 @@ function App() {
           <Route path="/reset" element={<ResetPassword />} />
           <Route path="/register" element={<Register />} />
           <Route path="/events" element={<Events menu={getMenu("Eventos")} />} />
-          <Route path="/users" element={<Users menu={getMenu("Personas")}/>} />
-          <Route path="/finance" element={<Finance menu={getMenu("Finanzas")}/>} />
-          <Route path="/settings" element={<Settings menu={getMenu("Configuración")}/>} />
-          <Route path="/exercises" element={<Exercises menu={getMenu("Ejercicios")}/>} />
-          <Route path="/aboutus" element={<Aboutus menu={getMenu("Sobre nosotros")}/>} />
-          <Route path="/user/:uid" element={<User menu={getMenu("Atlas")}/>} />
+          <Route path="/users" element={<Users menu={getMenu("Personas")} />} />
+          <Route path="/finance" element={<Finance menu={getMenu("Finanzas")} />} />
+          <Route path="/settings" element={<Settings menu={getMenu("Configuración")} />} />
+          <Route path="/exercises" element={<Exercises menu={getMenu("Ejercicios")} />} />
+          <Route path="/aboutus" element={<Aboutus menu={getMenu("Sobre nosotros")} />} />
+          <Route path="/user/:uid" element={<User menu={getMenu("Atlas")} />} />
           <Route path="*" element={<Login />} />
         </Routes>
       </Router>

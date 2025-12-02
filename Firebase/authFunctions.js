@@ -52,8 +52,8 @@ const registerWithEmailAndPassword = (dni, birthday, phone, name, email, passwor
         try {
             const userExists = await UserService.exists(dni);
             if (!userExists) {
+                console.log(auth);
                 createUserWithEmailAndPassword(auth, email, password).then((res) => {
-                    // Verificar si el usuario ya existe, crearlo en caso contrario
                     const user = new UserModel(birthday, dni, email, name, phone, res.user.uid, Timestamp.now());
                     UserService.add(user);
                     resolve(user);

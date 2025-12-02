@@ -37,7 +37,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
   useEffect(() => {
     const weight = parseFloat(statsState.weight_kg) || 0;
     const height = parseFloat(statsState.Height_cm) || 0;
-    
+
     if (weight > 0 && height > 0) {
       const newIMC = util.calculateIMC(weight, height);
       setStatsState(prevState => ({
@@ -50,6 +50,10 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
   const handleSubmit = (event) => {
     event.preventDefault();
     const updatedStats = { ...statsState };
+    updatedStats.weight_kg = updatedStats.weight_kg ? updatedStats.weight_kg : 0.00;
+    updatedStats.weight_kg_end = updatedStats.weight_kg_end ? updatedStats.weight_kg_end : 0.00;
+    updatedStats.Height_cm = updatedStats.Height_cm ? updatedStats.Height_cm : 0;
+    updatedStats.considerations = updatedStats.considerations ? updatedStats.considerations : { recent_surgeries: 'Ninguna', risks_factors: 'Ninguna' };
     handleClose();
     if (isEditing) {
       StatsService.update(updatedStats.id, updatedStats);
@@ -186,7 +190,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
           <Grid container sx={{ color: 'text.primary' }}>
             <Grid item xs={6} sx={{ mt: 2 }}>
               <TextField id="standard-basic" label="Peso base kg" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
-                value={statsState.weight_kg || ''}
+                value={statsState.weight_kg}
                 onChange={(event) =>
                   setStatsState({
                     ...statsState,
@@ -198,7 +202,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
 
             <Grid item xs={6} sx={{ mt: 2 }}>
               <TextField id="standard-basic" label="Peso salida kg" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
-                value={statsState.weight_kg_end || ''}
+                value={statsState.weight_kg_end}
                 onChange={(event) =>
                   setStatsState({
                     ...statsState,
@@ -208,10 +212,10 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
               />
             </Grid>
 
-            
+
             <Grid item xs={6} sx={{ mt: 2 }}>
               <TextField id="standard-basic" label="Estatura cm" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
-                value={statsState.Height_cm || ''}
+                value={statsState.Height_cm}
                 onChange={(event) =>
                   setStatsState({
                     ...statsState,
