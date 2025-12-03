@@ -154,8 +154,8 @@ function Menu({ header, toggleThemeMode, themeMode }) {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" sx={{ marginRight: "auto" }} className="header-text">
-              {header} 
-              <div class="version-text">{version}</div>
+              {header}
+              <div className="version-text">{version}</div>
             </Typography>
             <div style={{ marginLeft: "auto" }}>
               <ToggleButton
@@ -163,7 +163,7 @@ function Menu({ header, toggleThemeMode, themeMode }) {
                 selected={darkTheme}
                 onChange={() => { handleOnswitchTheme(!darkTheme) }}
               >
-                {darkTheme ? <DarkModeIcon /> : <LightModeIcon />}
+                {darkTheme ? <LightModeIcon /> : <DarkModeIcon />}
               </ToggleButton>
             </div>
           </Toolbar>
