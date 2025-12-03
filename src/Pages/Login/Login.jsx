@@ -22,9 +22,9 @@ function Login() {
 
 
   useEffect(() => {
-    setLoadingCircle(true);
     if (user) {
       UserService.get(user.uid).then(userData => {
+        setLoadingCircle(true);
         if (!!userData) {
           const uid = user.uid;
           localStorage.setItem('UID', uid);

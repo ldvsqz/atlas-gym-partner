@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { auth, registerWithEmailAndPassword } from "./../../../Firebase/authFunctions";
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
 // services and utilities
 import UserService from '../../../Firebase/userService';
 import Util from '../../assets/Util';
@@ -46,13 +48,14 @@ function User({ menu }) {
   const [showRenewAlert, setShowRenewAlert] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [openAddUserModal, setOpenAddUserModal] = useState(false);
+  const [checked, setChecked] = React.useState(true);
   const [newUser, setNewUser] = useState({
     name: '',
     phone: '',
     birthday: null,
     role: 1
   });
-   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const navigate = useNavigate();
   const util = new Util();
 
@@ -68,7 +71,7 @@ function User({ menu }) {
   }, []);
 
 
-   const handleShowSnackbar = () => {
+  const handleShowSnackbar = () => {
     setSnackbarOpen(true);
   };
 
@@ -78,6 +81,7 @@ function User({ menu }) {
     const filteredUsersData = Users.filter((user) =>
       user.name.toLowerCase().includes(term)
     );
+    setChecked(false);
     setFilteredUsers(filteredUsersData);
   };
 
@@ -142,6 +146,19 @@ function User({ menu }) {
     }
   };
 
+  const handleChangeCheck = (event) => {
+    setChecked(event.target.checked);
+    if (event.target.checked) {
+      const filteredUsersData = Users.filter((user) =>{
+        return util.isMembershipActive(user.until)
+      }
+      );
+      setFilteredUsers(filteredUsersData);
+    } else {
+      setFilteredUsers(Users);
+    }
+  };
+
   return (
 
     <div>
@@ -162,6 +179,10 @@ function User({ menu }) {
                 </InputAdornment>
               ),
             }}
+          />
+          <FormControlLabel
+            label="activos"
+            control={<Checkbox checked={checked} onChange={handleChangeCheck} />}
           />
 
           <Button

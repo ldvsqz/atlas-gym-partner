@@ -69,10 +69,7 @@ function Finance({ menu }) {
     const fetchFinances = async () => {
         try {
             setLoading(true);
-            console.log('Fetching finances...');
             const data = await FinanceService.getAll();
-            console.log('Finances fetched:', data);
-            // Sort by date descending (newest first)
             const sortedData = data.sort((a, b) => {
                 const dateA = a.date instanceof Date ? a.date : new Date(a.date.seconds * 1000);
                 const dateB = b.date instanceof Date ? b.date : new Date(b.date.seconds * 1000);

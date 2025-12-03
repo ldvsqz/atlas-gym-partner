@@ -41,7 +41,6 @@ function App() {
   );
 
   const version = packageInfo.version;
-  console.log("App Version:", version);
   const getMenu = (header = "Atlas") => (<Menu header={header} version={version} toggleThemeMode={toggleThemeMode} themeMode={themeMode} />);
 
 

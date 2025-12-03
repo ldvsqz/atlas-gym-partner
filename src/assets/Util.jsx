@@ -135,6 +135,12 @@ class Util {
             : `user${Date.now()}@pulgasboxing.com`
 
     }
+
+    isMembershipActive(_date) {
+        const currentDate = new Date();
+        const membershipDate = new Date(this.getDateFromFirebase(_date));
+        return membershipDate >= currentDate;
+    }
 }
 
 export default Util
