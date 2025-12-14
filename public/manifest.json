@@ -1,26 +1,18 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
-  "display": "standalone",
-  "name": "atlas-gym-partner.web",
-  "orientation": "any",
-  "scope": "/",
-  "short_name": "atlas-gym-partner.web",
+  "name": "atlas-gym-partner",
+  "short_name": "Atlas",
+  "description": "Plataforma para administrar gimnasios, miembros, pagos y entrenamientos.",
   "start_url": "/",
-  "theme_color": "#ffffff",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#0F172A",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "https://atlas-gym-partner.web.app/atlas.ico",
-      "type": "image/x-icon",
-      "sizes": "500x500",
-      "isSquare": true,
-      "isPng": false,
-      "isWebp": false,
-      "isJpg": false,
-      "width": 500,
-      "is512x512": false,
-      "is256x256": false,
-      "is192x192": false
+      "src": "/atlas_1.png",
+      "sizes": "600x600",
+      "type": "image/png"
     }
   ]
 }
+
