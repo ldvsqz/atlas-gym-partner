@@ -9,9 +9,17 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/atlas_1.png",
-      "sizes": "600x600",
-      "type": "image/png"
+      "src": "https://atlas-gym-partner.web.app/atlas.ico",
+      "type": "image/x-icon",
+      "sizes": "500x500",
+      "isSquare": true,
+      "isPng": false,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 500,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": false
     }
   ]
 }
