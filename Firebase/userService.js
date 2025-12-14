@@ -28,7 +28,7 @@ class UserService {
             console.log(error);
         }
     }
-    
+
 
 
     //get user data from a single user by ID
@@ -55,6 +55,17 @@ class UserService {
             return documentSnapshot.exists();
         } catch (error) {
             return error;
+        }
+    }
+
+    async existsByEMail(email) {
+        const usersRef = collection(db, COLLECTION_NAME);
+        const q = query(usersRef, where('email', '==', email), limit(1));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.size > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 

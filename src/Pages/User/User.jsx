@@ -129,7 +129,7 @@ function User({ menu }) {
                   <Avatar />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={`${user.name}, ${util.getAge(util.getDateFromFirebase(user.birthday))}`}
+                  primary={`${user.name || ''}, ${util.getAge(util.getDateFromFirebase(user.birthday))}`}
                   secondary={currentUid === user.uid && currentRol == 0 ? '' : `Activo hasta: ${util.formatDateShort(util.getDateFromFirebase(user.until))}`}
                 />
               </ListItem>
