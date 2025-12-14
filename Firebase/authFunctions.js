@@ -1,6 +1,4 @@
 import { GoogleAuthProvider, signInWithPopup, getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
-import { query, getDocs, collection, where, addDoc } from "firebase/firestore"
-import { db } from "./firebase"
 import { app } from "./firebase"
 import UserService from './userService';
 import UserModel from "../src/models/UserModel";
@@ -15,20 +13,33 @@ const signInWithGoogle = () => {
         try {
             const res = await signInWithPopup(auth, googleProvider);
             const userExists = await UserService.exists(res.user.uid);
-            if (!userExists) {
-                const user = new UserModel({
-                    uid: user.uid,
-                    dni: '',
-                    birthday: user.birthday,
-                    phone: user.phoneNumber,
-                    name: user.displayName,
-                    email: user.email,
-                    until: Timestamp.now(),
-                });
-                UserService.add(user);
+            const UserExistsByEmail = await UserService.existsByEMail(res.user.email);
+            console.log("User already exists", userExists, UserExistsByEmail);
+            if (userExists && UserExistsByEmail) {
+                resolve(new UserModel(
+                    Timestamp.now(),
+                    '',
+                    '',
+                    '',
+                    '',
+                    res.user.uid,
+                    Timestamp.now(),
+                ));
+            } else {
+                const user = new UserModel(
+                    res.user.birthday || Timestamp.now(),
+                    '',
+                    res.user.email,
+                    res.user.displayName,
+                    res.user.phoneNumber || '',
+                    res.user.uid,
+                    Timestamp.now(),
+                );
+                await UserService.add(user);
+                resolve(user);
             }
-            resolve(user);
         } catch (error) {
+            console.log(error);
             reject(error);
         }
     });

@@ -24,8 +24,8 @@ function Login() {
   useEffect(() => {
     if (user) {
       UserService.get(user.uid).then(userData => {
-        setLoadingCircle(true);
         if (!!userData) {
+          setLoadingCircle(true);
           const uid = user.uid;
           localStorage.setItem('UID', uid);
           localStorage.setItem('ROL', userData.rol);
@@ -89,11 +89,17 @@ function Login() {
             Iniciar sesión
           </Button>
           <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}
-            onClick={() =>
-              signInWithGoogle()
+            onClick={() => {
+              setLoadingCircle(true);
+              signInWithGoogle().then((user) => {
+                console.log("Google sign-in successful");
+                setLoadingCircle(false);
+              })
                 .catch(() => {
                   handleShowSnackbar();
-                })} >
+                  setLoadingCircle(false);
+                })
+            }}>
             <ListItemIcon>
               <GoogleIcon />
             </ListItemIcon>
@@ -102,12 +108,11 @@ function Login() {
           <Typography variant="body1" align="center" gutterBottom>
             <Link to="/reset">Recuperar contraseña</Link>
           </Typography>
-          {/**
-           * 
-          <Typography variant="body1" align="center" gutterBottom>
-            ¿No tienes cuenta? <Link to="/register">Registrar</Link>.
-          </Typography>
-          */}
+          {
+            <Typography variant="body1" align="center" gutterBottom>
+              ¿No tienes cuenta? <Link to="/register">Registrar</Link>.
+            </Typography>
+          }
           <AtlasSnackbar message="Correo o contraseña inválidos" open={snackbarOpen} severity="error" handleClose={handleSnackbarClose} />
         </div>
       )}

@@ -6,7 +6,7 @@ const firebaseConfig = {
   authDomain: "atlas-gym-partner.firebaseapp.com",
   databaseURL: "https://atlas-gym-partner-default-rtdb.firebaseio.com",
   projectId: "atlas-gym-partner",
-  storageBucket: "atlas-gym-partner.appspot.com",
+  storageBucket: "atlas-gym-partner.firebasestorage.app",
   messagingSenderId: "91174508336",
   appId: "1:91174508336:web:f8630c647aec27abf79af5"
 };

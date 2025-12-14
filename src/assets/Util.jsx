@@ -131,8 +131,8 @@ class Util {
             .toLowerCase()
             .trim()
             .replace(/\s+/g, '.') // spaces -> dots
-            .replace(/[^a-z0-9.]/g, '')}@example.com`
-            : `user${Date.now()}@pulgasboxing.com`
+            .replace(/[^a-z0-9.]/g, '')}`
+            : `user${Date.now()}`
 
     }
 
