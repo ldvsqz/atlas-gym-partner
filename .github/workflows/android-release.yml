@@ -21,7 +21,7 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci || npm install
 
       - name: Build web (Vite)
         id: build
@@ -64,7 +64,7 @@ jobs:
 
       - name: Install Capacitor CLI and Android platform
         run: |
-          npm ci
+          npm ci || npm install
           npm i --no-save @capacitor/cli @capacitor/core @capacitor/android
 
       - name: Ensure capacitor config & sync android
