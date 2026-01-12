@@ -156,6 +156,28 @@ jobs:
           echo "Final artifact:"
           ls -la release.apk
 
+      - name: Cleanup existing release assets (if any)
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=${{ github.ref_name }}
+          REPO=${{ github.repository }}
+          echo "Checking for existing release for tag $TAG"
+          release_json=$(curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$REPO/releases/tags/$TAG || true)
+          release_id=$(echo "$release_json" | jq -r '.id // empty')
+          if [ -n "$release_id" ]; then
+            echo "Found release id: $release_id — deleting existing assets"
+            echo "$release_json" | jq -r '.assets[]?.id' | while read asset_id; do
+              if [ -n "$asset_id" ]; then
+                echo "Deleting asset $asset_id"
+                curl -s -X DELETE -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$REPO/releases/assets/$asset_id || true
+              fi
+            done
+          else
+            echo "No existing release found for tag $TAG"
+          fi
+
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         id: create_release
