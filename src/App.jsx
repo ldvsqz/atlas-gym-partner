@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { colors } from '@mui/material';
@@ -59,7 +59,7 @@ function App() {
           <Route path="/exercises" element={<Exercises menu={getMenu("Ejercicios")} />} />
           <Route path="/aboutus" element={<Aboutus menu={getMenu("Sobre nosotros")} />} />
           <Route path="/user/:uid" element={<User menu={getMenu("Atlas")} />} />
-          <Route path="*" element={<Login />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </ThemeProvider>

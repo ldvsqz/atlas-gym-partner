@@ -53,7 +53,8 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
     updatedStats.weight_kg = updatedStats.weight_kg ? updatedStats.weight_kg : 0.00;
     updatedStats.weight_kg_end = updatedStats.weight_kg_end ? updatedStats.weight_kg_end : 0.00;
     updatedStats.Height_cm = updatedStats.Height_cm ? updatedStats.Height_cm : 0;
-    updatedStats.considerations = updatedStats.considerations ? updatedStats.considerations : { recent_surgeries: 'Ninguna', risks_factors: 'Ninguna' };
+    updatedStats.considerations.recent_surgeries = updatedStats.considerations.recent_surgeries ? updatedStats.considerations.recent_surgeries : 'Ninguna';
+    updatedStats.considerations.risks_factors = updatedStats.considerations.risks_factors ? updatedStats.considerations.risks_factors : 'Ninguna';
     handleClose();
     if (isEditing) {
       StatsService.update(updatedStats.id, updatedStats);

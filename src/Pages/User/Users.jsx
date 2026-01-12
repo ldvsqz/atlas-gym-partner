@@ -48,7 +48,7 @@ function User({ menu }) {
   const [showRenewAlert, setShowRenewAlert] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [openAddUserModal, setOpenAddUserModal] = useState(false);
-  const [checked, setChecked] = React.useState(true);
+  const [checked, setChecked] = React.useState(false);
   const [newUser, setNewUser] = useState({
     name: '',
     phone: '',
@@ -132,9 +132,9 @@ function User({ menu }) {
     const formattedName = util.formatMailNanme(newUser.name);
     const email = util.generateemail(formattedName);
     try {
-      //const res = await registerWithEmailAndPassword(formattedName, newUser.birthday, newUser.phone, newUser.name, email, formattedName);
-      //console.log('Registered user:', res);
-      const user = new UserModel(newUser.birthday, formattedName, email, newUser.name, newUser.phone, formattedName, Timestamp.now());
+      console.log(newUser);
+      const birthdayDate = newUser.birthday ? newUser.birthday.toDate() : Timestamp.now();
+      const user = new UserModel(birthdayDate, formattedName, email, newUser.name, newUser.phone, email, Timestamp.now());
       await userService.add(user);
       const UsersData = await UserService.getAll();
       setUsers(UsersData);
@@ -149,7 +149,7 @@ function User({ menu }) {
   const handleChangeCheck = (event) => {
     setChecked(event.target.checked);
     if (event.target.checked) {
-      const filteredUsersData = Users.filter((user) =>{
+      const filteredUsersData = Users.filter((user) => {
         return util.isMembershipActive(user.until)
       }
       );
