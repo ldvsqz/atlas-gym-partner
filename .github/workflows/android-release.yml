@@ -74,6 +74,9 @@ jobs:
           test -f capacitor.config.json || (echo 'Missing capacitor.config.json' && exit 1)
           npx cap sync android
 
+      - name: Make Gradle wrapper executable
+        run: chmod +x android/gradlew
+
       - name: Build Android (Gradle)
         working-directory: android
         run: ./gradlew assembleRelease -x lint
