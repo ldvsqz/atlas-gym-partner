@@ -122,7 +122,7 @@ class Util {
     }
 
     generateemail(formattedName) {
-        return `${formattedName}@pulgasboxing.com`;
+        return `${formattedName}_${Date.now()}@pulgasboxing.com`;
     }
 
     formatMailNanme(name) {

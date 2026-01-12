@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 // MUI
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -46,23 +46,36 @@ function User({ menu }) {
   const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
   const [currentUid, setCurrentUid] = useState(localStorage.getItem("UID"));
 
+  const params = useParams();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if (location.state) {
-      const uid = location.state.uid;
-      const fechClientData = async () => {
+    const uid = (location && location.state && location.state.uid) || params.uid || localStorage.getItem("UID");
+    if (!uid) {
+      // No UID provided via state, params or localStorage: redirect to users list
+      navigate('/users');
+      return;
+    }
+
+    const fetchClientData = async () => {
+      try {
         setLoading(true);
         const userData = await UserService.get(uid);
         const userStats = await StatService.getLast(uid);
         const userRoutine = await RoutineService.getLast(uid);
-        setUser(userData);
-        setStats(userStats);
-        setRoutine(userRoutine);
-      };
-      fechClientData().then(() => {
+
+        setUser(userData || new UserModel());
+        setStats(userStats || {});
+        setRoutine(userRoutine || {});
+      } catch (err) {
+        console.error('Error fetching user data', err);
+      } finally {
         setLoading(false);
-      });
-    }
-  }, [location.state]);
+      }
+    };
+
+    fetchClientData();
+  }, [location.state, params.uid, navigate]);
 
 
   const handleSnackbarClose = () => {
