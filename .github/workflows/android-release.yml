@@ -6,6 +6,11 @@ on:
       - master
     tags:
       - 'v*'
+
+# Ensure workflow has write permissions for repository contents and releases
+permissions:
+  contents: write
+  packages: write
 jobs:
   build-web:
     runs-on: ubuntu-latest
@@ -155,6 +160,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ github.ref_name }}
           release_name: "${{ github.ref_name }}"
           draft: false
