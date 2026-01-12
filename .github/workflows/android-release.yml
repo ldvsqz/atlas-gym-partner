@@ -1,0 +1,119 @@
+name: Build and Release Android APK
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*'
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+    outputs:
+      dist-path: ${{ steps.build.outputs.dist }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web (Vite)
+        id: build
+        run: |
+          npm run build
+          echo "dist=dist" >> $GITHUB_OUTPUT
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+
+  android-capacitor:
+    needs: build-web
+    runs-on: ubuntu-latest
+    env:
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: ./dist
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          java-version: '17'
+          target: 'android-33'
+          build-tools: '33.0.2' 
+
+      - name: Install Capacitor CLI and Android platform
+        run: |
+          npm ci
+          npm i --no-save @capacitor/cli @capacitor/core @capacitor/android
+
+      - name: Ensure capacitor config & sync android
+        run: |
+          test -f capacitor.config.json || (echo 'Missing capacitor.config.json' && exit 1)
+          npx cap sync android
+
+      - name: Build Android (Gradle)
+        working-directory: android
+        run: ./gradlew assembleRelease -x lint
+
+      - name: Prepare signing keystore
+        if: ${{ secrets.ANDROID_KEYSTORE }}
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+        run: |
+          echo "$ANDROID_KEYSTORE" | base64 --decode > android/keystore.jks
+
+      - name: Sign APK (if keystore present) or copy unsigned
+        run: |
+          unsigned_apk=$(find android -path "**/outputs/apk/release/*-unsigned.apk" | head -n1)
+          if [ -z "$unsigned_apk" ]; then unsigned_apk=$(find android -path "**/outputs/apk/release/*.apk" | head -n1); fi
+          echo "unsigned_apk=$unsigned_apk"
+          if [ -f android/keystore.jks ]; then
+            echo "Signing APK using android/keystore.jks"
+            apksigner=$(which apksigner || true)
+            if [ -z "$apksigner" ]; then echo "apksigner not found, ensure build-tools are installed"; exit 1; fi
+            apksigner sign --ks android/keystore.jks --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} --key-pass pass:${{ secrets.KEY_PASSWORD }} --out app-release-signed.apk "$unsigned_apk"
+            mv app-release-signed.apk release.apk
+          else
+            echo "Keystore not found; uploading unsigned APK"
+            cp "$unsigned_apk" release.apk
+          fi
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: "${{ github.ref_name }}"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload APK to Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: release.apk
+          asset_name: "atlas-${{ github.ref_name }}.apk"
+          asset_content_type: application/vnd.android.package-archive
