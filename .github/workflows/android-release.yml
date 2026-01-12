@@ -77,27 +77,67 @@ jobs:
         run: ./gradlew assembleRelease -x lint
 
       - name: Prepare signing keystore
-        if: ${{ secrets.ANDROID_KEYSTORE }}
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         run: |
-          echo "$ANDROID_KEYSTORE" | base64 --decode > android/keystore.jks
-
-      - name: Sign APK (if keystore present) or copy unsigned
-        run: |
-          unsigned_apk=$(find android -path "**/outputs/apk/release/*-unsigned.apk" | head -n1)
-          if [ -z "$unsigned_apk" ]; then unsigned_apk=$(find android -path "**/outputs/apk/release/*.apk" | head -n1); fi
-          echo "unsigned_apk=$unsigned_apk"
-          if [ -f android/keystore.jks ]; then
-            echo "Signing APK using android/keystore.jks"
-            apksigner=$(which apksigner || true)
-            if [ -z "$apksigner" ]; then echo "apksigner not found, ensure build-tools are installed"; exit 1; fi
-            apksigner sign --ks android/keystore.jks --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} --key-pass pass:${{ secrets.KEY_PASSWORD }} --out app-release-signed.apk "$unsigned_apk"
-            mv app-release-signed.apk release.apk
+          if [ -n "$ANDROID_KEYSTORE" ]; then
+            echo "Decoding ANDROID_KEYSTORE secret to android/keystore.jks"
+            echo "$ANDROID_KEYSTORE" | base64 --decode > android/keystore.jks
           else
-            echo "Keystore not found; uploading unsigned APK"
-            cp "$unsigned_apk" release.apk
+            echo "ANDROID_KEYSTORE secret not set; skipping keystore preparation"
           fi
+
+      - name: Produce single release APK (handle AAB or APK outputs)
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          set -e
+          # Prefer AAB (bundle) if present, else APKs
+          aab=$(find android -type f -path "**/outputs/bundle/*/release/*.aab" | head -n1)
+          unsigned_apk=$(find android -type f -path "**/outputs/apk/*/release/*-unsigned.apk" | head -n1)
+          fallback_apk=$(find android -type f -path "**/outputs/apk/*/release/*.apk" | grep -v '\-aligned\.' | head -n1)
+          echo "aab=$aab"
+          echo "unsigned_apk=$unsigned_apk"
+          echo "fallback_apk=$fallback_apk"
+
+          rm -f release.apk
+
+          if [ -n "$aab" ]; then
+            echo "Found AAB: $aab -> converting to universal APK via bundletool"
+            wget -q https://github.com/google/bundletool/releases/download/1.14.0/bundletool-all-1.14.0.jar -O bundletool.jar
+            if [ -f android/keystore.jks ]; then
+              java -jar bundletool.jar build-apks --bundle="$aab" --output=app.apks --mode=universal --ks=android/keystore.jks --ks-pass=pass:$KEYSTORE_PASSWORD --key-pass=pass:$KEY_PASSWORD --ks-key-alias=$KEY_ALIAS
+            else
+              java -jar bundletool.jar build-apks --bundle="$aab" --output=app.apks --mode=universal
+            fi
+            unzip -p app.apks universal.apk > release.apk
+          else
+            # Use signed APK if possible
+            src=""
+            if [ -n "$unsigned_apk" ]; then
+              src="$unsigned_apk"
+            elif [ -n "$fallback_apk" ]; then
+              src="$fallback_apk"
+            fi
+            if [ -z "$src" ]; then
+              echo "No APK or AAB found in android outputs"; exit 1
+            fi
+
+            if [ -f android/keystore.jks ]; then
+              echo "Signing APK: $src"
+              apksigner=$(which apksigner || true)
+              if [ -z "$apksigner" ]; then echo "apksigner not found, ensure build-tools are installed"; exit 1; fi
+              apksigner sign --ks android/keystore.jks --ks-pass pass:$KEYSTORE_PASSWORD --key-pass pass:$KEY_PASSWORD --out release.apk "$src"
+            else
+              echo "Keystore not present; copying APK as-is: $src"
+              cp "$src" release.apk
+            fi
+          fi
+
+          echo "Final artifact:"
+          ls -la release.apk
 
       - name: Create GitHub Release
         id: create_release
