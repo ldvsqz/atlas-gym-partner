@@ -92,17 +92,22 @@ jobs:
             echo "ANDROID_KEYSTORE secret not set; skipping keystore preparation"
           fi
 
-      - name: Produce single release APK (handle AAB or APK outputs)
+      - name: Produce release APK (handle AAB or APK outputs)
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
           set -e
+          echo "Listing build output folders for debugging:"
+          ls -la android || true
+          ls -la android/app/build || true
+          ls -la android/app/build/outputs || true
+          echo "Searching for artifacts (AAB/APK)..."
           # Prefer AAB (bundle) if present, else APKs
-          aab=$(find android -type f -path "**/outputs/bundle/*/release/*.aab" | head -n1)
-          unsigned_apk=$(find android -type f -path "**/outputs/apk/*/release/*-unsigned.apk" | head -n1)
-          fallback_apk=$(find android -type f -path "**/outputs/apk/*/release/*.apk" | grep -v '\-aligned\.' | head -n1)
+          aab=$(find android -type f -name "*.aab" | head -n1)
+          unsigned_apk=$(find android -type f -name "*-unsigned.apk" | head -n1)
+          fallback_apk=$(find android -type f -name "*release*.apk" | grep -v '\-aligned\.' | head -n1)
           echo "aab=$aab"
           echo "unsigned_apk=$unsigned_apk"
           echo "fallback_apk=$fallback_apk"
@@ -127,7 +132,9 @@ jobs:
               src="$fallback_apk"
             fi
             if [ -z "$src" ]; then
-              echo "No APK or AAB found in android outputs"; exit 1
+              echo "No APK or AAB found in android outputs";
+              echo "Directory listing above shows current files";
+              exit 1
             fi
 
             if [ -f android/keystore.jks ]; then
