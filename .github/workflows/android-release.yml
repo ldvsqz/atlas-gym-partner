@@ -82,10 +82,6 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x android/gradlew
 
-      - name: Build Android (Gradle)
-        working-directory: android
-        run: ./gradlew assembleRelease -x lint
-
       - name: Prepare signing keystore
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
@@ -94,8 +90,34 @@ jobs:
             echo "Decoding ANDROID_KEYSTORE secret to android/keystore.jks"
             echo "$ANDROID_KEYSTORE" | base64 --decode > android/keystore.jks
           else
-            echo "ANDROID_KEYSTORE secret not set; skipping keystore preparation"
+            echo "WARNING: ANDROID_KEYSTORE secret not set; build will be unsigned"
           fi
+
+      - name: Build Android (Gradle)
+        working-directory: android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          # Pass signing config to Gradle if keystore exists
+          if [ -f keystore.jks ]; then
+            echo "Building with keystore signing..."
+            ./gradlew assembleRelease \
+              -Pandroid.injected.signing.store.file=keystore.jks \
+              -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+              -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+              -Pandroid.injected.signing.key.password="$KEY_PASSWORD" \
+              -x lint
+          else
+            echo "Building without signing (unsigned APK)..."
+            ./gradlew assembleRelease -x lint
+          fi
+          
+          # Also try bundleRelease as fallback
+          echo ""
+          echo "Also building bundleRelease as backup..."
+          ./gradlew bundleRelease -x lint || true
 
       - name: Produce release APK (handle AAB or APK outputs)
         env:
@@ -104,97 +126,96 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
           set -e
-          echo "Listing build output folders for debugging:"
-          ls -la android || true
-          ls -la android/app/build || true
-          ls -la android/app/build/outputs || true
-          echo "Searching for artifacts (AAB/APK)..."
-          # Prefer AAB (bundle) if present, else APKs
-          aab=$(find android -type f -name "*.aab" | head -n1)
+          echo "=== Debugging Gradle outputs ==="
+          find android/app/build -type d -name outputs 2>/dev/null | while read dir; do
+            echo "Found outputs directory: $dir"
+            ls -laR "$dir" || true
+          done
+          
+          echo ""
+          echo "=== Searching for APK/AAB files ==="
+          # Look for signed APK first (preferred), then unsigned APK, then AAB
+          signed_apk=$(find android -type f -name "*release*signed*.apk" | head -n1)
+          regular_release_apk=$(find android/app/build/outputs/apk/release -type f -name "*.apk" 2>/dev/null | head -n1)
           unsigned_apk=$(find android -type f -name "*-unsigned.apk" | head -n1)
-          fallback_apk=$(find android -type f -name "*release*.apk" | grep -v '\-aligned\.' | head -n1)
-          echo "aab=$aab"
+          aab=$(find android -type f -name "*.aab" | head -n1)
+          
+          echo "signed_apk=$signed_apk"
+          echo "regular_release_apk=$regular_release_apk"
           echo "unsigned_apk=$unsigned_apk"
-          echo "fallback_apk=$fallback_apk"
-
+          echo "aab=$aab"
+          
           rm -f release.apk
-
-          if [ -n "$aab" ]; then
-            echo "Found AAB: $aab -> converting to universal APK via bundletool"
+          
+          # Prefer signed APK if available
+          apk_to_use=""
+          if [ -n "$signed_apk" ]; then
+            apk_to_use="$signed_apk"
+            echo "Using signed APK: $apk_to_use"
+          elif [ -n "$regular_release_apk" ]; then
+            apk_to_use="$regular_release_apk"
+            echo "Using release APK: $apk_to_use"
+          elif [ -n "$unsigned_apk" ]; then
+            apk_to_use="$unsigned_apk"
+            echo "Using unsigned APK (will sign): $apk_to_use"
+          fi
+          
+          if [ -n "$apk_to_use" ]; then
+            # Sign the APK if it's not already signed and we have a keystore
+            if echo "$apk_to_use" | grep -q "signed"; then
+              echo "APK is already signed, copying..."
+              cp "$apk_to_use" release.apk
+            elif [ -f android/keystore.jks ]; then
+              echo "Signing APK with keystore..."
+              apksigner=$(which apksigner || true)
+              if [ -z "$apksigner" ]; then 
+                echo "ERROR: apksigner not found"
+                exit 1
+              fi
+              apksigner sign --ks android/keystore.jks \
+                --ks-pass pass:"$KEYSTORE_PASSWORD" \
+                --key-pass pass:"$KEY_PASSWORD" \
+                --out release.apk "$apk_to_use"
+            else
+              echo "No keystore available, using APK as-is"
+              cp "$apk_to_use" release.apk
+            fi
+          elif [ -n "$aab" ]; then
+            echo "No APK found, converting AAB to universal APK..."
             wget -q https://github.com/google/bundletool/releases/download/1.14.0/bundletool-all-1.14.0.jar -O bundletool.jar
             if [ -f android/keystore.jks ]; then
-              java -jar bundletool.jar build-apks --bundle="$aab" --output=app.apks --mode=universal --ks=android/keystore.jks --ks-pass=pass:$KEYSTORE_PASSWORD --key-pass=pass:$KEY_PASSWORD --ks-key-alias=$KEY_ALIAS
+              java -jar bundletool.jar build-apks --bundle="$aab" --output=app.apks --mode=universal \
+                --ks=android/keystore.jks --ks-pass=pass:"$KEYSTORE_PASSWORD" \
+                --key-pass=pass:"$KEY_PASSWORD" --ks-key-alias="$KEY_ALIAS"
             else
               java -jar bundletool.jar build-apks --bundle="$aab" --output=app.apks --mode=universal
             fi
             unzip -p app.apks universal.apk > release.apk
           else
-            # Use signed APK if possible
-            src=""
-            if [ -n "$unsigned_apk" ]; then
-              src="$unsigned_apk"
-            elif [ -n "$fallback_apk" ]; then
-              src="$fallback_apk"
-            fi
-            if [ -z "$src" ]; then
-              echo "No APK or AAB found in android outputs";
-              echo "Directory listing above shows current files";
-              exit 1
-            fi
-
-            if [ -f android/keystore.jks ]; then
-              echo "Signing APK: $src"
-              apksigner=$(which apksigner || true)
-              if [ -z "$apksigner" ]; then echo "apksigner not found, ensure build-tools are installed"; exit 1; fi
-              apksigner sign --ks android/keystore.jks --ks-pass pass:$KEYSTORE_PASSWORD --key-pass pass:$KEY_PASSWORD --out release.apk "$src"
-            else
-              echo "Keystore not present; copying APK as-is: $src"
-              cp "$src" release.apk
-            fi
+            echo "ERROR: No APK or AAB found in android/app/build/outputs"
+            echo "Directory structure:"
+            find android/app/build/outputs -type f 2>/dev/null | head -20
+            exit 1
           fi
+          
+          echo ""
+          echo "=== Final artifact ==="
+          ls -lh release.apk
 
-          echo "Final artifact:"
-          ls -la release.apk
-
-      - name: Cleanup existing release assets (if any)
+      - name: Create Release and Upload APK
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG=${{ github.ref_name }}
-          REPO=${{ github.repository }}
-          echo "Checking for existing release for tag $TAG"
-          release_json=$(curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$REPO/releases/tags/$TAG || true)
-          release_id=$(echo "$release_json" | jq -r '.id // empty')
-          if [ -n "$release_id" ]; then
-            echo "Found release id: $release_id — deleting existing assets"
-            echo "$release_json" | jq -r '.assets[]?.id' | while read asset_id; do
-              if [ -n "$asset_id" ]; then
-                echo "Deleting asset $asset_id"
-                curl -s -X DELETE -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$REPO/releases/assets/$asset_id || true
-              fi
-            done
-          else
-            echo "No existing release found for tag $TAG"
-          fi
-
-      - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ github.ref_name }}
-          release_name: "${{ github.ref_name }}"
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload APK to Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release.apk
-          asset_name: "atlas-${{ github.ref_name }}.apk"
-          asset_content_type: application/vnd.android.package-archive
+          echo "Creating release for tag $TAG and uploading APK..."
+          
+          # Delete existing release if it exists (to clean up)
+          gh release delete "$TAG" -y || true
+          
+          # Create new release with the APK asset
+          gh release create "$TAG" \
+            "release.apk#atlas-${TAG}.apk" \
+            --title "$TAG" \
+            --draft=false \
+            --prerelease=false

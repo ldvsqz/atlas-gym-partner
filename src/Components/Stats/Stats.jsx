@@ -39,7 +39,7 @@ function Stats({ stats = new StatsModel() }) {
     };
     return (
         <div>
-            {stats ? (
+            {stats && stats.date ? (
                 <div>
                     <Button align="center" onClick={handleOpen} sx={{ width: '100%' }}>Ver medidas</Button>
                     <Dialog
