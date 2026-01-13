@@ -219,3 +219,15 @@ jobs:
             --title "$TAG" \
             --draft=false \
             --prerelease=false
+          
+          echo ""
+          echo "Removing auto-generated source code archives..."
+          # GitHub automatically adds source code (zip/tar.gz), delete them to keep only the APK
+          gh release view "$TAG" --json assets -q '.assets[].name' | while read asset; do
+            if [[ "$asset" == *.zip ]] || [[ "$asset" == *.tar.gz ]]; then
+              echo "Deleting source archive: $asset"
+              gh release delete-asset "$TAG" "$asset" -y || true
+            fi
+          done
+          
+          echo "Release complete! APK only."
