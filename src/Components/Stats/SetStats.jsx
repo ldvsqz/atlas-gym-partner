@@ -174,7 +174,7 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
             <Grid item xs={6} sx={{ mt: 2 }}>
               <TextField id="standard-basic" label="Factores de riesgo" variant="standard" sx={{ maxWidth: '90%', padding: '10px' }}
                 type="text"
-                value={statsState.considerations.risks_factors}
+                value={statsState.considerations?.risks_factors || ''}
                 onChange={(event) =>
                   setStatsState({
                     ...statsState,

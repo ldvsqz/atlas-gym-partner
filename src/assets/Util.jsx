@@ -19,6 +19,7 @@ class Util {
     };
 
     getDateFromFirebase(_date) {
+        if (!_date) return new Date();
         const milliseconds = _date.seconds * 1000 + Math.floor(_date.nanoseconds / 1e6);
         return new Date(milliseconds);
     };
