@@ -66,9 +66,17 @@ jobs:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         run: |
           if [ -n "$ANDROID_KEYSTORE" ]; then
-            echo "$ANDROID_KEYSTORE" | tr -d '\n' | base64 --decode > android/keystore.jks
-            echo "Keystore prepared"
-            ls -lh android/keystore.jks
+            # Decode base64 keystore - handle both single and multi-line base64
+            echo "$ANDROID_KEYSTORE" | base64 -d > android/keystore.jks 2>/dev/null || \
+            printf "%s" "$ANDROID_KEYSTORE" | base64 -d > android/keystore.jks
+            if [ $? -eq 0 ]; then
+              echo "Keystore prepared successfully"
+              ls -lh android/keystore.jks
+            else
+              echo "Failed to decode keystore, attempting workaround..."
+              echo "$ANDROID_KEYSTORE" | sed 's/ //g' | base64 -d > android/keystore.jks
+              ls -lh android/keystore.jks
+            fi
           fi
       
       - name: Build Android APK
