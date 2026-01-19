@@ -202,8 +202,14 @@ jobs:
           echo "=== Final artifact ==="
           ls -lh release.apk
 
+      - name: Debug - Check if this is a tag
+        run: |
+          echo "github.ref: ${{ github.ref }}"
+          echo "github.ref_name: ${{ github.ref_name }}"
+          echo "startsWith check: ${{ startsWith(github.ref, 'refs/tags/') }}"
+
       - name: Create Release and Upload APK
-        if: startsWith(github.ref, 'refs/tags/')
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
