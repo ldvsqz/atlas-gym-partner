@@ -73,12 +73,12 @@ jobs:
       - name: Build Android APK
         working-directory: android
         env:
-          KEYSTORE_PATH: keystore.jks
+          KEYSTORE_PATH: ../keystore.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
-          if [ -f keystore.jks ]; then
+          if [ -f ../keystore.jks ]; then
             echo "Building with signing..."
             ./gradlew assembleRelease -x lint
           else
