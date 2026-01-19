@@ -1,240 +1,139 @@
-#name: Build and Release Android APK
-#
-#on:
-#  push:
-#    branches:
-#      - master
-#    tags:
-#      - 'v*'
-#
-## Ensure workflow has write permissions for repository contents and releases
-#permissions:
-#  contents: write
-#  packages: write
-#jobs:
-#  build-web:
-#    runs-on: ubuntu-latest
-#    outputs:
-#      dist-path: ${{ steps.build.outputs.dist }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#
-#      - name: Setup Node.js
-#        uses: actions/setup-node@v4
-#        with:
-#          node-version: '18'
-#
-#      - name: Install dependencies
-#        run: npm ci || npm install
-#
-#      - name: Build web (Vite)
-#        id: build
-#        run: |
-#          npm run build
-#          echo "dist=dist" >> $GITHUB_OUTPUT
-#
-#      - name: Upload dist artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: web-dist
-#          path: dist
-#
-#  android-capacitor:
-#    needs: build-web
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Setup Java 17
-#        uses: actions/setup-java@v4
-#        with:
-#          distribution: 'temurin'
-#          java-version: '17'
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#
-#      - name: Setup Node.js
-#        uses: actions/setup-node@v4
-#        with:
-#          node-version: '18'
-#
-#      - name: Download dist artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: web-dist
-#          path: ./dist
-#
-#      - name: Setup Android SDK
-#        uses: android-actions/setup-android@v2
-#        with:
-#          api-level: '33'
-#          build-tools: '33.0.2'
-#
-#      - name: Install Capacitor CLI and Android platform
-#        run: |
-#          npm ci || npm install
-#          npm i --no-save @capacitor/cli @capacitor/core @capacitor/android
-#
-#      - name: Ensure capacitor config & sync android
-#        run: |
-#          test -f capacitor.config.json || (echo 'Missing capacitor.config.json' && exit 1)
-#          npx cap sync android
-#
-#      - name: Make Gradle wrapper executable
-#        run: chmod +x android/gradlew
-#
-#      - name: Prepare signing keystore
-#        env:
-#          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-#        run: |
-#          if [ -n "$ANDROID_KEYSTORE" ]; then
-#            echo "Decoding ANDROID_KEYSTORE secret to android/keystore.jks"
-#            echo "$ANDROID_KEYSTORE" | base64 --decode > android/keystore.jks
-#          else
-#            echo "WARNING: ANDROID_KEYSTORE secret not set; build will be unsigned"
-#          fi
-#
-#      - name: Build Android (Gradle)
-#        working-directory: android
-#        env:
-#          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-#          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-#          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-#        run: |
-#          # Pass signing config to Gradle if keystore exists
-#          if [ -f keystore.jks ]; then
-#            echo "Building with keystore signing..."
-#            ./gradlew assembleRelease \
-#              -Pandroid.injected.signing.store.file=keystore.jks \
-#              -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
-#              -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
-#              -Pandroid.injected.signing.key.password="$KEY_PASSWORD" \
-#              -x lint
-#          else
-#            echo "Building without signing (unsigned APK)..."
-#            ./gradlew assembleRelease -x lint
-#          fi
-#          
-#          # Also try bundleRelease as fallback
-#          echo ""
-#          echo "Also building bundleRelease as backup..."
-#          ./gradlew bundleRelease -x lint || true
-#
-#      - name: Produce release APK (handle AAB or APK outputs)
-#        env:
-#          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-#          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-#          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-#        run: |
-#          set -e
-#          echo "=== Debugging Gradle outputs ==="
-#          find android/app/build -type d -name outputs 2>/dev/null | while read dir; do
-#            echo "Found outputs directory: $dir"
-#            ls -laR "$dir" || true
-#          done
-#          
-#          echo ""
-#          echo "=== Searching for APK/AAB files ==="
-#          # Look for signed APK first (preferred), then unsigned APK, then AAB
-#          signed_apk=$(find android -type f -name "*release*signed*.apk" | head -n1)
-#          regular_release_apk=$(find android/app/build/outputs/apk/release -type f -name "*.apk" 2>/dev/null | head -n1)
-#          unsigned_apk=$(find android -type f -name "*-unsigned.apk" | head -n1)
-#          aab=$(find android -type f -name "*.aab" | head -n1)
-#          
-#          echo "signed_apk=$signed_apk"
-#          echo "regular_release_apk=$regular_release_apk"
-#          echo "unsigned_apk=$unsigned_apk"
-#          echo "aab=$aab"
-#          
-#          rm -f release.apk
-#          
-#          # Prefer signed APK if available
-#          apk_to_use=""
-#          if [ -n "$signed_apk" ]; then
-#            apk_to_use="$signed_apk"
-#            echo "Using signed APK: $apk_to_use"
-#          elif [ -n "$regular_release_apk" ]; then
-#            apk_to_use="$regular_release_apk"
-#            echo "Using release APK: $apk_to_use"
-#          elif [ -n "$unsigned_apk" ]; then
-#            apk_to_use="$unsigned_apk"
-#            echo "Using unsigned APK (will sign): $apk_to_use"
-#          fi
-#          
-#          if [ -n "$apk_to_use" ]; then
-#            # Sign the APK if it's not already signed and we have a keystore
-#            if echo "$apk_to_use" | grep -q "signed"; then
-#              echo "APK is already signed, copying..."
-#              cp "$apk_to_use" release.apk
-#            elif [ -f android/keystore.jks ]; then
-#              echo "Signing APK with keystore..."
-#              apksigner=$(which apksigner || true)
-#              if [ -z "$apksigner" ]; then 
-#                echo "ERROR: apksigner not found"
-#                exit 1
-#              fi
-#              apksigner sign --ks android/keystore.jks \
-#                --ks-pass pass:"$KEYSTORE_PASSWORD" \
-#                --key-pass pass:"$KEY_PASSWORD" \
-#                --out release.apk "$apk_to_use"
-#            else
-#              echo "No keystore available, using APK as-is"
-#              cp "$apk_to_use" release.apk
-#            fi
-#          elif [ -n "$aab" ]; then
-#            echo "No APK found, converting AAB to universal APK..."
-#            wget -q https://github.com/google/bundletool/releases/download/1.14.0/bundletool-all-1.14.0.jar -O bundletool.jar
-#            if [ -f android/keystore.jks ]; then
-#              java -jar bundletool.jar build-apks --bundle="$aab" --output=app.apks --mode=universal \
-#                --ks=android/keystore.jks --ks-pass=pass:"$KEYSTORE_PASSWORD" \
-#                --key-pass=pass:"$KEY_PASSWORD" --ks-key-alias="$KEY_ALIAS"
-#            else
-#              java -jar bundletool.jar build-apks --bundle="$aab" --output=app.apks --mode=universal
-#            fi
-#            unzip -p app.apks universal.apk > release.apk
-#          else
-#            echo "ERROR: No APK or AAB found in android/app/build/outputs"
-#            echo "Directory structure:"
-#            find android/app/build/outputs -type f 2>/dev/null | head -20
-#            exit 1
-#          fi
-#          
-#          echo ""
-#          echo "=== Final artifact ==="
-#          ls -lh release.apk
-#
-#      - name: Debug - Check if this is a tag
-#        run: |
-#          echo "github.ref: ${{ github.ref }}"
-#          echo "github.ref_name: ${{ github.ref_name }}"
-#          echo "startsWith check: ${{ startsWith(github.ref, 'refs/tags/') }}"
-#
-#      - name: Create Release and Upload APK
-#        if: ${{ startsWith(github.ref, 'refs/tags/') }}
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: |
-#          TAG=${{ github.ref_name }}
-#          echo "Creating release for tag $TAG and uploading APK..."
-#          
-#          # Delete existing release if it exists (to clean up)
-#          gh release delete "$TAG" -y || true
-#          
-#          # Create new release with the APK asset
-#          gh release create "$TAG" \
-#            "release.apk#atlas-${TAG}.apk" \
-#            --title "$TAG" \
-#            --draft=false \
-#            --prerelease=false
-#          
-#          echo ""
-#          echo "Removing auto-generated source code archives..."
-#          # GitHub automatically adds source code (zip/tar.gz), delete them to keep only the APK
-#          gh release view "$TAG" --json assets -q '.assets[].name' | while read asset; do
-#            if [[ "$asset" == *.zip ]] || [[ "$asset" == *.tar.gz ]]; then
-#              echo "Deleting source archive: $asset"
-#              gh release delete-asset "$TAG" "$asset" -y || true
-#            fi
-#          done
-#          
-#          echo "Release complete! APK only."
-#
+name: Build and Release Android APK
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - run: npm ci || npm install
+      
+      - run: npm run build
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+
+  android-capacitor:
+    needs: build-web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: ./dist
+      
+      - uses: android-actions/setup-android@v2
+        with:
+          api-level: '33'
+          build-tools: '33.0.2'
+      
+      - run: npm ci || npm install && npm i --no-save @capacitor/cli @capacitor/core @capacitor/android
+      
+      - run: npx cap sync android
+      
+      - run: chmod +x android/gradlew
+      
+      - name: Prepare keystore
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+        run: |
+          if [ -n "$ANDROID_KEYSTORE" ]; then
+            echo "$ANDROID_KEYSTORE" | base64 --decode > android/keystore.jks
+            echo "Keystore prepared"
+          fi
+      
+      - name: Build Android APK
+        working-directory: android
+        env:
+          KEYSTORE_PATH: keystore.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          if [ -f keystore.jks ]; then
+            echo "Building with signing..."
+            ./gradlew assembleRelease -x lint
+          else
+            echo "Building without signing..."
+            ./gradlew assembleRelease -x lint
+          fi
+      
+      - name: Find and prepare APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          # Find APK or AAB
+          apk=$(find android/app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -n1)
+          aab=$(find android/app/build/outputs/bundle/release -name "*.aab" 2>/dev/null | head -n1)
+          
+          if [ -n "$apk" ]; then
+            echo "Found APK: $apk"
+            cp "$apk" release.apk
+          elif [ -n "$aab" ]; then
+            echo "Found AAB, converting to APK..."
+            wget -q https://github.com/google/bundletool/releases/download/1.14.0/bundletool-all-1.14.0.jar
+            java -jar bundletool-all-1.14.0.jar build-apks --bundle="$aab" --output=app.apks --mode=universal \
+              --ks=android/keystore.jks --ks-pass=pass:"$KEYSTORE_PASSWORD" \
+              --key-pass=pass:"$KEY_PASSWORD" --ks-key-alias="$KEY_ALIAS" 2>/dev/null || \
+            java -jar bundletool-all-1.14.0.jar build-apks --bundle="$aab" --output=app.apks --mode=universal
+            unzip -p app.apks universal.apk > release.apk
+          else
+            echo "ERROR: No APK or AAB found"
+            find android/app/build/outputs -type f | head -20
+            exit 1
+          fi
+          
+          ls -lh release.apk
+      
+      - name: Create Release and Upload APK
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(grep '"version"' package.json | head -1 | grep -oP '"\K[^"]+')
+          RELEASE_TAG="v${VERSION}"
+          
+          echo "Creating release $RELEASE_TAG with APK..."
+          
+          # Delete old release if exists
+          gh release delete "$RELEASE_TAG" -y 2>/dev/null || true
+          sleep 1
+          
+          # Create release with APK
+          gh release create "$RELEASE_TAG" \
+            release.apk#atlas-${RELEASE_TAG}.apk \
+            --title "$RELEASE_TAG" \
+            --draft=false \
+            --prerelease=false \
+            --generate-notes
+          
+          echo "✅ Release $RELEASE_TAG created successfully with APK!"

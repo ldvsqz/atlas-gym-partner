@@ -27,6 +27,7 @@ jobs:
           channelId: live
           projectId: atlas-gym-partner
   build-web:
+    needs: build_and_deploy
     runs-on: ubuntu-latest
     outputs:
       dist-path: ${{ steps.build.outputs.dist }}
