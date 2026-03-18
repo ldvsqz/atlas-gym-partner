@@ -9,10 +9,9 @@ on:
 
 permissions:
   contents: write
-  packages: write
 
 jobs:
-  build-web:
+  build-android:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,130 +19,65 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '18'
-      
-      - run: npm ci || npm install
-      
-      - run: npm run build
-      
-      - uses: actions/upload-artifact@v4
-        with:
-          name: web-dist
-          path: dist
-
-  android-capacitor:
-    needs: build-web
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
       
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
       
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-      
-      - uses: actions/download-artifact@v4
-        with:
-          name: web-dist
-          path: ./dist
-      
       - uses: android-actions/setup-android@v2
         with:
           api-level: '33'
           build-tools: '33.0.2'
       
-      - run: npm ci || npm install && npm i --no-save @capacitor/cli @capacitor/core @capacitor/android
+      - name: Install dependencies
+        run: npm ci
       
-      - run: npx cap sync android
+      - name: Build web app
+        run: npm run build
       
-      - run: chmod +x android/gradlew
+      - name: Prepare Capacitor
+        run: |
+          npm i --no-save @capacitor/cli @capacitor/core @capacitor/android
+          npx cap sync android
       
-      - name: Prepare keystore
+      - name: Setup signing keystore
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         run: |
-          # If ANDROID_KEYSTORE secret exists, decode it. Otherwise, keystore.jks should already be in repo
           if [ -n "$ANDROID_KEYSTORE" ]; then
-            echo "$ANDROID_KEYSTORE" | base64 -d > android/keystore.jks 2>/dev/null || \
-            printf "%s" "$ANDROID_KEYSTORE" | base64 -d > android/keystore.jks
+            echo "$ANDROID_KEYSTORE" | base64 -d > android/keystore.jks
           fi
           
-          # Verify keystore exists
           if [ -f android/keystore.jks ]; then
-            echo "✅ Keystore ready"
-            ls -lh android/keystore.jks
+            echo "Keystore ready"
           else
-            echo "❌ Keystore not found!"
-            exit 1
+            echo "Warning: Keystore not found, build will be unsigned"
           fi
       
-      - name: Build Android APK
+      - name: Build APK
         working-directory: android
-        env:
-          KEYSTORE_PATH: ../keystore.jks
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
-          if [ -f ../keystore.jks ]; then
-            echo "Building with signing..."
-            ./gradlew assembleRelease -x lint
-          else
-            echo "Building without signing..."
-            ./gradlew assembleRelease -x lint
-          fi
+          chmod +x gradlew
+          ./gradlew assembleRelease -x lint
       
-      - name: Find and prepare APK
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      - name: Locate APK
         run: |
-          # Find APK or AAB
-          apk=$(find android/app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -n1)
-          aab=$(find android/app/build/outputs/bundle/release -name "*.aab" 2>/dev/null | head -n1)
-          
-          if [ -n "$apk" ]; then
-            echo "Found APK: $apk"
-            cp "$apk" release.apk
-          elif [ -n "$aab" ]; then
-            echo "Found AAB, converting to APK..."
-            wget -q https://github.com/google/bundletool/releases/download/1.14.0/bundletool-all-1.14.0.jar
-            java -jar bundletool-all-1.14.0.jar build-apks --bundle="$aab" --output=app.apks --mode=universal \
-              --ks=android/keystore.jks --ks-pass=pass:"$KEYSTORE_PASSWORD" \
-              --key-pass=pass:"$KEY_PASSWORD" --ks-key-alias="$KEY_ALIAS" 2>/dev/null || \
-            java -jar bundletool-all-1.14.0.jar build-apks --bundle="$aab" --output=app.apks --mode=universal
-            unzip -p app.apks universal.apk > release.apk
-          else
-            echo "ERROR: No APK or AAB found"
-            find android/app/build/outputs -type f | head -20
-            exit 1
-          fi
-          
-          ls -lh release.apk
+          find android/app/build/outputs/apk/release -name "*.apk" -exec cp {} release.apk \;
       
-      - name: Create Release and Upload APK
+      - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION=$(grep '"version"' package.json | head -1 | grep -oP '"\K[^"]+')
-          RELEASE_TAG="v${VERSION}"
+          TAG="${GITHUB_REF#refs/tags/}"
+          if [ "$TAG" = "$GITHUB_REF" ]; then
+            TAG="v$(grep '"version"' package.json | head -1 | grep -oP '"\K[^"]+')"
+          fi
           
-          echo "Creating release $RELEASE_TAG with APK..."
-          
-          # Delete old release if exists
-          gh release delete "$RELEASE_TAG" -y 2>/dev/null || true
+          gh release delete "$TAG" -y 2>/dev/null || true
           sleep 1
           
-          # Create release with APK
-          gh release create "$RELEASE_TAG" \
-            release.apk#atlas-${RELEASE_TAG}.apk \
-            --title "$RELEASE_TAG" \
-            --draft=false \
-            --prerelease=false \
+          gh release create "$TAG" \
+            release.apk \
+            --title "$TAG" \
             --generate-notes
-          
-          echo "✅ Release $RELEASE_TAG created successfully with APK!"
