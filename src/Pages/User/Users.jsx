@@ -5,8 +5,10 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 // services and utilities
 import UserService from '../../../Firebase/userService';
+import FinanceService from '../../../Firebase/financeService';
 import Util from '../../assets/Util';
 import UserModel from '../../models/UserModel';
+import FinanceModel from '../../models/FinanceModel';
 //MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -22,6 +24,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -48,7 +52,7 @@ function User({ menu }) {
   const [showRenewAlert, setShowRenewAlert] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [openAddUserModal, setOpenAddUserModal] = useState(false);
-  const [checked, setChecked] = React.useState(false);
+  const [checked, setChecked] = React.useState(true);
   const [newUser, setNewUser] = useState({
     name: '',
     phone: '',
@@ -64,7 +68,8 @@ function User({ menu }) {
     const fetchUsers = async () => {
       const UsersData = await UserService.getAll();
       setUsers(UsersData);
-      setFilteredUsers(UsersData);
+      const activeUsers = UsersData.filter((user) => util.isMembershipActive(user.until));
+      setFilteredUsers(activeUsers);
       setLoading(false)
     };
     fetchUsers();
@@ -104,6 +109,19 @@ function User({ menu }) {
 
       await UserService.update(user.uid, updatedUser);
 
+      // Add finance movement
+      const movement = {
+        type: 'income',
+        amount: 15000,
+        description: `Renovación de membresía - ${user.name}`,
+        date: new Date(),
+        category: 'membresia'
+      };
+      FinanceService.add(movement).then(() => {
+        handleShowSnackbar();
+      }).catch((error) => {
+        console.error('Error adding finance movement:', error);
+      });
       // Refresh the users list
       const UsersData = await UserService.getAll();
       setUsers(UsersData);
@@ -163,36 +181,34 @@ function User({ menu }) {
 
     <div>
       {menu}
-      <Container fixed sx={{ mt: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <TextField label="Buscar" variant="standard"
-            value={searchTerm}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              handleSearch(e);
-            }}
-            InputProps={{
-              startAdornment: focused ? null : (
-                <InputAdornment position="start">
-                </InputAdornment>
-              ),
-            }}
-          />
-          <FormControlLabel
-            label="activos"
-            control={<Checkbox checked={checked} onChange={handleChangeCheck} />}
-          />
-
-          <Button
-            variant="contained"
-            onClick={handleOpenAddUserModal}
-            sx={{ ml: 2 }}
-          >
-            Agregar Usuario
-          </Button>
-
+      <Container fixed sx={{ mt: 4, pr: 0, pl: 0 }}>
+        <Box sx={{ mb: 4 }}>
+          <Grid container spacing={2} sx={{ px: 2 }}>
+            <Grid item xs={12} sm={6}>
+              <TextField label="Buscar" variant="standard" fullWidth
+                value={searchTerm}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  handleSearch(e);
+                }}
+                InputProps={{
+                  startAdornment: focused ? null : (
+                    <InputAdornment position="start">
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <FormControlLabel
+                label={checked ? `Activos: ${filteredUsers.filter(user => user.rol !== 0 && util.isMembershipActive(user.until)).length}` : `Todos: ${filteredUsers.length}`}
+                control={<Checkbox checked={checked} onChange={handleChangeCheck} />}
+                sx={{ gap: 2 }}
+              />
+            </Grid>
+          </Grid>
         </Box>
         {loading ? (
           <Stack spacing={1}>
@@ -209,7 +225,7 @@ function User({ menu }) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Nombre</TableCell>
-                    <TableCell>Membresía hasta</TableCell>
+                    <TableCell>Hasta</TableCell>
                     <TableCell>Acción</TableCell>
                   </TableRow>
                 </TableHead>
@@ -226,7 +242,13 @@ function User({ menu }) {
                         <TableCell onClick={() => handleViewProfile(user.uid)} sx={{ cursor: 'pointer' }}>{user.name}</TableCell>
                         <TableCell
                           onClick={() => handleViewProfile(user.uid)}
-                          sx={{ color: util.dateExpireColor(util.getDateFromFirebase(user.until)), cursor: 'pointer' }}>
+                          sx={{
+                            color: (() => {
+                              const daysLeft = (new Date(util.getDateFromFirebase(user.until)) - new Date()) / (1000 * 60 * 60 * 24);
+                              return daysLeft > 0 && daysLeft <= 5 ? '#DAA520' : util.dateExpireColor(util.getDateFromFirebase(user.until));
+                            })(),
+                            cursor: 'pointer'
+                          }}>
                           {util.formatDateShort(util.getDateFromFirebase(user.until))}
                         </TableCell>
                         <TableCell>
@@ -298,6 +320,19 @@ function User({ menu }) {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Fab
+        color="primary"
+        aria-label="add"
+        onClick={handleOpenAddUserModal}
+        sx={{
+          position: 'fixed',
+          bottom: 16,
+          right: 16,
+        }}
+      >
+        <AddIcon />
+      </Fab>
     </div>
   );
 }

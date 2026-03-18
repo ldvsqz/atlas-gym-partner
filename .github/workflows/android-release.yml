@@ -65,20 +65,30 @@ jobs:
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         run: |
+          # If ANDROID_KEYSTORE secret exists, decode it. Otherwise, keystore.jks should already be in repo
           if [ -n "$ANDROID_KEYSTORE" ]; then
-            echo "$ANDROID_KEYSTORE" | base64 --decode > android/keystore.jks
-            echo "Keystore prepared"
+            echo "$ANDROID_KEYSTORE" | base64 -d > android/keystore.jks 2>/dev/null || \
+            printf "%s" "$ANDROID_KEYSTORE" | base64 -d > android/keystore.jks
+          fi
+          
+          # Verify keystore exists
+          if [ -f android/keystore.jks ]; then
+            echo "✅ Keystore ready"
+            ls -lh android/keystore.jks
+          else
+            echo "❌ Keystore not found!"
+            exit 1
           fi
       
       - name: Build Android APK
         working-directory: android
         env:
-          KEYSTORE_PATH: keystore.jks
+          KEYSTORE_PATH: ../keystore.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
-          if [ -f keystore.jks ]; then
+          if [ -f ../keystore.jks ]; then
             echo "Building with signing..."
             ./gradlew assembleRelease -x lint
           else
