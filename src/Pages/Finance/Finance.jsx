@@ -240,50 +240,20 @@ function Finance({ menu }) {
                     </Grid>
                 </Grid>
 
-                <Grid container spacing={2} className="summary-grid">
-                    <Grid item xs={12} sm={6} md={3}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleOpen}
-                            className="add-button"
-                        >
-                            Agregar Movimiento
-                        </Button>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
+                <Grid container spacing={2} sx={{ px: 2, mb: 4 }}>
+                    <Grid item xs={12} sm={4}>
                         <Button
                             variant="outlined"
+                            fullWidth
                             onClick={downloadPDF}
                         >
-                            Descargar PDF
+                            PDF
                         </Button>
                     </Grid>
-                    <Grid item xs={12} sm={6} md={2}>
-                        <LocalizationProvider
-                            adapterLocale="es-ES"
-                            dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                format="LL"
-                                label="desde"
-                                maxDate={today}
-                                onChange={(date) => setEndDate(new Date(date))} />
-                        </LocalizationProvider>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={2}>
-                        <LocalizationProvider
-                            adapterLocale="es-ES"
-                            dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                format="LL"
-                                label="hasta"
-                                maxDate={today}
-                                onChange={(date) => setEndDate(new Date(date))} />
-                        </LocalizationProvider>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={2}>
+                    <Grid item xs={12} sm={4}>
                         <Button
                             variant="outlined"
+                            fullWidth
                             onClick={() => {
                                 setStartDate('');
                                 setEndDate('');
@@ -292,9 +262,47 @@ function Finance({ menu }) {
                             Limpiar
                         </Button>
                     </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleOpen}
+                            fullWidth
+                            className="add-button"
+                        >
+                            Agregar Movimiento
+                        </Button>
+                    </Grid>
                 </Grid>
+                {/* Date Filters *
 
-                {/* Add/Edit Dialog */}
+<Grid container spacing={2} sx={{ px: 2, mb: 4 }}>
+<Grid item xs={12} sm={6}>
+<LocalizationProvider
+                            fullWidth
+                            adapterLocale="es-ES"
+                            dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                fullWidth
+                                format="LL"
+                                label="desde"
+                                maxDate={today}
+                                onChange={(date) => setEndDate(new Date(date))} />
+                        </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={2}>
+                        <LocalizationProvider
+                        adapterLocale="es-ES"
+                        dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                        format="LL"
+                        label="hasta"
+                        maxDate={today}
+                        onChange={(date) => setEndDate(new Date(date))} />
+                        </LocalizationProvider>
+                        </Grid>
+                        </Grid>
+                        */}
                 <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
                     <DialogTitle>
                         {editingId ? 'Editar Movimiento' : 'Nuevo Movimiento'}
