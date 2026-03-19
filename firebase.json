@@ -26,9 +26,11 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "cleanUrls": true,
+    "trailingSlashBehavior": "ADD",
     "rewrites": [
       {
-        "source": "**",
+        "source": "!/assets/**",
         "destination": "/index.html"
       }
     ]
