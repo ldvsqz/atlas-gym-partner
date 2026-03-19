@@ -38,12 +38,12 @@ jobs:
             exit 1
           fi
       
-      - uses: w9jds/firebase-action@v12.8.0
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          args: deploy --only hosting
-        env:
-          # Generate with: firebase login:ci
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ATLAS_GYM_PARTNER }}'
+          channelId: live
+          projectId: atlas-gym-partner
       
       - name: Verify deployment
         run: |
