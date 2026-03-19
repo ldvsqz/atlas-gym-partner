@@ -5,13 +5,13 @@ name: Deploy to Firebase Hosting on PR
 'on': pull_request
 jobs:
   build_and_preview:
-    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: npm ci && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - uses: w9jds/firebase-action@v13.0.0  # Updated action
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ATLAS_GYM_PARTNER }}'
-          projectId: atlas-gym-partner
+          args: deploy --only hosting:preview
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ATLAS_GYM_PARTNER }}
