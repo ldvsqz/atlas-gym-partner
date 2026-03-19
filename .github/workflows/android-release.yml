@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   android_build_and_release:
+    needs: firebase_build_and_deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
