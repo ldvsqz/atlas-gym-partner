@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: npm i
       
+      - name: Clear previous build
+        run: rm -rf dist
+      
       - name: Build
         run: npm run build
       
@@ -35,9 +38,14 @@ jobs:
             exit 1
           fi
       
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - uses: w9jds/firebase-action@v12.8.0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ATLAS_GYM_PARTNER }}'
-          channelId: live
-          projectId: atlas-gym-partner
+          args: deploy --only hosting
+        env:
+          # Generate with: firebase login:ci
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      
+      - name: Verify deployment
+        run: |
+          echo "Deployment completed. Site should be available at:"
+          echo "https://atlas-gym-partner.web.app"
