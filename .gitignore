@@ -24,8 +24,3 @@ dist-ssr
 *.sw?
 package-lock.json
 
-# Android keystore (keeps signing key out of repo)
-android/keystore.jks
-android/keystore.properties
-android/keystore-info.txt
-android/keystore.b64

@@ -6,10 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "cap:init": "npx cap init \"Atlas Gym\" \"com.atlas.gym\" --web-dir=dist",
-    "cap:add:android": "npx cap add android",
-    "android:build": "npm run build && npx cap sync android && cd android && ./gradlew assembleRelease -x lint"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -35,9 +32,6 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react-swc": "^3.0.0",
-    "vite": "^4.2.0",
-    "@capacitor/cli": "^5.0.0",
-    "@capacitor/core": "^5.0.0",
-    "@capacitor/android": "^5.0.0"
+    "vite": "^4.2.0"
   }
 }
