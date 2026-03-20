@@ -1,7 +1,19 @@
 import React from "react";
 import { Container, Typography, Box, Grid, Card, CardContent } from "@mui/material";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import { Stack, IconButton, Tooltip } from '@mui/material';
+import EmailIcon from '@mui/icons-material/Email';
+import PersonIcon from '@mui/icons-material/Person';
 
 export default function AboutUs({ menu }) {
+    const contactData = [
+        { icon: <EmailIcon />, label: 'ldvas24@gmail.com', url: 'mailto:ldvas24@gmail.com' },
+        { icon: <WhatsAppIcon />, label: '+506 86221624', url: 'https://wa.me/50686221624' },
+        { icon: <LinkedInIcon />, label: 'LinkedIn Profile', url: 'https://www.linkedin.com/in/davidvas24/' },
+    ];
+
+
     return (
         <div style={{ paddingBottom: '60px' }}>
             {menu}
@@ -103,7 +115,7 @@ export default function AboutUs({ menu }) {
                 </Box>
 
                 {/* Final Message */}
-                <Box textAlign="center" mt={8}>
+                <Box textAlign="center" mt={8} mb={8}>
                     <Typography variant="h5" fontWeight="bold" gutterBottom>
                         ¿Por qué Atlas?
                     </Typography>
@@ -113,6 +125,33 @@ export default function AboutUs({ menu }) {
                         retención de clientes y permitirte enfocarte en lo que realmente importa:
                         construir una comunidad fuerte.
                     </Typography>
+                </Box>
+
+                {/* Contact Section */}
+                <Box textAlign="center" mt={8} mb={8}>
+                    <Typography variant="h5" fontWeight="bold" gutterBottom>
+                        Contáctanos
+                    </Typography>
+                    <Stack direction="row"
+                        spacing={1}
+                        justifyContent="center" // Centers the icons horizontally
+                        alignItems="center"     // Centers them vertically
+                        sx={{ width: '100%' }}>
+
+                        {contactData.map((item, index) => (
+                            <Tooltip key={index} title={item.label} arrow>
+                                <IconButton
+                                    component="a"
+                                    href={item.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    color="primary"
+                                >
+                                    {item.icon}
+                                </IconButton>
+                            </Tooltip>
+                        ))}
+                    </Stack>
                 </Box>
             </Container>
         </div>

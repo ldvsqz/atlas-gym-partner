@@ -23,9 +23,9 @@ function Login() {
 
   useEffect(() => {
     if (user) {
+      setLoadingCircle(true);
       UserService.get(user.uid).then(userData => {
         if (!!userData) {
-          setLoadingCircle(true);
           const uid = user.uid;
           localStorage.setItem('UID', uid);
           localStorage.setItem('ROL', userData.rol);
@@ -61,7 +61,6 @@ function Login() {
           <TextField
             label="Correo electrocnico"
             type="email"
-            placeholder="Correo electrocnico"
             fullWidth
             margin="normal"
             value={email}
@@ -69,7 +68,6 @@ function Login() {
           />
           <TextField
             label="Contraseña"
-            placeholder="Contraseña"
             fullWidth
             type="password"
             value={password}
