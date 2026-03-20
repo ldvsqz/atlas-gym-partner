@@ -43,7 +43,6 @@ function App() {
   const version = packageInfo.version;
   const getMenu = (header = "Atlas") => (<Menu header={header} version={version} toggleThemeMode={toggleThemeMode} themeMode={themeMode} />);
 
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
