@@ -16,6 +16,7 @@ import StatsChart from "../../Components/Stats/StatsChart";
 import Util from '../../assets/Util';
 import StatsModel from '../../models/StatsModel'
 import StatService from '../../../Firebase/statsService';
+import { useAuthProfile } from '../../hooks/useAuthProfile';
 import './SetStats.css';
 
 function Stats({ stats = new StatsModel() }) {
@@ -23,7 +24,7 @@ function Stats({ stats = new StatsModel() }) {
     const [open, setOpen] = useState(false);
     const [statsState, setStats] = useState(stats);
     const [expanded, setExpanded] = useState(true);
-    const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
+    const { isAdmin } = useAuthProfile();
 
     const handleOpen = async () => {
         const lastStats = await StatService.getLast(stats.uid);
@@ -217,7 +218,7 @@ function Stats({ stats = new StatsModel() }) {
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={() => setOpen(false)} fullWidth>Cancelar</Button>
-                            {currentRol == 0 && <SetStats stats={stats} uid={stats.uid} isEditing={true} onSave={(updatedStats) => setStats(updatedStats)} />}
+                            {isAdmin && <SetStats stats={stats} uid={stats.uid} isEditing={true} onSave={(updatedStats) => setStats(updatedStats)} />}
                         </DialogActions>
 
                     </Dialog>

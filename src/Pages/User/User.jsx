@@ -41,6 +41,7 @@ import Util from '../../assets/Util';
 import UserModel from "../../models/UserModel";
 import { Timestamp } from 'firebase/firestore';
 import 'firebase/firestore';
+import { useAuthProfile } from '../../hooks/useAuthProfile';
 
 const getStatDate = (stat) => {
   if (!stat?.date) return null;
@@ -63,8 +64,8 @@ function User({ menu }) {
   const [statsHistory, setStatsHistory] = useState([]);
   const [routine, setRoutine] = useState({});
   const [loading, setLoading] = useState(true);
-  const [currentRol, setRol] = useState(localStorage.getItem("ROL"));
-  const [currentUid, setCurrentUid] = useState(localStorage.getItem("UID"));
+  const { user: authUser, isAdmin } = useAuthProfile();
+  const currentUid = authUser?.uid;
   const [roleChangeDialogOpen, setRoleChangeDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isOperationLoading, setIsOperationLoading] = useState(false);
@@ -75,7 +76,7 @@ function User({ menu }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const uid = (location && location.state && location.state.uid) || params.uid || localStorage.getItem("UID");
+    const uid = (location && location.state && location.state.uid) || params.uid || authUser?.uid;
     if (!uid) {
       // No UID provided via state, params or localStorage: redirect to users list
       navigate('/users');
@@ -105,7 +106,7 @@ function User({ menu }) {
     };
 
     fetchClientData();
-  }, [location.state, params.uid, navigate]);
+  }, [location.state, params.uid, navigate, authUser?.uid]);
 
 
 
@@ -194,8 +195,8 @@ function User({ menu }) {
   });
   const hasStats = Boolean(stats?.date);
   const isOwnProfile = currentUid === user.uid;
-  const canAddStats = currentRol == 0 || (isOwnProfile && !hasStats);
-  const canEditStats = currentRol == 0 && hasStats;
+  const canAddStats = isAdmin || (isOwnProfile && !hasStats);
+  const canEditStats = isAdmin && hasStats;
 
 
   return (
@@ -224,7 +225,7 @@ function User({ menu }) {
                             {util.getAge(util.getDateFromFirebase(user.birthday))} años · nac. {util.formatDateShort(util.getDateFromFirebase(user.birthday))}
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
-                            {currentUid === user.uid && currentRol == 0 ? 'Administrador' : `Activo hasta ${util.formatDateShort(util.getDateFromFirebase(user.until))}`}
+                            {currentUid === user.uid && isAdmin ? 'Administrador' : `Activo hasta ${util.formatDateShort(util.getDateFromFirebase(user.until))}`}
                           </Typography>
                         </Box>
                       </Box>
@@ -267,7 +268,7 @@ function User({ menu }) {
                         <SetUser user={user} onSave={(updatedUser) => setUser(updatedUser)} />
                       </Grid>
                       <Grid item xs={12} md={6}>
-                        {currentRol == 0 && currentUid !== user.uid && (
+                        {isAdmin && currentUid !== user.uid && (
                           <Alert
                           fullWidth
                           buttonName="Renovar membresía"
@@ -279,7 +280,7 @@ function User({ menu }) {
                       </Grid>
 
 
-                      {currentRol == 0 && currentUid !== user.uid && (
+                      {isAdmin && currentUid !== user.uid && (
                         <>
                       <Grid item xs={12} md={6}>
                         <Button
@@ -418,11 +419,11 @@ function User({ menu }) {
             <Divider sx={{ my: 3 }} />
             {/* 
             <Grid container sx={{ color: 'text.primary' }}>
-              <Grid item xs={currentRol == 0 ? 6 : 12}>
+              <Grid item xs={isAdmin ? 6 : 12}>
                 <Stats stats={stats} />
               </Grid>
               <Grid item xs={6}>
-                {currentRol == 0 && <SetStats stats={stats} uid={user.uid} isEditing={false} onSave={(updatedStats) => {
+                {isAdmin && <SetStats stats={stats} uid={user.uid} isEditing={false} onSave={(updatedStats) => {
                   handleOnSaveStats()
                 }} />
                 }
@@ -431,7 +432,7 @@ function User({ menu }) {
 
             <Divider />
             <Routines routine={routine} />
-            {currentRol == 0 && <SetRoutine uid={user.uid} onSaveRoutine={(newRoutine) => {
+            {isAdmin && <SetRoutine uid={user.uid} onSaveRoutine={(newRoutine) => {
              handleOnsetRoutine()
              }} />
             } */}

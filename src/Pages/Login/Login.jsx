@@ -13,6 +13,16 @@ import Divider from '@mui/material/Divider';
 import { useSnackbar } from '../../Components/snackbar/AtlasSnackbar';
 
 
+const resolvePostLoginRedirect = (lastRoute, userData, uid) => {
+  const defaultRoute = userData?.rol === 0 ? '/users' : `/user/${uid}`;
+  if (!lastRoute) return defaultRoute;
+
+  const pathname = lastRoute.split('?')[0];
+  if (userData?.rol === 0) return lastRoute;
+  if (pathname === '/aboutus' || pathname === `/user/${uid}`) return lastRoute;
+  return defaultRoute;
+};
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,9 +43,8 @@ function Login() {
           localStorage.setItem('ROL', userData.rol);
           setLoadingCircle(false);
           
-          // Redirigir a la última ruta guardada, o a /users por defecto
           const lastRoute = localStorage.getItem('LAST_ROUTE');
-          const redirectPath = lastRoute || '/users';
+          const redirectPath = resolvePostLoginRedirect(lastRoute, userData, uid);
           navigate(redirectPath, { state: { uid } });
         }
       }).catch(error => {

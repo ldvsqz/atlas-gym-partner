@@ -1,15 +1,21 @@
 import React from 'react';
-import Menu from '../Components/Menu/Menu';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-
+import { Box, Container, Typography } from '@mui/material';
+import ConstructionIcon from '@mui/icons-material/Construction';
 
 function Events({ menu }) {
-
   return (
     <div>
       {menu}
       <Container fixed>
+        <Box sx={{ py: 8, textAlign: 'center' }}>
+          <ConstructionIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+          <Typography variant="h5" gutterBottom>
+            Eventos
+          </Typography>
+          <Typography color="text.secondary">
+            Esta sección estará disponible próximamente.
+          </Typography>
+        </Box>
       </Container>
     </div>
   );

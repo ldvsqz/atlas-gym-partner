@@ -1,8 +1,9 @@
 import React, { Suspense, lazy, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Box, CircularProgress, colors } from '@mui/material';
+import { useAuthProfile } from "./hooks/useAuthProfile";
 import Menu from "./Components/Menu/Menu";
 import Login from "./Pages/Login/Login";
 import Register from "./Pages/Register/Register";
@@ -52,19 +53,19 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/public/cycle/:id" element={<PublicCycleView />} />
               <Route path="/cycle/:id" element={<PublicCycleView />} />
-              <Route path="/events" element={<Events menu={getMenu("Eventos")} />} />
-              <Route path="/users" element={<Users menu={getMenu("Personas")} />} />
-              <Route path="/finance" element={<Finance menu={getMenu("Finanzas")} />} />
+              <Route path="/events" element={<AdminRoute><Events menu={getMenu("Eventos")} /></AdminRoute>} />
+              <Route path="/users" element={<AdminRoute><Users menu={getMenu("Personas")} /></AdminRoute>} />
+              <Route path="/finance" element={<AdminRoute><Finance menu={getMenu("Finanzas")} /></AdminRoute>} />
               <Route
                 path="/cashbox"
-                element={<CashboxPage menu={getMenu("Arqueo de caja")} />}
+                element={<AdminRoute><CashboxPage menu={getMenu("Arqueo de caja")} /></AdminRoute>}
               />
-              <Route path="/training" element={<TrainingPage menu={getMenu("Planificación")} />} />
-              <Route path="/gym-layout" element={<GymLayoutPage menu={getMenu("Circuitos del gimnasio")} />} />
-              <Route path="/settings" element={<Settings menu={getMenu("Configuración")} />} />
-              <Route path="/exercises" element={<Exercises menu={getMenu("Ejercicios")} />} />
-              <Route path="/aboutus" element={<Aboutus menu={getMenu("Sobre nosotros")} />} />
-              <Route path="/user/:uid" element={<User menu={getMenu("Atlas")} />} />
+              <Route path="/training" element={<AdminRoute><TrainingPage menu={getMenu("Planificación")} /></AdminRoute>} />
+              <Route path="/gym-layout" element={<AdminRoute><GymLayoutPage menu={getMenu("Circuitos del gimnasio")} /></AdminRoute>} />
+              <Route path="/settings" element={<AdminRoute><Settings menu={getMenu("Configuración")} /></AdminRoute>} />
+              <Route path="/exercises" element={<AdminRoute><Exercises menu={getMenu("Ejercicios")} /></AdminRoute>} />
+              <Route path="/aboutus" element={<PrivateRoute><Aboutus menu={getMenu("Sobre nosotros")} /></PrivateRoute>} />
+              <Route path="/user/:uid" element={<UserRoute><User menu={getMenu("Atlas")} /></UserRoute>} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
@@ -72,6 +73,58 @@ function App() {
       </Router>
     </ThemeProvider>
   );
+}
+
+
+function PrivateRoute({ children }) {
+  const { user, loading } = useAuthProfile();
+
+  if (loading) {
+    return <PageLoader />;
+  }
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+}
+
+function AdminRoute({ children }) {
+  const { user, profile, loading } = useAuthProfile();
+
+  if (loading) {
+    return <PageLoader />;
+  }
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (profile?.rol !== 0) {
+    return <Navigate to={`/user/${user.uid}`} replace state={{ uid: user.uid }} />;
+  }
+
+  return children;
+}
+
+function UserRoute({ children }) {
+  const { uid } = useParams();
+  const { user, profile, loading } = useAuthProfile();
+
+  if (loading) {
+    return <PageLoader />;
+  }
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (profile?.rol === 0 || uid === user.uid) {
+    return children;
+  }
+
+  return <Navigate to={`/user/${user.uid}`} replace state={{ uid: user.uid }} />;
 }
 
 function PageLoader() {
