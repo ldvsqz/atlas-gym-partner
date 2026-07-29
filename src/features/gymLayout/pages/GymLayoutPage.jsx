@@ -381,6 +381,7 @@ function GymLayoutPage({ menu }) {
         onSubmit={handleExerciseSubmit}
         saving={exerciseSaving}
         exercise={editingExercise}
+        exercises={exercises}
       />
 
       <DeleteConfirmationDialog

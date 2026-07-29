@@ -190,6 +190,66 @@ exports.openWARequest = onCall(
   },
 );
 
+exports.sendMembershipStatusNotification = onCall(
+  {
+    region: 'us-central1',
+    timeoutSeconds: 60,
+    memory: '256MiB',
+    secrets: [OPENWA_API_KEY],
+  },
+  async (request) => {
+    await assertAdminRequest(request);
+
+    const uid = normalizeLookupValue(request.data?.uid);
+    if (!uid) {
+      throw new HttpsError('invalid-argument', 'El uid del usuario es requerido.');
+    }
+
+    const userSnapshot = await db.collection(USERS_COLLECTION).doc(uid).get();
+    if (!userSnapshot.exists) {
+      throw new HttpsError('not-found', 'No se encontro el usuario.');
+    }
+
+    const user = { uid: userSnapshot.id, ...userSnapshot.data() };
+    const phone = formatPhoneForOpenWA(user.phone);
+    if (!phone) {
+      throw new HttpsError('failed-precondition', 'El usuario no tiene un telefono valido.');
+    }
+
+    const untilDate = getDateFromFirestoreValue(user.until);
+    if (!untilDate) {
+      throw new HttpsError('failed-precondition', 'El usuario no tiene una fecha de membresia valida.');
+    }
+
+    const now = new Date();
+    const isExpired = untilDate < now;
+    const sessionName = getOpenWASessionName();
+    const text = isExpired
+      ? buildExpiredMessage(user.name, untilDate)
+      : buildActiveMessage(user.name, untilDate);
+
+    await sendTextMessage(sessionName, { chatId: phone, text });
+
+    const notificationRef = db.collection(NOTIFIED_COLLECTION).doc(user.uid);
+    await notificationRef.set(
+      buildNotificationPayload(user, phone, untilDate, {
+        notified: isExpired,
+        ...(isExpired
+          ? { lastExpiredNotifiedAt: FieldValue.serverTimestamp() }
+          : { lastActiveNotifiedAt: FieldValue.serverTimestamp() }),
+      }),
+      { merge: true },
+    );
+
+    return {
+      sent: true,
+      status: isExpired ? 'expired' : 'active',
+      uid: user.uid,
+      until: untilDate.toISOString(),
+    };
+  },
+);
+
 const REGISTRATION_RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const REGISTRATION_RATE_LIMIT_MAX_REQUESTS = 10;
 const registrationRateLimit = new Map();

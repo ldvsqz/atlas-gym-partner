@@ -111,10 +111,9 @@ function Login() {
               setLoadingCircle(true);
               signInWithGoogle().then((user) => {
                 setLoadingCircle(false);
-              })
-                .catch(() => {
+              }).catch(() => {
                   setLoadingCircle(false);
-                  showSnackbar('Error al iniciar sesión con Google', 'error');
+                  // showSnackbar('Error al iniciar sesión con Google', 'error');
                 })
             }}>
             <ListItemIcon>

@@ -1,5 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   CircularProgress,
@@ -16,12 +19,26 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CycleCard from './CycleCard';
 import CreateCycleDialog from '../dialogs/CreateCycleDialog';
 import { useCycles } from '../hooks/useCycles';
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import { CYCLE_LABELS, CYCLE_TYPES } from '../models/trainingModels';
 import { buildMainCircuit } from '../utils/mainCircuitBuilder.js';
+import {
+  LOAD_INTENSITY_OPTIONS,
+  LOAD_VOLUME_OPTIONS,
+  createSessionLoadsFromMicrocycleLoads,
+  createWizardLoadPlan,
+  formatCyclePlanningDescription,
+  formatLoadSummary,
+  formatSessionPlanningDescription,
+  getSessionLoadKey,
+  getWizardDayPlan,
+  mergeWizardLoadPlan,
+  normalizeWizardLoadPlan,
+} from '../utils/planningWizard.js';
 import { useSnackbar } from '../../../Components/snackbar/AtlasSnackbar';
 import TrainingService from '../../../../Firebase/trainingService';
 import GymLayoutService from '../../../../Firebase/gymLayoutService';
@@ -59,16 +76,6 @@ const getMesocycleWeeksFromPeriod = (startDate, endDate) => {
   return Math.max(1, Math.ceil(inclusiveDays / 7));
 };
 
-const getWizardStationCategories = (gymExercises = [], dayIndex = 1) => {
-  const categories = [...new Set(gymExercises.map((exercise) => exercise.category).filter(Boolean))].sort();
-  if (!categories.length) return [];
-
-  return Array.from({ length: 5 }, (_, index) => {
-    const offset = (Number(dayIndex || 1) - 1 + index) % categories.length;
-    return categories[offset];
-  });
-};
-
 function CycleList({ exercises = [] }) {
   const { cycles, loading, saving, createCycle, updateCycle, deleteCycle, refreshCycles } = useCycles();
   const { showSnackbar } = useSnackbar();
@@ -78,10 +85,14 @@ function CycleList({ exercises = [] }) {
   const [search, setSearch] = useState('');
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardType, setWizardType] = useState(CYCLE_TYPES.MICRO);
-  const [wizardObjective, setWizardObjective] = useState('');
   const [wizardStartDate, setWizardStartDate] = useState(dayjs().format('YYYY-MM-DD'));
   const [wizardEndDate, setWizardEndDate] = useState(dayjs().add(4, 'week').subtract(3, 'day').format('YYYY-MM-DD'));
   const [wizardSaving, setWizardSaving] = useState(false);
+  const [wizardGymCategories, setWizardGymCategories] = useState([]);
+  const [wizardCategoriesLoading, setWizardCategoriesLoading] = useState(false);
+  const [wizardLoadsTouched, setWizardLoadsTouched] = useState(false);
+  const [wizardMicrocycleLoads, setWizardMicrocycleLoads] = useState([]);
+  const [wizardSessionLoads, setWizardSessionLoads] = useState({});
 
   const filteredCycles = useMemo(() => {
     const value = search.trim().toLowerCase();
@@ -99,6 +110,39 @@ function CycleList({ exercises = [] }) {
         .some((field) => String(field).toLowerCase().includes(value))
     );
   }, [cycles, search]);
+
+  const currentWizardWeeks = useMemo(() => {
+    if (wizardType === CYCLE_TYPES.MICRO) return 1;
+    return getMesocycleWeeksFromPeriod(wizardStartDate, wizardEndDate);
+  }, [wizardEndDate, wizardStartDate, wizardType]);
+
+  useEffect(() => {
+    if (!wizardOpen) return;
+
+    const defaultPlan = createWizardLoadPlan({
+      weeks: currentWizardWeeks,
+      categoryOptions: wizardGymCategories,
+    });
+    setWizardMicrocycleLoads((currentMicrocycleLoads) =>
+      mergeWizardLoadPlan(
+        defaultPlan,
+        { microcycleLoads: currentMicrocycleLoads, sessionLoads: {} },
+        wizardLoadsTouched
+      ).microcycleLoads
+    );
+    setWizardSessionLoads((currentSessionLoads) =>
+      mergeWizardLoadPlan(
+        defaultPlan,
+        { microcycleLoads: [], sessionLoads: currentSessionLoads },
+        wizardLoadsTouched
+      ).sessionLoads
+    );
+  }, [
+    currentWizardWeeks,
+    wizardGymCategories,
+    wizardLoadsTouched,
+    wizardOpen,
+  ]);
 
   const handleDelete = async () => {
     if (!cycleToDelete) return;
@@ -129,8 +173,48 @@ function CycleList({ exercises = [] }) {
     setDialogOpen(true);
   };
 
+  const loadWizardCategories = async () => {
+    try {
+      setWizardCategoriesLoading(true);
+      const gymExercises = await GymLayoutService.getExercises();
+      setWizardGymCategories([...new Set(gymExercises.map((exercise) => exercise.category).filter(Boolean))].sort());
+    } catch (error) {
+      console.error('Error loading wizard categories:', error);
+      showSnackbar('No se pudieron cargar las categorías del gimnasio', 'warning');
+    } finally {
+      setWizardCategoriesLoading(false);
+    }
+  };
+
   const openGenerateDialog = () => {
+    setWizardLoadsTouched(false);
     setWizardOpen(true);
+    loadWizardCategories();
+  };
+
+  const updateMicrocycleLoad = (weekIndex, field, value) => {
+    setWizardLoadsTouched(true);
+    setWizardMicrocycleLoads((currentLoads) =>
+      currentLoads.map((load) =>
+        Number(load.weekIndex) === Number(weekIndex)
+          ? { ...load, [field]: value }
+          : load
+      )
+    );
+  };
+
+  const updateSessionLoad = (weekIndex, dayOfWeek, field, value) => {
+    setWizardLoadsTouched(true);
+    const loadKey = getSessionLoadKey(weekIndex, dayOfWeek);
+    setWizardSessionLoads((currentLoads) => ({
+      ...currentLoads,
+      [loadKey]: {
+        ...currentLoads[loadKey],
+        weekIndex: Number(weekIndex),
+        dayOfWeek: Number(dayOfWeek),
+        [field]: value,
+      },
+    }));
   };
 
   const runWizard = async () => {
@@ -140,11 +224,6 @@ function CycleList({ exercises = [] }) {
 
       if (!gymExercises.length) {
         showSnackbar('Agrega ejercicios en Circuitos del gimnasio antes de usar el Wizard', 'warning');
-        return;
-      }
-
-      if (!wizardObjective.trim()) {
-        showSnackbar('Indica el objetivo del ciclo', 'warning');
         return;
       }
 
@@ -167,8 +246,26 @@ function CycleList({ exercises = [] }) {
         return;
       }
 
+      const gymCategories = [...new Set(gymExercises.map((exercise) => exercise.category).filter(Boolean))].sort();
+      const normalizedPlan = normalizeWizardLoadPlan({
+        weeks,
+        categoryOptions: gymCategories,
+        microcycleLoads: wizardMicrocycleLoads,
+        sessionLoads: wizardType === CYCLE_TYPES.MICRO ? wizardSessionLoads : {},
+      });
+      const wizardPlan = wizardType === CYCLE_TYPES.MESO
+        ? {
+          ...normalizedPlan,
+          sessionLoads: createSessionLoadsFromMicrocycleLoads({
+            microcycleLoads: normalizedPlan.microcycleLoads,
+            categoryOptions: gymCategories,
+          }),
+        }
+        : normalizedPlan;
       const cycleName = formatCycleDateRange(cycleStart, cycleEnd);
-      const cycleDescription = `Objetivo: ${wizardObjective.trim()}\nAutogenerado.`;
+      const cycleDescription = wizardType === CYCLE_TYPES.MICRO
+        ? formatSessionPlanningDescription({ sessionLoads: wizardPlan.sessionLoads })
+        : formatCyclePlanningDescription({ microcycleLoads: wizardPlan.microcycleLoads });
       const generatedCycle = await TrainingService.createCycle({
         name: cycleName,
         type: wizardType,
@@ -182,7 +279,19 @@ function CycleList({ exercises = [] }) {
       await Promise.all(days.map((day) => {
         const sessionDate = getSessionDate(cycleStart, day);
         const sessionName = formatCycleDate(sessionDate);
-        const stationCategories = getWizardStationCategories(gymExercises, day.dayIndex);
+        const dayPlan = getWizardDayPlan({
+          weekIndex: day.weekIndex,
+          dayOfWeek: day.dayOfWeek,
+          categoryOptions: gymCategories,
+          microcycleLoads: wizardPlan.microcycleLoads,
+          sessionLoads: wizardPlan.sessionLoads,
+        });
+        const stationCategories = dayPlan.stationCategories;
+        const loadSummary = formatLoadSummary({
+          microcycleLoad: dayPlan.microcycleLoad,
+          sessionLoad: dayPlan.sessionLoad,
+          includeMicrocycle: wizardType === CYCLE_TYPES.MESO,
+        });
         const mainCircuit = buildMainCircuit({
           stationCategories,
           exercises: gymExercises,
@@ -204,7 +313,10 @@ function CycleList({ exercises = [] }) {
               h: station.gridPosition.h,
             })),
             exerciseOrder: stationExerciseIds,
-            listNotes: `${mainCircuit.laps} vueltas · ${mainCircuit.workMinutes} min trabajo · ${mainCircuit.transitionMinutes} min transición`,
+            listNotes: [
+              `${mainCircuit.laps} vueltas · ${mainCircuit.workMinutes} min trabajo · ${mainCircuit.transitionMinutes} min transición`,
+              loadSummary,
+            ].join('\n\n'),
           })
           : Promise.resolve();
 
@@ -216,13 +328,18 @@ function CycleList({ exercises = [] }) {
             gymLayoutId,
             gymLayoutName: circuitName,
             mainCircuit,
+            notes: loadSummary,
+          },
+          extraBlock: {
+            ...day.extraBlock,
+            notes: loadSummary,
           },
         }));
       }));
 
       await refreshCycles();
       setWizardOpen(false);
-      setWizardObjective('');
+      setWizardLoadsTouched(false);
       showSnackbar('Ciclo y circuitos generados correctamente', 'success');
     } catch (error) {
       console.error('Error running planning wizard:', error);
@@ -231,6 +348,133 @@ function CycleList({ exercises = [] }) {
       setWizardSaving(false);
     }
   };
+
+  const renderLoadSelect = ({ label, value, onChange, options, disabled = false }) => (
+    (() => {
+      const selectOptions = value && !options.includes(value) ? [value, ...options] : options;
+
+      return (
+        <TextField
+          select
+          size="small"
+          label={label}
+          value={value || ''}
+          onChange={(event) => onChange(event.target.value)}
+          disabled={wizardSaving || disabled}
+          fullWidth
+        >
+          {selectOptions.length ? (
+            selectOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))
+          ) : (
+            <MenuItem value="">Sin opciones</MenuItem>
+          )}
+        </TextField>
+      );
+    })()
+  );
+
+  const renderMicrocycleLoadFields = (microcycleLoad) => {
+    const weekIndex = Number(microcycleLoad.weekIndex || 1);
+
+    return (
+      <Grid container spacing={1}>
+        <Grid item xs={12} sm={4}>
+          {renderLoadSelect({
+            label: 'Énfasis',
+            value: microcycleLoad.focusCategory,
+            options: wizardGymCategories,
+            disabled: !wizardGymCategories.length,
+            onChange: (value) => updateMicrocycleLoad(weekIndex, 'focusCategory', value),
+          })}
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          {renderLoadSelect({
+            label: 'Intensidad',
+            value: microcycleLoad.intensity,
+            options: LOAD_INTENSITY_OPTIONS,
+            onChange: (value) => updateMicrocycleLoad(weekIndex, 'intensity', value),
+          })}
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          {renderLoadSelect({
+            label: 'Volumen',
+            value: microcycleLoad.volume,
+            options: LOAD_VOLUME_OPTIONS,
+            onChange: (value) => updateMicrocycleLoad(weekIndex, 'volume', value),
+          })}
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            size="small"
+            label="Nota de la semana"
+            value={microcycleLoad.notes || ''}
+            onChange={(event) => updateMicrocycleLoad(weekIndex, 'notes', event.target.value)}
+            disabled={wizardSaving}
+            fullWidth
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const renderSessionLoadCard = (sessionLoad, weekIndex) => (
+    <Grid item xs={12} md={6} key={getSessionLoadKey(weekIndex, sessionLoad.dayOfWeek)}>
+      <Box
+        sx={{
+          border: '1px solid',
+          borderColor: 'divider',
+          borderRadius: 1,
+          p: 1,
+          bgcolor: 'background.default',
+        }}
+      >
+        <Typography variant="caption" fontWeight={900}>
+          Sesión {sessionLoad.dayOfWeek}
+        </Typography>
+        <Grid container spacing={1} sx={{ mt: 0.25 }}>
+          <Grid item xs={12} sm={4}>
+            {renderLoadSelect({
+              label: 'Énfasis',
+              value: sessionLoad.focusCategory,
+              options: wizardGymCategories,
+              disabled: !wizardGymCategories.length,
+              onChange: (value) => updateSessionLoad(weekIndex, sessionLoad.dayOfWeek, 'focusCategory', value),
+            })}
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            {renderLoadSelect({
+              label: 'Intensidad',
+              value: sessionLoad.intensity,
+              options: LOAD_INTENSITY_OPTIONS,
+              onChange: (value) => updateSessionLoad(weekIndex, sessionLoad.dayOfWeek, 'intensity', value),
+            })}
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            {renderLoadSelect({
+              label: 'Volumen',
+              value: sessionLoad.volume,
+              options: LOAD_VOLUME_OPTIONS,
+              onChange: (value) => updateSessionLoad(weekIndex, sessionLoad.dayOfWeek, 'volume', value),
+            })}
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              size="small"
+              label="Nota de sesión"
+              value={sessionLoad.notes || ''}
+              onChange={(event) => updateSessionLoad(weekIndex, sessionLoad.dayOfWeek, 'notes', event.target.value)}
+              disabled={wizardSaving}
+              fullWidth
+            />
+          </Grid>
+        </Grid>
+      </Box>
+    </Grid>
+  );
 
   return (
     <Box>
@@ -319,7 +563,7 @@ function CycleList({ exercises = [] }) {
         open={wizardOpen}
         onClose={wizardSaving ? undefined : () => setWizardOpen(false)}
         fullWidth
-        maxWidth="xs"
+        maxWidth="md"
       >
         <DialogTitle>Wizard de planificación</DialogTitle>
         <DialogContent>
@@ -343,16 +587,6 @@ function CycleList({ exercises = [] }) {
               <MenuItem value={CYCLE_TYPES.MICRO}>Microciclo</MenuItem>
               <MenuItem value={CYCLE_TYPES.MESO}>Mesociclo</MenuItem>
             </TextField>
-
-            <TextField
-              label="Objetivo del ciclo"
-              value={wizardObjective}
-              onChange={(event) => setWizardObjective(event.target.value)}
-              disabled={wizardSaving}
-              minRows={2}
-              multiline
-              fullWidth
-            />
 
             <TextField
               type="date"
@@ -386,6 +620,81 @@ function CycleList({ exercises = [] }) {
             <Typography variant="body2" color="text.secondary">
               Se creará {wizardType === CYCLE_TYPES.MICRO ? `el microciclo ${formatCycleDateRange(wizardStartDate, dayjs(wizardStartDate).add(4, 'day'))}` : `el mesociclo ${formatCycleDateRange(wizardStartDate, wizardEndDate)}`} y cada sesión quedará vinculada con su circuito principal.
             </Typography>
+
+            <Box>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={0.75} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} sx={{ mb: 1 }}>
+                <Box>
+                  <Typography variant="subtitle2" fontWeight={900}>
+                    Cargas del ciclo
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {wizardType === CYCLE_TYPES.MICRO
+                      ? 'Configura la carga de cada sesión.'
+                      : 'Configura la carga de cada semana del mesociclo.'}
+                  </Typography>
+                </Box>
+                <Button
+                  type="button"
+                  size="small"
+                  variant="outlined"
+                  onClick={() => {
+                    const plan = createWizardLoadPlan({
+                      weeks: currentWizardWeeks,
+                      categoryOptions: wizardGymCategories,
+                    });
+                    setWizardLoadsTouched(false);
+                    setWizardMicrocycleLoads(plan.microcycleLoads);
+                    setWizardSessionLoads(plan.sessionLoads);
+                  }}
+                  disabled={wizardSaving}
+                >
+                  Restablecer cargas
+                </Button>
+              </Stack>
+
+              {wizardCategoriesLoading && (
+                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+                  <CircularProgress size={14} />
+                  <Typography variant="caption" color="text.secondary">
+                    Cargando categorías disponibles...
+                  </Typography>
+                </Stack>
+              )}
+
+              {wizardType === CYCLE_TYPES.MICRO ? (
+                <Grid container spacing={1}>
+                  {Array.from({ length: 5 }, (_, index) => {
+                    const dayOfWeek = index + 1;
+                    const loadKey = getSessionLoadKey(1, dayOfWeek);
+                    return renderSessionLoadCard(wizardSessionLoads[loadKey] || { weekIndex: 1, dayOfWeek }, 1);
+                  })}
+                </Grid>
+              ) : (
+                <Stack spacing={1}>
+                  {wizardMicrocycleLoads.map((microcycleLoad) => {
+                    const weekIndex = Number(microcycleLoad.weekIndex || 1);
+
+                    return (
+                      <Accordion key={weekIndex} disableGutters sx={{ borderRadius: 1, '&:before': { display: 'none' } }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Box sx={{ minWidth: 0 }}>
+                            <Typography variant="subtitle2" fontWeight={900}>
+                              Semana {weekIndex}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>
+                              {microcycleLoad.focusCategory || 'Sin énfasis'} · I {microcycleLoad.intensity} · V {microcycleLoad.volume}
+                            </Typography>
+                          </Box>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          {renderMicrocycleLoadFields(microcycleLoad)}
+                        </AccordionDetails>
+                      </Accordion>
+                    );
+                  })}
+                </Stack>
+              )}
+            </Box>
 
             {wizardSaving && (
               <Stack direction="row" spacing={1} alignItems="center">
