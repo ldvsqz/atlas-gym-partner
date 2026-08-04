@@ -130,6 +130,17 @@ function Menu({
           </ListItem>
         )}
 
+        {isAdmin && (
+          <ListItem key="Configuración" disablePadding>
+            <ListItemButton component={Link} to="/settings">
+              <ListItemIcon>
+                <InfoIcon />
+              </ListItemIcon>
+              <ListItemText primary="Configuración" />
+            </ListItemButton>
+          </ListItem>
+        )}
+
         <ListItem key="Sobre nosotros" disablePadding>
           <ListItemButton component={Link} to="/aboutus">
             <ListItemIcon>

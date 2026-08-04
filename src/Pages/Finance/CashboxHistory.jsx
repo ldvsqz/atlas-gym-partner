@@ -31,6 +31,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import Util from '../../assets/Util';
 import FinanceModel from '../../models/FinanceModel';
+import moduleSettings from '../../config/moduleSettings';
 import {
     CASHBOX_EXPENSE_CATEGORY,
     formatPeriodLabel,
@@ -47,6 +48,35 @@ import {
 const util = new Util();
 const formatCurrency = (amount) => `₡${Number(amount || 0).toFixed(2)}`;
 const formatMonth = (month) => (month ? dayjs(month, 'YYYY-MM').format('MMMM YYYY') : '-');
+const DEFAULT_DISTRIBUTION_PERCENTAGES = {
+    part1: 40,
+    part2: 40,
+    part3: 20,
+};
+
+const getCashboxSettings = () => moduleSettings.getSettings('cashbox');
+
+function getDistributionKeys(percentages = {}) {
+    const keys = Object.keys(percentages || {});
+    if (keys.length === 0) return [];
+
+    const numberedKeys = keys.filter((key) => /^part\d+$/.test(key));
+    if (numberedKeys.length > 0) {
+        return numberedKeys.sort((a, b) => {
+            const aNum = Number(a.replace('part', ''));
+            const bNum = Number(b.replace('part', ''));
+            return aNum - bNum;
+        });
+    }
+
+    const fallbackKeys = ['first', 'second', 'third'];
+    return fallbackKeys.filter((key) => keys.includes(key));
+}
+
+function getDistributionLabel(key) {
+    const match = key.match(/^part(\d+)$/);
+    return match ? `Parte ${match[1]}` : key;
+}
 
 function CashboxHistoryDialog({ open, onClose, history, loading, onDownloadHistoryPDF }) {
     return (
@@ -123,12 +153,12 @@ function CashboxPage() {
     const [openHistoryModal, setOpenHistoryModal] = useState(false);
     const [historyLoading, setHistoryLoading] = useState(false);
     const [cashboxMonth, setCashboxMonth] = useState(isMonthParam(initialMonth) ? initialMonth : dayjs().format('YYYY-MM'));
-    const [debtAmount, setDebtAmount] = useState(120000);
-    const [distributionPercentages, setDistributionPercentages] = useState({
-        first: 40,
-        second: 40,
-        third: 20,
-    });
+    const [cashboxSettings, setCashboxSettings] = useState(getCashboxSettings);
+    const [debtAmount, setDebtAmount] = useState(() => getCashboxSettings().fixedDebtAmount ?? 0);
+    const [distributionPercentages, setDistributionPercentages] = useState(
+        () => getCashboxSettings().distributionPercentages || DEFAULT_DISTRIBUTION_PERCENTAGES,
+    );
+    const [maintenancePercentage, setMaintenancePercentage] = useState(() => getCashboxSettings().maintenancePercentage ?? 20);
     const [savedCashbox, setSavedCashbox] = useState(null);
     const [cashboxLoading, setCashboxLoading] = useState(false);
     const [cashboxSaving, setCashboxSaving] = useState(false);
@@ -169,15 +199,19 @@ function CashboxPage() {
             setSavedCashbox(cashbox);
 
             if (cashbox) {
-                setDebtAmount(cashbox.debts || 0);
-                setDistributionPercentages({
-                    first: cashbox.distributionPercentages?.first ?? 40,
-                    second: cashbox.distributionPercentages?.second ?? 40,
-                    third: cashbox.distributionPercentages?.third ?? 20,
-                });
+                setDebtAmount(cashbox.debts ?? cashboxSettings.fixedDebtAmount ?? 0);
+                setDistributionPercentages(
+                    cashbox.distributionPercentages || cashboxSettings.distributionPercentages || {
+                        part1: 40,
+                        part2: 40,
+                        part3: 20,
+                    }
+                );
+                setMaintenancePercentage(cashbox.maintenancePercentage ?? cashboxSettings.maintenancePercentage ?? 20);
             } else {
-                setDebtAmount(120000);
-                setDistributionPercentages({ first: 40, second: 40, third: 20 });
+                setDebtAmount(cashboxSettings.fixedDebtAmount ?? 0);
+                setDistributionPercentages(cashboxSettings.distributionPercentages || DEFAULT_DISTRIBUTION_PERCENTAGES);
+                setMaintenancePercentage(cashboxSettings.maintenancePercentage ?? 20);
             }
         } catch (error) {
             console.error('Error fetching monthly cashbox:', error);
@@ -185,12 +219,22 @@ function CashboxPage() {
         } finally {
             setCashboxLoading(false);
         }
-    }, [cashboxMonth, showSnackbar]);
+    }, [cashboxMonth, showSnackbar, cashboxSettings]);
 
     useEffect(() => {
         fetchFinances();
         fetchCashboxHistory();
     }, [fetchFinances, fetchCashboxHistory]);
+
+    useEffect(() => {
+        const unsubscribe = moduleSettings.subscribe('cashbox', (settings) => {
+            setCashboxSettings(settings);
+            setDebtAmount(settings.fixedDebtAmount ?? 0);
+            setDistributionPercentages(settings.distributionPercentages || DEFAULT_DISTRIBUTION_PERCENTAGES);
+            setMaintenancePercentage(settings.maintenancePercentage ?? 20);
+        });
+        return unsubscribe;
+    }, []);
 
     useEffect(() => {
         const month = searchParams.get('month');
@@ -220,17 +264,25 @@ function CashboxPage() {
     const calculateCashbox = (period = selectedPeriod) => {
         const monthlyFinances = getMonthlyFinances(period);
         const monthlyIncome = monthlyFinances
-            .filter(f => f.type === 'income')
+            .filter((f) => f.type === 'income')
             .reduce((sum, f) => sum + parseFloat(f.amount || 0), 0);
         const monthlyExpense = monthlyFinances
-            .filter(f => f.type === 'expense')
+            .filter((f) => f.type === 'expense')
             .reduce((sum, f) => sum + parseFloat(f.amount || 0), 0);
         const totalBalance = monthlyIncome - monthlyExpense;
         const debts = Math.max(parseFloat(debtAmount || 0), 0);
         const balanceAfterDebts = totalBalance - debts;
-        const maintenanceFund = balanceAfterDebts > 0 ? balanceAfterDebts * 0.2 : 0;
+        const maintenanceFund = balanceAfterDebts > 0 ? balanceAfterDebts * (Number(maintenancePercentage || 20) / 100) : 0;
         const distributableBalance = balanceAfterDebts - maintenanceFund;
         const safeDistributableBalance = distributableBalance > 0 ? distributableBalance : 0;
+
+        const distributionKeys = getDistributionKeys(distributionPercentages);
+        const distributions = distributionKeys.reduce((acc, key) => {
+            acc[key] = safeDistributableBalance * (Number(distributionPercentages[key] || 0) / 100);
+            return acc;
+        }, {});
+
+        const distributionTotalPercentage = distributionKeys.reduce((sum, key) => sum + Number(distributionPercentages[key] || 0), 0);
 
         return {
             period,
@@ -242,15 +294,9 @@ function CashboxPage() {
             balanceAfterDebts,
             maintenanceFund,
             distributableBalance: safeDistributableBalance,
-            distributions: {
-                first: safeDistributableBalance * (Number(distributionPercentages.first || 0) / 100),
-                second: safeDistributableBalance * (Number(distributionPercentages.second || 0) / 100),
-                third: safeDistributableBalance * (Number(distributionPercentages.third || 0) / 100),
-            },
-            distributionTotalPercentage:
-                Number(distributionPercentages.first || 0)
-                + Number(distributionPercentages.second || 0)
-                + Number(distributionPercentages.third || 0),
+            distributions,
+            distributionTotalPercentage,
+            distributionKeys,
         };
     };
 
@@ -300,9 +346,11 @@ function CashboxPage() {
             theme: 'grid',
             head: [['Distribución', 'Porcentaje', 'Monto']],
             body: [
-                ['Parte 1', `${distributionPercentages.first}%`, formatCurrency(cashbox.distributions.first)],
-                ['Parte 2', `${distributionPercentages.second}%`, formatCurrency(cashbox.distributions.second)],
-                ['Parte 3', `${distributionPercentages.third}%`, formatCurrency(cashbox.distributions.third)],
+                ...getDistributionKeys(distributionPercentages).map((key) => [
+                    getDistributionLabel(key),
+                    `${distributionPercentages[key] ?? 0}%`,
+                    formatCurrency(cashbox.distributions[key] ?? 0),
+                ]),
             ],
             styles: { fontSize: 10 },
             headStyles: { fillColor: [69, 90, 100] },
@@ -374,9 +422,11 @@ function CashboxPage() {
                 theme: 'grid',
                 head: [['Distribución', 'Porcentaje', 'Monto']],
                 body: [
-                    ['Parte 1', `${cashbox.distributionPercentages?.first ?? 0}%`, formatCurrency(distributions.first ?? 0)],
-                    ['Parte 2', `${cashbox.distributionPercentages?.second ?? 0}%`, formatCurrency(distributions.second ?? 0)],
-                    ['Parte 3', `${cashbox.distributionPercentages?.third ?? 0}%`, formatCurrency(distributions.third ?? 0)],
+                    ...getDistributionKeys(cashbox.distributionPercentages || {}).map((key) => [
+                        getDistributionLabel(key),
+                        `${cashbox.distributionPercentages?.[key] ?? 0}%`,
+                        formatCurrency(distributions[key] ?? 0),
+                    ]),
                 ],
                 styles: { fontSize: 10 },
                 headStyles: { fillColor: [69, 90, 100] },
@@ -438,11 +488,10 @@ function CashboxPage() {
             const payload = {
                 month: cashboxMonth,
                 debts: currentCashbox.debts,
-                distributionPercentages: {
-                    first: Number(distributionPercentages.first || 0),
-                    second: Number(distributionPercentages.second || 0),
-                    third: Number(distributionPercentages.third || 0),
-                },
+                distributionPercentages: getDistributionKeys(distributionPercentages).reduce((acc, key) => ({
+                    ...acc,
+                    [key]: Number(distributionPercentages[key] || 0),
+                }), {}),
                 summary: {
                     monthlyIncome: currentCashbox.monthlyIncome,
                     monthlyExpense: currentCashbox.monthlyExpense,
@@ -549,49 +598,22 @@ function CashboxPage() {
                                         label="Deudas"
                                         type="number"
                                         value={debtAmount}
-                                        onChange={(event) => setDebtAmount(event.target.value)}
-                                        inputProps={{ min: 0, step: '0.01' }}
+                                        InputProps={{ readOnly: true }}
+                                        inputProps={{ min: 0, step: '0.01', tabIndex: -1 }}
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={2}>
-                                    <TextField
-                                        fullWidth
-                                        label="Parte 1 %"
-                                        type="number"
-                                        value={distributionPercentages.first}
-                                        onChange={(event) => setDistributionPercentages({
-                                            ...distributionPercentages,
-                                            first: event.target.value,
-                                        })}
-                                        inputProps={{ min: 0, step: '1' }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={2}>
-                                    <TextField
-                                        fullWidth
-                                        label="Parte 2 %"
-                                        type="number"
-                                        value={distributionPercentages.second}
-                                        onChange={(event) => setDistributionPercentages({
-                                            ...distributionPercentages,
-                                            second: event.target.value,
-                                        })}
-                                        inputProps={{ min: 0, step: '1' }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={2}>
-                                    <TextField
-                                        fullWidth
-                                        label="Parte 3 %"
-                                        type="number"
-                                        value={distributionPercentages.third}
-                                        onChange={(event) => setDistributionPercentages({
-                                            ...distributionPercentages,
-                                            third: event.target.value,
-                                        })}
-                                        inputProps={{ min: 0, step: '1' }}
-                                    />
-                                </Grid>
+                                {getDistributionKeys(distributionPercentages).map((key) => (
+                                    <Grid item xs={12} md={2} key={key}>
+                                        <TextField
+                                            fullWidth
+                                            label={`${getDistributionLabel(key)} %`}
+                                            type="number"
+                                            value={distributionPercentages[key] ?? ''}
+                                            InputProps={{ readOnly: true }}
+                                            inputProps={{ min: 0, step: '1', tabIndex: -1 }}
+                                        />
+                                    </Grid>
+                                ))}
                             </Grid>
 
                             {cashbox.distributionTotalPercentage !== 100 && (
@@ -628,7 +650,7 @@ function CashboxPage() {
                                 <Grid item xs={12} sm={6} md={3}>
                                     <Card variant="outlined">
                                         <CardContent>
-                                            <Typography variant="body2" color="text.secondary">Mantenimiento 20% (M)</Typography>
+                                            <Typography variant="body2" color="text.secondary">Mantenimiento {maintenancePercentage}% (M)</Typography>
                                             <Typography variant="h6">{formatCurrency(cashbox.maintenanceFund)}</Typography>
                                         </CardContent>
                                     </Card>
@@ -638,18 +660,16 @@ function CashboxPage() {
                             <Divider sx={{ my: 2 }} />
 
                             <Grid container spacing={2}>
-                                <Grid item xs={12} md={4}>
-                                    <Typography variant="body2" color="text.secondary">Parte 1 ({distributionPercentages.first}%)</Typography>
-                                    <Typography variant="h6">{formatCurrency(cashbox.distributions.first)}</Typography>
-                                </Grid>
-                                <Grid item xs={12} md={4}>
-                                    <Typography variant="body2" color="text.secondary">Parte 2 ({distributionPercentages.second}%)</Typography>
-                                    <Typography variant="h6">{formatCurrency(cashbox.distributions.second)}</Typography>
-                                </Grid>
-                                <Grid item xs={12} md={4}>
-                                    <Typography variant="body2" color="text.secondary">Parte 3 ({distributionPercentages.third}%)</Typography>
-                                    <Typography variant="h6">{formatCurrency(cashbox.distributions.third)}</Typography>
-                                </Grid>
+                                {getDistributionKeys(distributionPercentages).map((key) => (
+                                    <Grid item xs={12} md={4} key={key}>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {getDistributionLabel(key)} ({distributionPercentages[key]}%)
+                                        </Typography>
+                                        <Typography variant="h6">
+                                            {formatCurrency(cashbox.distributions[key] ?? 0)}
+                                        </Typography>
+                                    </Grid>
+                                ))}
                             </Grid>
                         </Paper>
 
