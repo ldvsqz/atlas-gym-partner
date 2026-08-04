@@ -211,7 +211,7 @@ exports.sendMembershipStatusNotification = onCall(
     }
 
     const user = { uid: userSnapshot.id, ...userSnapshot.data() };
-    const phone = formatPhoneForOpenWA(user.phone);
+    const phone = formatPhoneForOpenWA('71699673');
     if (!phone) {
       throw new HttpsError('failed-precondition', 'El usuario no tiene un telefono valido.');
     }

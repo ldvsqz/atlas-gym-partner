@@ -21,47 +21,35 @@ const checkRegistrationAvailability = async ({ dni = '', email = '' }) => {
 };
 
 
-const signInWithGoogle = () => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const res = await signInWithPopup(auth, googleProvider);
-            const normalizedEmail = (res.user.email || '').trim().toLowerCase();
-            const userExists = await UserService.existsByUid(res.user.uid);
-            const { available } = await checkRegistrationAvailability({ email: normalizedEmail });
-            if (userExists) {
-                const user = await UserService.get(res.user.uid);
-                resolve(user);
-            } else if (!available) {
-                reject(createAppError('app/registration-unavailable', 'Ya existe un perfil registrado con estos datos.'));
-            } else {
-                const user = new UserModel(
-                    res.user.birthday || Timestamp.now(),
-                    '',
-                    normalizedEmail,
-                    (res.user.displayName || '').trim(),
-                    res.user.phoneNumber || '',
-                    res.user.uid,
-                    Timestamp.now(),
-                );
-                await UserService.add(user);
-                resolve(user);
-            }
-        } catch (error) {
-            reject(error);
-        }
-    });
+const signInWithGoogle = async () => {
+    const res = await signInWithPopup(auth, googleProvider);
+    const normalizedEmail = (res.user.email || '').trim().toLowerCase();
+    const userExists = await UserService.existsByUid(res.user.uid);
+    const { available } = await checkRegistrationAvailability({ email: normalizedEmail });
+    if (userExists) {
+        const user = await UserService.get(res.user.uid);
+        return user;
+    } else if (!available) {
+        throw createAppError('app/registration-unavailable', 'Ya existe un perfil registrado con estos datos.');
+    } else {
+        const user = new UserModel(
+            res.user.birthday || Timestamp.now(),
+            '',
+            normalizedEmail,
+            (res.user.displayName || '').trim(),
+            res.user.phoneNumber || '',
+            res.user.uid,
+            Timestamp.now(),
+        );
+        await UserService.add(user);
+        return user;
+    }
 };
 
 
-const logInWithEmailAndPassword = (email, password) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const response = await signInWithEmailAndPassword(auth, email, password);
-            resolve(response);
-        } catch (error) {
-            reject(error);
-        }
-    });
+const logInWithEmailAndPassword = async (email, password) => {
+    const response = await signInWithEmailAndPassword(auth, email, password);
+    return response;
 };
 
 
@@ -105,15 +93,9 @@ const registerWithEmailAndPassword = async (dni, birthday, phone, name, email, p
 };
 
 
-const sendPasswordReset = (email) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const response = await sendPasswordResetEmail(auth, email);
-            resolve(response);
-        } catch (error) {
-            reject(error);
-        }
-    });
+const sendPasswordReset = async (email) => {
+    const response = await sendPasswordResetEmail(auth, email);
+    return response;
 };
 
 

@@ -42,7 +42,7 @@ export default function TransferList(props) {
     const handleSearch = (event) => {
         const term = util.removeAccents(event.target.value.toLowerCase());
         setSearchTerm(term);
-        if (!!term) {
+        if (term) {
 
             const filteredExercises = left.filter((ex) =>
                 util.removeAccents(ex.name.toLowerCase()).includes(term) ||

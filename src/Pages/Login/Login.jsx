@@ -37,7 +37,7 @@ function Login() {
     setLoadingCircle(true);
     if (user) {
       UserService.get(user.uid).then(userData => {
-        if (!!userData) {
+        if (userData) {
           const uid = user.uid;
           localStorage.setItem('UID', uid);
           localStorage.setItem('ROL', userData.rol);
