@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Container,
@@ -13,6 +13,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import { useSnackbar } from '../../../Components/snackbar/AtlasSnackbar';
+import moduleSettings from '../../../config/moduleSettings';
 import DeleteConfirmationDialog from '../../training/components/DeleteConfirmationDialog';
 import ExercisePalette from '../components/ExercisePalette';
 import GymGrid from '../components/GymGrid';
@@ -23,8 +24,6 @@ import CreateExerciseDialog from '../dialogs/CreateExerciseDialog';
 import { useGymExercises } from '../hooks/useGymExercises';
 import { useGymLayout } from '../hooks/useGymLayout';
 import {
-  DEFAULT_GRID_COLS,
-  DEFAULT_GRID_ROWS,
   createGymLayoutModel,
   collidesWithReservedCell,
   removeReservedCollisions,
@@ -59,6 +58,26 @@ function GymLayoutPage({ menu }) {
   const [layoutToDelete, setLayoutToDelete] = useState(null);
   const [selectedPaletteExercise, setSelectedPaletteExercise] = useState(null);
   const [viewMode, setViewMode] = useState('catalog');
+
+  useEffect(() => {
+    const applyGridSettings = (settings = {}) => {
+      const rows = Math.max(1, Number(settings.rows || layout.rows || 1));
+      const cols = Math.max(1, Number(settings.cols || layout.cols || 1));
+      const reservedCells = Array.isArray(settings.reservedCells) ? settings.reservedCells : layout.reservedCells;
+
+      setLayout((current) => ({
+        ...current,
+        rows,
+        cols,
+        reservedCells,
+        items: removeReservedCollisions(current.items, rows, cols, reservedCells),
+      }));
+    };
+
+    applyGridSettings(moduleSettings.getSettings('gymLayout'));
+    const unsubscribe = moduleSettings.subscribe('gymLayout', applyGridSettings);
+    return unsubscribe;
+  }, [setLayout]);
 
   const placedExerciseIds = useMemo(
     () => layout.items.map((item) => item.exerciseId),
@@ -105,7 +124,8 @@ function GymLayoutPage({ menu }) {
               : item
           )),
           current.rows,
-          current.cols
+          current.cols,
+          current.reservedCells
         ),
       }));
       return;
@@ -130,7 +150,7 @@ function GymLayoutPage({ menu }) {
   const handleLayoutItemsChange = (items) => {
     setLayout((current) => ({
       ...current,
-      items: removeReservedCollisions(items, current.rows, current.cols),
+      items: removeReservedCollisions(items, current.rows, current.cols, current.reservedCells),
     }));
   };
 
@@ -146,8 +166,8 @@ function GymLayoutPage({ menu }) {
       h: Math.min(Number(exercise.height || 1), layout.rows),
     };
 
-    if (collidesWithReservedCell(nextItem, layout.rows, layout.cols)) {
-      showSnackbar('Casilla bloqueada (Baño / Bodega)', 'warning');
+    if (collidesWithReservedCell(nextItem, layout.rows, layout.cols, layout.reservedCells)) {
+      showSnackbar('Casilla bloqueada', 'warning');
       return;
     }
 
@@ -156,7 +176,7 @@ function GymLayoutPage({ menu }) {
       const existsInOrder = (current.exerciseOrder || []).includes(exerciseId);
       return {
         ...current,
-        items: removeReservedCollisions([...filtered, nextItem], current.rows, current.cols),
+        items: removeReservedCollisions([...filtered, nextItem], current.rows, current.cols, current.reservedCells),
         exerciseOrder: existsInOrder ? current.exerciseOrder : [...(current.exerciseOrder || []), exerciseId],
       };
     });
@@ -198,12 +218,11 @@ function GymLayoutPage({ menu }) {
   const handleSave = async () => {
     const cleanedLayout = {
       ...layout,
-      rows: DEFAULT_GRID_ROWS,
-      cols: DEFAULT_GRID_COLS,
       items: removeReservedCollisions(
         layout.items.filter((item) => exerciseIds.has(item.exerciseId)),
-        DEFAULT_GRID_ROWS,
-        DEFAULT_GRID_COLS
+        layout.rows,
+        layout.cols,
+        layout.reservedCells
       ),
       exerciseOrder: orderedPlacedExercises.map((exercise) => exercise.id),
     };
@@ -215,7 +234,14 @@ function GymLayoutPage({ menu }) {
   };
 
   const handleNewLayout = () => {
-    setLayout(createGymLayoutModel({ id: `layout-${Date.now()}`, name: 'Nuevo circuito' }));
+    const settings = moduleSettings.getSettings('gymLayout');
+    setLayout(createGymLayoutModel({
+      id: `layout-${Date.now()}`,
+      name: 'Nuevo circuito',
+      rows: settings.rows,
+      cols: settings.cols,
+      reservedCells: settings.reservedCells,
+    }));
     setSelectedPaletteExercise(null);
     setViewMode('editor');
   };
