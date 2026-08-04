@@ -1,22 +1,14 @@
 import React from 'react';
-import { Box, Container, Typography } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
+import { Box } from '@mui/material';
+import ModuleSettings from './ModuleSettings';
 
 function Settings({ menu }) {
   return (
     <div>
       {menu}
-      <Container fixed>
-        <Box sx={{ py: 8, textAlign: 'center' }}>
-          <SettingsIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-          <Typography variant="h5" gutterBottom>
-            Configuración
-          </Typography>
-          <Typography color="text.secondary">
-            Esta sección estará disponible próximamente.
-          </Typography>
-        </Box>
-      </Container>
+      <Box sx={{ py: 2 }}>
+        <ModuleSettings />
+      </Box>
     </div>
   );
 }

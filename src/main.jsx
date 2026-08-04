@@ -2,9 +2,21 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import ErrorBoundary from './Components/ErrorBoundary/ErrorBoundary'
+import moduleSettings from './config/moduleSettings';
 //import './index.css'
 
 import { SnackbarProvider } from './Components/snackbar/AtlasSnackbar';
+
+moduleSettings.registerModule('cashbox', {
+  fixedDebtAmount: 0,
+  partsCount: 3,
+  distributionPercentages: {
+    part1: 40,
+    part2: 40,
+    part3: 20,
+  },
+  maintenancePercentage: 20,
+});
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -12,8 +12,6 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import {
-  DEFAULT_GRID_COLS,
-  DEFAULT_GRID_ROWS,
   DEFAULT_LAYOUT_ID,
   createGymLayoutModel,
   getGymExerciseCategoryColor,
@@ -111,11 +109,15 @@ class GymLayoutService {
 
   async saveLayout(layout) {
     const layoutId = layout.id || DEFAULT_LAYOUT_ID;
+    const rows = Math.max(1, Number(layout.rows || 1));
+    const cols = Math.max(1, Number(layout.cols || 1));
+    const reservedCells = Array.isArray(layout.reservedCells) ? layout.reservedCells : [];
     const payload = {
       name: layout.name?.trim() || 'Circuito principal',
-      rows: DEFAULT_GRID_ROWS,
-      cols: DEFAULT_GRID_COLS,
-      items: removeReservedCollisions(layout.items, DEFAULT_GRID_ROWS, DEFAULT_GRID_COLS),
+      rows,
+      cols,
+      reservedCells,
+      items: removeReservedCollisions(layout.items, rows, cols, reservedCells),
       exerciseOrder: Array.isArray(layout.exerciseOrder) ? layout.exerciseOrder.map(String) : [],
       listNotes: layout.listNotes || '',
       updatedAt: serverTimestamp(),

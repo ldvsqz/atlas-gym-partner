@@ -22,6 +22,8 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import InfoIcon from "@mui/icons-material/Info";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import GridOnIcon from "@mui/icons-material/GridOn";
+import SettingsIcon from '@mui/icons-material/Settings';
+
 
 import { auth } from "../../../Firebase/authFunctions";
 import "./Menu.css";
@@ -130,10 +132,21 @@ function Menu({
           </ListItem>
         )}
 
+        {isAdmin && (
+          <ListItem key="Configuración" disablePadding>
+            <ListItemButton component={Link} to="/settings">
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Configuración" />
+            </ListItemButton>
+          </ListItem>
+        )}
+
         <ListItem key="Sobre nosotros" disablePadding>
           <ListItemButton component={Link} to="/aboutus">
             <ListItemIcon>
-              <InfoIcon sx={{ color: "#ff5722" }} />
+              <InfoIcon />
             </ListItemIcon>
             <ListItemText primary="Sobre nosotros" />
           </ListItemButton>

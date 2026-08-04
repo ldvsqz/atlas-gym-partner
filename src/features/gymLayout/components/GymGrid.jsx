@@ -48,11 +48,15 @@ function GymGrid({
   );
 
   const gridItems = useMemo(
-    () => removeReservedCollisions(layout.items, layout.rows, layout.cols).filter((i) => exercisesById.has(i.exerciseId)),
-    [exercisesById, layout.cols, layout.items, layout.rows]
+    () => removeReservedCollisions(layout.items, layout.rows, layout.cols, layout.reservedCells).filter((i) => exercisesById.has(i.exerciseId)),
+    [exercisesById, layout.cols, layout.items, layout.reservedCells, layout.rows]
   );
 
-  const reservedCells = useMemo(() => getReservedCellsForGrid(layout.rows, layout.cols), [layout.rows, layout.cols]);
+  const reservedCells = useMemo(
+    () => getReservedCellsForGrid(layout.rows, layout.cols, layout.reservedCells),
+    [layout.cols, layout.reservedCells, layout.rows]
+  );
+  const reservedCellIds = useMemo(() => new Set(reservedCells.map((cell) => cell.id)), [reservedCells]);
 
   const reactGridLayout = useMemo(() => [
     ...reservedCells.map((c) => ({ i: c.id, x: c.x, y: c.y, w: c.w, h: c.h, static: true })),
@@ -68,9 +72,9 @@ function GymGrid({
   const handleLayoutChange = (nextLayout) => {
     if (isDroppingRef.current) return;
     const items = nextLayout
-      .filter((i) => i.i !== '__dropping-elem__' && !i.i.startsWith('__reserved_'))
+      .filter((i) => i.i !== '__dropping-elem__' && !reservedCellIds.has(i.i))
       .map(fromGridLayoutItem);
-    onLayoutChange(removeReservedCollisions(items, layout.rows, layout.cols));
+    onLayoutChange(removeReservedCollisions(items, layout.rows, layout.cols, layout.reservedCells));
   };
 
   const handleBackgroundGridClick = (e) => {

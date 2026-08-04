@@ -3,7 +3,7 @@ export const DEFAULT_LAYOUT_ID = 'main-floor';
 export const DEFAULT_GRID_ROWS = 6;
 export const DEFAULT_GRID_COLS = 3;
 
-export const RESERVED_GRID_CELLS = [
+export const DEFAULT_RESERVED_GRID_CELLS = [
   {
     id: '__reserved_bathroom__',
     label: 'Baño',
@@ -25,6 +25,8 @@ export const RESERVED_GRID_CELLS = [
     color: '#64748B',
   },
 ];
+
+export const RESERVED_GRID_CELLS = DEFAULT_RESERVED_GRID_CELLS;
 
 export const EXERCISE_CATEGORIES = [
   'Técnica',
@@ -67,8 +69,11 @@ export const createGymExerciseModel = (values = {}) => {
 export const createGymLayoutModel = (values = {}) => ({
   id: values.id || DEFAULT_LAYOUT_ID,
   name: values.name || 'Circuito principal',
-  rows: DEFAULT_GRID_ROWS,
-  cols: DEFAULT_GRID_COLS,
+  rows: Math.max(1, Number(values.rows || DEFAULT_GRID_ROWS)),
+  cols: Math.max(1, Number(values.cols || DEFAULT_GRID_COLS)),
+  reservedCells: Array.isArray(values.reservedCells)
+    ? values.reservedCells.map(normalizeReservedCell)
+    : DEFAULT_RESERVED_GRID_CELLS.map(normalizeReservedCell),
   items: Array.isArray(values.items) ? values.items.map(normalizeLayoutItem) : [],
   exerciseOrder: Array.isArray(values.exerciseOrder) ? values.exerciseOrder.map(String) : [],
   listNotes: values.listNotes || '',
@@ -82,6 +87,17 @@ export const normalizeLayoutItem = (item) => ({
   y: Number(item.y || 0),
   w: Math.max(1, Number(item.w || item.width || 1)),
   h: Math.max(1, Number(item.h || item.height || 1)),
+});
+
+export const normalizeReservedCell = (cell = {}) => ({
+  id: String(cell.id || `__reserved_${Date.now()}__`),
+  label: String(cell.label || 'Zona bloqueada'),
+  description: String(cell.description || 'bloqueado'),
+  x: Math.max(0, Number(cell.x || 0)),
+  y: Math.max(0, Number(cell.y || 0)),
+  w: Math.max(1, Number(cell.w || cell.width || 1)),
+  h: Math.max(1, Number(cell.h || cell.height || 1)),
+  color: String(cell.color || '#64748B'),
 });
 
 export const toGridLayoutItem = (item, exercise) => ({
@@ -122,18 +138,34 @@ export const rectanglesOverlap = (first, second) =>
   && first.y < second.y + second.h
   && first.y + first.h > second.y;
 
-export const getReservedCellsForGrid = (rows = DEFAULT_GRID_ROWS, cols = DEFAULT_GRID_COLS) =>
-  RESERVED_GRID_CELLS.filter((cell) => (
-    cell.x >= 0
-    && cell.y >= 0
-    && cell.x + cell.w <= cols
-    && cell.y + cell.h <= rows
-  ));
+export const getReservedCellsForGrid = (
+  rows = DEFAULT_GRID_ROWS,
+  cols = DEFAULT_GRID_COLS,
+  reservedCells = DEFAULT_RESERVED_GRID_CELLS
+) =>
+  (reservedCells || [])
+    .map(normalizeReservedCell)
+    .filter((cell) => (
+      cell.x >= 0
+      && cell.y >= 0
+      && cell.x + cell.w <= cols
+      && cell.y + cell.h <= rows
+    ));
 
-export const collidesWithReservedCell = (item, rows = DEFAULT_GRID_ROWS, cols = DEFAULT_GRID_COLS) =>
-  getReservedCellsForGrid(rows, cols).some((cell) => rectanglesOverlap(item, cell));
+export const collidesWithReservedCell = (
+  item,
+  rows = DEFAULT_GRID_ROWS,
+  cols = DEFAULT_GRID_COLS,
+  reservedCells = DEFAULT_RESERVED_GRID_CELLS
+) =>
+  getReservedCellsForGrid(rows, cols, reservedCells).some((cell) => rectanglesOverlap(item, cell));
 
-export const removeReservedCollisions = (items = [], rows = DEFAULT_GRID_ROWS, cols = DEFAULT_GRID_COLS) =>
-  clampLayoutItems(items, rows, cols).filter((item) => !collidesWithReservedCell(item, rows, cols));
+export const removeReservedCollisions = (
+  items = [],
+  rows = DEFAULT_GRID_ROWS,
+  cols = DEFAULT_GRID_COLS,
+  reservedCells = DEFAULT_RESERVED_GRID_CELLS
+) =>
+  clampLayoutItems(items, rows, cols).filter((item) => !collidesWithReservedCell(item, rows, cols, reservedCells));
 
 export const getExerciseSizeLabel = (exercise) => `${exercise.width || 1}x${exercise.height || 1}`;
