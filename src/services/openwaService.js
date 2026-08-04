@@ -31,6 +31,7 @@ class OpenWAService {
 
   constructor() {
     this.callOpenWA = httpsCallable(functions, 'openWARequest');
+    this.callMembershipNotification = httpsCallable(functions, 'sendMembershipStatusNotification');
   }
 
   async listSessions(options = {}) {
@@ -67,6 +68,23 @@ class OpenWAService {
     }
 
     return this.#call('sendText', { sessionId, chatId, text, ...options });
+  }
+
+  async sendMembershipStatusNotification(uid) {
+    if (!uid) {
+      throw new OpenWAError('El uid del usuario es requerido.', { code: 'VALIDATION_ERROR' });
+    }
+
+    try {
+      const response = await this.callMembershipNotification({ uid });
+      return response.data;
+    } catch (error) {
+      throw new OpenWAError(error.message || 'No se pudo enviar la notificacion de membresia.', {
+        code: error.code || 'MEMBERSHIP_NOTIFICATION_ERROR',
+        data: error.details || null,
+        cause: error,
+      });
+    }
   }
 
   async #call(action, payload = {}) {

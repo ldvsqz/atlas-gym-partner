@@ -20,6 +20,33 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == uid;
     }
 
+    function ownerUserCreateAllowed(uid) {
+      return isOwner(uid)
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.rol == 1
+        && request.resource.data.keys().hasOnly([
+          'birthday',
+          'dni',
+          'email',
+          'name',
+          'phone',
+          'rol',
+          'uid',
+          'until'
+        ]);
+    }
+
+    function ownerUserUpdateAllowed(uid) {
+      return isOwner(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'birthday',
+          'dni',
+          'email',
+          'name',
+          'phone'
+        ]);
+    }
+
     function isPublicCycle(cycleId) {
       return exists(/databases/$(database)/documents/cycles/$(cycleId))
         && get(/databases/$(database)/documents/cycles/$(cycleId)).data.public == true;
@@ -27,25 +54,21 @@ service cloud.firestore {
 
     match /users/{uid} {
       allow read: if isAdmin() || isOwner(uid);
-      allow create: if isAdmin()
-        || (
-          isOwner(uid)
-          && request.resource.data.uid == request.auth.uid
-          && request.resource.data.rol == 1
-        );
-      allow update: if isAdmin()
-        || (
-          isOwner(uid)
-          && request.resource.data.uid == resource.data.uid
-          && request.resource.data.rol == resource.data.rol
-        );
+      allow create: if isAdmin() || ownerUserCreateAllowed(uid);
+      allow update: if isAdmin() || ownerUserUpdateAllowed(uid);
       allow delete: if isAdmin();
     }
 
     match /stats/{statsId} {
       allow read: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
       allow create: if isAdmin() || (signedIn() && request.resource.data.uid == request.auth.uid);
-      allow update, delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow update: if isAdmin()
+        || (
+          signedIn()
+          && resource.data.uid == request.auth.uid
+          && request.resource.data.uid == resource.data.uid
+        );
+      allow delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
     }
 
     match /routine/{routineId} {

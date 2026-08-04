@@ -92,8 +92,8 @@ class RoutineService {
             return null
         }
         const routineRef = collection(db, 'routine');
-        const routineQuery = await query(routineRef, where('uid', '==', uid), orderBy('date', 'desc'), limit(1));
-        const querySnapshot = await getDocs(routineQuery);
+        const lastRoutineQuery = query(routineRef, where('uid', '==', uid), orderBy('date', 'desc'), limit(1));
+        const querySnapshot = await getDocs(lastRoutineQuery);
         try {
             if (querySnapshot.docs) {
                 const documentSnapshot = querySnapshot.docs[0];
@@ -110,8 +110,8 @@ class RoutineService {
 
     async getByDni(dni) {
         const routineRef = collection(db, 'routine');
-        const query = query(routineRef, where('dni', '==', dni));
-        const querySnapshot = await getDocs(query);
+        const dniQuery = query(routineRef, where('dni', '==', dni));
+        const querySnapshot = await getDocs(dniQuery);
 
         const routine = [];
 

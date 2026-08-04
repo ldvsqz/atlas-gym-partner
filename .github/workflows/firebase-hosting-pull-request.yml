@@ -9,9 +9,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm i
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Audit
+        run: npm run audit
+        continue-on-error: true
 
       - name: Bump patch version
         run: npm version patch --no-git-tag-version
@@ -21,9 +35,6 @@ jobs:
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          # La acción automáticamente detecta si es un PR y crea un canal de previsualización.
-          # No necesitas 'args: deploy --only hosting:preview'.
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ATLAS_GYM_PARTNER }}'
-          projectId: atlas-gym-partner # Es buena práctica especificar el project ID
-          # No necesitas la sección 'env' para GCP_SA_KEY, ya que firebaseServiceAccount se pasa directamente en 'with'.
+          projectId: atlas-gym-partner

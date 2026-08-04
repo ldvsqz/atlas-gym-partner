@@ -24,6 +24,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-package-lock.json
-!functions/package-lock.json
 .codex
+package-lock.json

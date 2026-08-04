@@ -8,7 +8,7 @@ const rootDir = path.dirname(fileURLToPath(import.meta.url))
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  envPrefix: ['VITE_', 'OPENWA_'],
+  envPrefix: ['VITE_'],
   resolve: {
     dedupe: ['react', 'react-dom'],
     alias: {

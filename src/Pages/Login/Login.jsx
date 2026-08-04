@@ -13,6 +13,16 @@ import Divider from '@mui/material/Divider';
 import { useSnackbar } from '../../Components/snackbar/AtlasSnackbar';
 
 
+const resolvePostLoginRedirect = (lastRoute, userData, uid) => {
+  const defaultRoute = userData?.rol === 0 ? '/users' : `/user/${uid}`;
+  if (!lastRoute) return defaultRoute;
+
+  const pathname = lastRoute.split('?')[0];
+  if (userData?.rol === 0) return lastRoute;
+  if (pathname === '/aboutus' || pathname === `/user/${uid}`) return lastRoute;
+  return defaultRoute;
+};
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,15 +37,14 @@ function Login() {
     setLoadingCircle(true);
     if (user) {
       UserService.get(user.uid).then(userData => {
-        if (!!userData) {
+        if (userData) {
           const uid = user.uid;
           localStorage.setItem('UID', uid);
           localStorage.setItem('ROL', userData.rol);
           setLoadingCircle(false);
           
-          // Redirigir a la última ruta guardada, o a /users por defecto
           const lastRoute = localStorage.getItem('LAST_ROUTE');
-          const redirectPath = lastRoute || '/users';
+          const redirectPath = resolvePostLoginRedirect(lastRoute, userData, uid);
           navigate(redirectPath, { state: { uid } });
         }
       }).catch(error => {
@@ -102,10 +111,9 @@ function Login() {
               setLoadingCircle(true);
               signInWithGoogle().then((user) => {
                 setLoadingCircle(false);
-              })
-                .catch(() => {
+              }).catch(() => {
                   setLoadingCircle(false);
-                  showSnackbar('Error al iniciar sesión con Google', 'error');
+                  // showSnackbar('Error al iniciar sesión con Google', 'error');
                 })
             }}>
             <ListItemIcon>

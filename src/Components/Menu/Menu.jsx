@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logout from "../Logout/Logout";
+import { useAuthProfile } from "../../hooks/useAuthProfile";
 
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -31,13 +32,11 @@ function Menu({
   version,
 }) {
   const navigate = useNavigate();
+  const { user, isAdmin } = useAuthProfile();
 
   const [showMenu, setMenu] = useState(false);
-  const [uid, setUid] = useState(() => localStorage.getItem("UID"));
-  const [currentRol] = useState(() => localStorage.getItem("ROL"));
 
   const menuTitle = header || title || "";
-  const isAdmin = String(currentRol) === "0";
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -63,13 +62,9 @@ function Menu({
   };
 
   const handleOnNavigate = () => {
-    const storedUid = localStorage.getItem("UID");
-
-    setUid(storedUid);
-
-    if (storedUid) {
-      navigate(`/user/${storedUid}`, {
-        state: { uid: storedUid },
+    if (user?.uid) {
+      navigate(`/user/${user.uid}`, {
+        state: { uid: user.uid },
       });
     }
   };

@@ -11,7 +11,7 @@ const FieldValue = admin.firestore.FieldValue;
 
 const OPENWA_API_KEY = defineSecret('OPENWA_API_KEY');
 const OPENWA_BASE_URL = defineString('OPENWA_BASE_URL', {
-  default: 'http://34.71.177.92:2785',
+  default: 'https://34.71.177.92:2785',
 });
 const OPENWA_SESSION_NAME = defineString('OPENWA_SESSION_NAME', {
   default: 'iris',
@@ -190,6 +190,70 @@ exports.openWARequest = onCall(
   },
 );
 
+exports.sendMembershipStatusNotification = onCall(
+  {
+    region: 'us-central1',
+    timeoutSeconds: 60,
+    memory: '256MiB',
+    secrets: [OPENWA_API_KEY],
+  },
+  async (request) => {
+    await assertAdminRequest(request);
+
+    const uid = normalizeLookupValue(request.data?.uid);
+    if (!uid) {
+      throw new HttpsError('invalid-argument', 'El uid del usuario es requerido.');
+    }
+
+    const userSnapshot = await db.collection(USERS_COLLECTION).doc(uid).get();
+    if (!userSnapshot.exists) {
+      throw new HttpsError('not-found', 'No se encontro el usuario.');
+    }
+
+    const user = { uid: userSnapshot.id, ...userSnapshot.data() };
+    const phone = formatPhoneForOpenWA('71699673');
+    if (!phone) {
+      throw new HttpsError('failed-precondition', 'El usuario no tiene un telefono valido.');
+    }
+
+    const untilDate = getDateFromFirestoreValue(user.until);
+    if (!untilDate) {
+      throw new HttpsError('failed-precondition', 'El usuario no tiene una fecha de membresia valida.');
+    }
+
+    const now = new Date();
+    const isExpired = untilDate < now;
+    const sessionName = getOpenWASessionName();
+    const text = isExpired
+      ? buildExpiredMessage(user.name, untilDate)
+      : buildActiveMessage(user.name, untilDate);
+
+    await sendTextMessage(sessionName, { chatId: phone, text });
+
+    const notificationRef = db.collection(NOTIFIED_COLLECTION).doc(user.uid);
+    await notificationRef.set(
+      buildNotificationPayload(user, phone, untilDate, {
+        notified: isExpired,
+        ...(isExpired
+          ? { lastExpiredNotifiedAt: FieldValue.serverTimestamp() }
+          : { lastActiveNotifiedAt: FieldValue.serverTimestamp() }),
+      }),
+      { merge: true },
+    );
+
+    return {
+      sent: true,
+      status: isExpired ? 'expired' : 'active',
+      uid: user.uid,
+      until: untilDate.toISOString(),
+    };
+  },
+);
+
+const REGISTRATION_RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const REGISTRATION_RATE_LIMIT_MAX_REQUESTS = 10;
+const registrationRateLimit = new Map();
+
 exports.checkRegistrationAvailability = onCall(
   {
     region: 'us-central1',
@@ -197,8 +261,14 @@ exports.checkRegistrationAvailability = onCall(
     memory: '256MiB',
   },
   async (request) => {
+    assertRegistrationRateLimit(request);
+
     const dni = normalizeLookupValue(request.data?.dni);
     const email = normalizeLookupValue(request.data?.email).toLowerCase();
+
+    if (!dni && !email) {
+      throw new HttpsError('invalid-argument', 'Debes enviar al menos un campo para validar.');
+    }
 
     const [dniSnapshot, emailSnapshot] = await Promise.all([
       dni
@@ -209,10 +279,9 @@ exports.checkRegistrationAvailability = onCall(
         : Promise.resolve({ empty: true }),
     ]);
 
-    return {
-      dniExists: !dniSnapshot.empty,
-      emailExists: !emailSnapshot.empty,
-    };
+    const available = dniSnapshot.empty && emailSnapshot.empty;
+
+    return { available };
   },
 );
 
@@ -247,6 +316,33 @@ function assertString(value, fieldName) {
 
 function normalizeLookupValue(value) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function getRequestIp(request) {
+  const forwardedFor = request.rawRequest?.headers?.['x-forwarded-for'];
+  if (typeof forwardedFor === 'string' && forwardedFor.length > 0) {
+    return forwardedFor.split(',')[0].trim();
+  }
+
+  return request.rawRequest?.ip || 'unknown';
+}
+
+function assertRegistrationRateLimit(request) {
+  const ip = getRequestIp(request);
+  const now = Date.now();
+  const current = registrationRateLimit.get(ip) || { count: 0, windowStart: now };
+
+  if (now - current.windowStart > REGISTRATION_RATE_LIMIT_WINDOW_MS) {
+    current.count = 0;
+    current.windowStart = now;
+  }
+
+  current.count += 1;
+  registrationRateLimit.set(ip, current);
+
+  if (current.count > REGISTRATION_RATE_LIMIT_MAX_REQUESTS) {
+    throw new HttpsError('resource-exhausted', 'Demasiadas solicitudes. Intenta nuevamente en un minuto.');
+  }
 }
 
 async function openWARequest(path, { method = 'GET', body, retries = 2 } = {}) {

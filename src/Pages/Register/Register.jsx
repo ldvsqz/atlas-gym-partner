@@ -18,9 +18,10 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const getRegisterErrorMessage = (error) => {
   switch (error?.code) {
+    case 'app/registration-unavailable':
     case 'app/dni-already-exists':
-      return 'Ya existe un perfil registrado con ese DNI.';
     case 'app/email-already-exists':
+      return 'Ya existe un perfil registrado con esos datos.';
     case 'auth/email-already-in-use':
       return 'Ya existe una cuenta registrada con ese correo.';
     case 'auth/invalid-email':

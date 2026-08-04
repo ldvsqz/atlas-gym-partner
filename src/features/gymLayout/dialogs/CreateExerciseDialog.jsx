@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
   Button,
+  ButtonBase,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -15,6 +16,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImageIcon from '@mui/icons-material/Image';
+import CollectionsIcon from '@mui/icons-material/Collections';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import {
@@ -60,7 +62,7 @@ const resizeImageFile = async (file) => {
   return canvas.toDataURL('image/jpeg', IMAGE_QUALITY);
 };
 
-function CreateExerciseDialog({ open, onClose, onSubmit, saving = false, exercise = null }) {
+function CreateExerciseDialog({ open, onClose, onSubmit, saving = false, exercise = null, exercises = [] }) {
   const fileInputRef = useRef(null);
   const [imageError, setImageError] = useState('');
   const {
@@ -76,6 +78,23 @@ function CreateExerciseDialog({ open, onClose, onSubmit, saving = false, exercis
   const selectedImage = useWatch({ control, name: 'imageDataUrl' });
   const selectedImageName = useWatch({ control, name: 'imageName' });
   const selectedColor = getGymExerciseCategoryColor(selectedCategory);
+  const importedImages = useMemo(() => {
+    const seenImages = new Set();
+
+    return exercises
+      .filter((item) => item?.imageDataUrl)
+      .filter((item) => {
+        if (seenImages.has(item.imageDataUrl)) return false;
+        seenImages.add(item.imageDataUrl);
+        return true;
+      })
+      .map((item) => ({
+        id: item.id,
+        imageDataUrl: item.imageDataUrl,
+        imageName: item.imageName || item.name || 'Imagen importada',
+        exerciseName: item.name || 'Estación',
+      }));
+  }, [exercises]);
 
   useEffect(() => {
     reset(createGymExerciseModel(exercise || {}));
@@ -106,6 +125,12 @@ function CreateExerciseDialog({ open, onClose, onSubmit, saving = false, exercis
   const clearImage = () => {
     setValue('imageDataUrl', '', { shouldDirty: true, shouldValidate: true });
     setValue('imageName', '', { shouldDirty: true, shouldValidate: true });
+    setImageError('');
+  };
+
+  const selectImportedImage = (image) => {
+    setValue('imageDataUrl', image.imageDataUrl, { shouldDirty: true, shouldValidate: true });
+    setValue('imageName', image.imageName, { shouldDirty: true, shouldValidate: true });
     setImageError('');
   };
 
@@ -218,81 +243,155 @@ function CreateExerciseDialog({ open, onClose, onSubmit, saving = false, exercis
                 borderRadius: 1,
                 p: 1.5,
                 display: 'flex',
+                flexDirection: 'column',
                 gap: 1.5,
-                alignItems: { xs: 'stretch', sm: 'center' },
-                flexDirection: { xs: 'column', sm: 'row' },
               }}
             >
               <Box
                 sx={{
-                  width: { xs: '100%', sm: 116 },
-                  height: 86,
-                  borderRadius: 1,
-                  overflow: 'hidden',
-                  bgcolor: 'action.hover',
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  display: 'grid',
-                  placeItems: 'center',
-                  flexShrink: 0,
+                  display: 'flex',
+                  gap: 1.5,
+                  alignItems: { xs: 'stretch', sm: 'center' },
+                  flexDirection: { xs: 'column', sm: 'row' },
                 }}
               >
-                {selectedImage ? (
-                  <Box
-                    component="img"
-                    src={selectedImage}
-                    alt={selectedImageName || 'Imagen de estación'}
-                    sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <ImageIcon color="disabled" />
-                )}
-              </Box>
-
-              <Box sx={{ minWidth: 0, flex: 1 }}>
-                <Typography variant="subtitle2" fontWeight={800}>
-                  Imagen de la estación
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }}>
-                  {selectedImageName || 'Importa una imagen para verla en el grid y en el PDF.'}
-                </Typography>
-                {imageError && (
-                  <Typography variant="caption" color="error" sx={{ display: 'block', mt: 0.5 }}>
-                    {imageError}
-                  </Typography>
-                )}
-              </Box>
-
-              <Stack direction="row" spacing={1} sx={{ flexShrink: 0 }}>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={handleImageChange}
-                />
-                <Button
-                  type="button"
-                  variant="outlined"
-                  startIcon={<UploadFileIcon />}
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={saving}
+                <Box
+                  sx={{
+                    width: { xs: '100%', sm: 116 },
+                    height: 86,
+                    borderRadius: 1,
+                    overflow: 'hidden',
+                    bgcolor: 'action.hover',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    display: 'grid',
+                    placeItems: 'center',
+                    flexShrink: 0,
+                  }}
                 >
-                  Importar
-                </Button>
-                {selectedImage && (
+                  {selectedImage ? (
+                    <Box
+                      component="img"
+                      src={selectedImage}
+                      alt={selectedImageName || 'Imagen de estación'}
+                      sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <ImageIcon color="disabled" />
+                  )}
+                </Box>
+
+                <Box sx={{ minWidth: 0, flex: 1 }}>
+                  <Typography variant="subtitle2" fontWeight={800}>
+                    Imagen de la estación
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }}>
+                    {selectedImageName || 'Importa una imagen o elige una ya cargada.'}
+                  </Typography>
+                  {imageError && (
+                    <Typography variant="caption" color="error" sx={{ display: 'block', mt: 0.5 }}>
+                      {imageError}
+                    </Typography>
+                  )}
+                </Box>
+
+                <Stack direction="row" spacing={1} sx={{ flexShrink: 0 }}>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={handleImageChange}
+                  />
                   <Button
                     type="button"
-                    color="error"
                     variant="outlined"
-                    startIcon={<DeleteIcon />}
-                    onClick={clearImage}
+                    startIcon={<UploadFileIcon />}
+                    onClick={() => fileInputRef.current?.click()}
                     disabled={saving}
                   >
-                    Quitar
+                    Importar
                   </Button>
-                )}
-              </Stack>
+                  {selectedImage && (
+                    <Button
+                      type="button"
+                      color="error"
+                      variant="outlined"
+                      startIcon={<DeleteIcon />}
+                      onClick={clearImage}
+                      disabled={saving}
+                    >
+                      Quitar
+                    </Button>
+                  )}
+                </Stack>
+              </Box>
+
+              {importedImages.length > 0 && (
+                <Box>
+                  <Stack direction="row" spacing={0.75} alignItems="center" sx={{ mb: 1 }}>
+                    <CollectionsIcon color="action" fontSize="small" />
+                    <Typography variant="caption" color="text.secondary" fontWeight={800}>
+                      Elegir imagen existente
+                    </Typography>
+                  </Stack>
+
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: 1,
+                      overflowX: 'auto',
+                      pb: 0.5,
+                    }}
+                  >
+                    {importedImages.map((image) => {
+                      const isSelected = selectedImage === image.imageDataUrl;
+
+                      return (
+                        <ButtonBase
+                          key={image.id}
+                          onClick={() => selectImportedImage(image)}
+                          disabled={saving}
+                          aria-label={`Usar imagen de ${image.exerciseName}`}
+                          sx={{
+                            width: 88,
+                            flex: '0 0 88px',
+                            borderRadius: 1,
+                            border: '2px solid',
+                            borderColor: isSelected ? 'primary.main' : 'divider',
+                            overflow: 'hidden',
+                            display: 'block',
+                            bgcolor: 'background.paper',
+                            textAlign: 'left',
+                          }}
+                        >
+                          <Box
+                            component="img"
+                            src={image.imageDataUrl}
+                            alt={image.exerciseName}
+                            sx={{ width: '100%', height: 58, objectFit: 'cover', display: 'block' }}
+                          />
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              display: 'block',
+                              px: 0.75,
+                              py: 0.5,
+                              fontWeight: 700,
+                              lineHeight: 1.1,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {image.exerciseName}
+                          </Typography>
+                        </ButtonBase>
+                      );
+                    })}
+                  </Box>
+                </Box>
+              )}
             </Box>
           </Grid>
 

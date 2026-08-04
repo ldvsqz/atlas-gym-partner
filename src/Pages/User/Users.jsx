@@ -10,6 +10,7 @@ import StatService from '../../../Firebase/statsService';
 import Util from '../../assets/Util';
 import UserModel from '../../models/UserModel';
 import FinanceModel from '../../models/FinanceModel';
+import OpenWAService from '../../services/openwaService';
 //MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -189,21 +190,21 @@ function User({ menu }) {
     }
   };
 
-  const handleWaNotificationResponse = (response, user) => {
-    if (response) {
-    userService.get(user.uid).then((_user) => {
-        const message = util.selectMembershipMessage(_user.name, _user.until);
-        if(_user.phone){
-          util.openWAChat(_user.phone, message);
-        } else {
-          showSnackbar('El usuario no tiene un número telefónico registrado.', 'error');
-        }
-      }).catch((error) => {
-        console.error('Error fetching user for WhatsApp notification:', error);
-        showSnackbar('No pudimos enviar la notificación. Intenta de nuevo.', 'error');
-      });
+  const handleWaNotificationResponse = async (response, user) => {
+    if (!response) return;
+
+    try {
+      const result = await OpenWAService.sendMembershipStatusNotification(user.uid);
+      const message = result.status === 'expired'
+        ? `Notificación de vencimiento enviada a ${user.name}`
+        : `Notificación de membresía activa enviada a ${user.name}`;
+
+      showSnackbar(message, 'success');
+    } catch (error) {
+      console.error('Error sending membership notification:', error);
+      showSnackbar('No pudimos enviar la notificación. Revisa la sesión de WhatsApp e intenta de nuevo.', 'error');
     }
-  }
+  };
 
   const handleOpenAddUserModal = () => {
     setOpenAddUserModal(true);
