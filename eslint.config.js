@@ -33,4 +33,13 @@ export default [
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
     },
   },
+  {
+    files: ['tests/**'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.es2021,
+      },
+    },
+  },
 ];
