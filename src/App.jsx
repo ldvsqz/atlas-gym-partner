@@ -22,6 +22,8 @@ const PublicCycleView = lazy(() => import("./features/training/public/PublicCycl
 const GymLayoutPage = lazy(() => import("./features/gymLayout/pages/GymLayoutPage"));
 const CashboxPage = lazy(() => import("./Pages/Finance/CashboxHistory"));
 
+import NotificationService from "./services/notificationService";
+
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -32,6 +34,30 @@ const darkTheme = createTheme({
     },
   },
 });
+
+function NotificationManager() {
+  const { user } = useAuthProfile();
+
+  useEffect(() => {
+    if (user?.uid) {
+      NotificationService.requestAndRegisterToken(user.uid);
+
+      const unsubscribe = NotificationService.onForegroundMessage((payload) => {
+        const title = payload.notification?.title || payload.data?.title || 'Atlas Gym Partner 🥊';
+        const body = payload.notification?.body || payload.data?.body || 'Tienes una nueva notificación de membresía.';
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification(title, { body, icon: '/atlas.ico' });
+        }
+      });
+
+      return () => {
+        if (typeof unsubscribe === 'function') unsubscribe();
+      };
+    }
+  }, [user?.uid]);
+
+  return null;
+}
 
 function App() {
   useEffect(() => {
@@ -45,6 +71,7 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Router>
+        <NotificationManager />
         <RouteTracker>
           <Suspense fallback={<PageLoader />}>
             <Routes>

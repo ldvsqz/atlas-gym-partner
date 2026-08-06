@@ -12,11 +12,18 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:91174508336:web:f8630c647aec27abf79af5"
 };
 
+import { getMessaging, isSupported } from "firebase/messaging"
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 const functions = getFunctions(app, 'us-central1')
 
-export {db}
-export {app}
-export {functions}
+let messaging = null;
+isSupported().then((supported) => {
+  if (supported) {
+    messaging = getMessaging(app);
+  }
+}).catch((err) => console.error("Firebase Messaging support error:", err));
+
+export { db, app, functions, messaging, firebaseConfig }

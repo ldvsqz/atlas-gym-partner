@@ -211,7 +211,7 @@ exports.sendMembershipStatusNotification = onCall(
     }
 
     const user = { uid: userSnapshot.id, ...userSnapshot.data() };
-    const phone = formatPhoneForOpenWA('71699673');
+    const phone = formatPhoneForOpenWA(71699673);
     if (!phone) {
       throw new HttpsError('failed-precondition', 'El usuario no tiene un telefono valido.');
     }
@@ -228,7 +228,27 @@ exports.sendMembershipStatusNotification = onCall(
       ? buildExpiredMessage(user.name, untilDate)
       : buildActiveMessage(user.name, untilDate);
 
-    await sendTextMessage(sessionName, { chatId: phone, text });
+    const title = isExpired
+      ? 'Vencimiento de Membresía 🥊'
+      : 'Membresía Activa ✅';
+
+    // 1. Send OpenWA WhatsApp notification (if available)
+    try {
+      await sendTextMessage(sessionName, { chatId: phone, text });
+    } catch (waError) {
+      logger.warn('WhatsApp message sending failed, continuing with Push Notification:', waError.message);
+    }
+
+    // 2. Send FCM Push Notification (if user has FCM tokens)
+    const userTokens = user.fcmTokens || (user.lastFcmToken ? [user.lastFcmToken] : []);
+    let pushResult = null;
+    if (userTokens.length > 0) {
+      pushResult = await sendFcmPushNotification(userTokens, {
+        title,
+        body: text,
+        data: { uid: user.uid, type: 'membership_notification' }
+      });
+    }
 
     const notificationRef = db.collection(NOTIFIED_COLLECTION).doc(user.uid);
     await notificationRef.set(
@@ -246,6 +266,7 @@ exports.sendMembershipStatusNotification = onCall(
       status: isExpired ? 'expired' : 'active',
       uid: user.uid,
       until: untilDate.toISOString(),
+      pushSent: pushResult ? pushResult.successCount > 0 : false
     };
   },
 );
@@ -547,3 +568,74 @@ function serializeError(error) {
     data: error.data || null,
   };
 }
+
+async function sendFcmPushNotification(tokens, { title, body, data }) {
+  if (!tokens) return { successCount: 0, failureCount: 0 };
+  const tokenList = Array.isArray(tokens) ? tokens : [tokens];
+  const validTokens = tokenList.filter((t) => typeof t === 'string' && t.trim() !== '');
+
+  if (validTokens.length === 0) {
+    return { successCount: 0, failureCount: 0 };
+  }
+
+  const message = {
+    notification: { title, body },
+    data: data || {},
+    tokens: validTokens,
+  };
+
+  try {
+    const response = await admin.messaging().sendEachForMulticast(message);
+    logger.info('FCM push notification multicast result:', {
+      successCount: response.successCount,
+      failureCount: response.failureCount,
+    });
+    return response;
+  } catch (error) {
+    logger.error('Error in sendFcmPushNotification:', error);
+    return { successCount: 0, failureCount: validTokens.length, error: error.message };
+  }
+}
+
+exports.sendDirectPushNotification = onCall(
+  {
+    region: 'us-central1',
+    timeoutSeconds: 30,
+    memory: '256MiB',
+  },
+  async (request) => {
+    await assertAdminRequest(request);
+
+    const uid = normalizeLookupValue(request.data?.uid);
+    const title = request.data?.title || 'Aviso de Atlas Gym';
+    const body = request.data?.body;
+
+    if (!uid || !body) {
+      throw new HttpsError('invalid-argument', 'El uid del usuario y el contenido del mensaje son requeridos.');
+    }
+
+    const userSnapshot = await db.collection(USERS_COLLECTION).doc(uid).get();
+    if (!userSnapshot.exists) {
+      throw new HttpsError('not-found', 'No se encontro el usuario.');
+    }
+
+    const user = userSnapshot.data();
+    const userTokens = user.fcmTokens || (user.lastFcmToken ? [user.lastFcmToken] : []);
+
+    if (userTokens.length === 0) {
+      throw new HttpsError('failed-precondition', 'El usuario no tiene dispositivos registrados para notificaciones push.');
+    }
+
+    const result = await sendFcmPushNotification(userTokens, {
+      title,
+      body,
+      data: { uid, type: 'direct_push' },
+    });
+
+    return {
+      success: result.successCount > 0,
+      successCount: result.successCount,
+      failureCount: result.failureCount,
+    };
+  },
+);

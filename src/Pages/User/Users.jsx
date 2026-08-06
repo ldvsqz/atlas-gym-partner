@@ -201,8 +201,10 @@ function User({ menu }) {
 
       showSnackbar(message, 'success');
     } catch (error) {
-      console.error('Error sending membership notification:', error);
-      showSnackbar('No pudimos enviar la notificación. Revisa la sesión de WhatsApp e intenta de nuevo.', 'error');
+      console.error('Error sending membership notification via OpenWA API:', error);
+      const msgText = util.selectMembershipMessage(user.name, user.until);
+      util.openWAChat('71699673', msgText);
+      showSnackbar(`Abriendo WhatsApp Web para notificar a ${user.name}...`, 'info');
     }
   };
 
@@ -379,11 +381,10 @@ function User({ menu }) {
                               onResponse={(response) => handleRenewResponse(response, user)}
                             />
                             { 
-                            !util.isMembershipActive(user.until)  &&
                               <Alert
                                 buttonName="Notificar"
                                 title="Notificar"
-                                message={`¿Desea notificar elvencimiento de la membresía de: ${user.name}?`}
+                                message={`¿Desea notificar el vencimiento de la membresía de: ${user.name}?`}
                                 onResponse={(response) => handleWaNotificationResponse(response, user)}
                               />
                             }

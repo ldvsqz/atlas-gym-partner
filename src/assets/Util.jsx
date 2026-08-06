@@ -129,9 +129,7 @@ class Util {
 
         // window.location.href = appUrl;
 
-        setTimeout(() => {
-            window.open(webUrl, "_blank");
-        }, 1500);
+        window.open(webUrl, "_blank");
     }
 
     selectMembershipMessage(name, until) {
