@@ -42,4 +42,14 @@ export default [
       },
     },
   },
+  {
+    files: ['public/firebase-messaging-sw.js', '**/service-worker*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.serviceworker,
+        importScripts: 'readonly',
+        firebase: 'readonly',
+      },
+    },
+  },
 ];
