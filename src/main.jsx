@@ -31,19 +31,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 // Register service worker only in production builds.
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js').then((registration) => {
-      registration.addEventListener('updatefound', () => {
-        const installingWorker = registration.installing;
-        if (!installingWorker) return;
-
-        installingWorker.addEventListener('statechange', () => {
-          if (registration.waiting) {
-            window.location.reload();
-          }
-        });
+    navigator.serviceWorker.register('/service-worker.js')
+      .catch((err) => {
+        console.warn('Service worker registration failed:', err);
       });
-    }).catch((err) => {
-      console.warn('Service worker registration failed:', err);
-    });
   });
 }
