@@ -38,7 +38,6 @@ import './Finance.css';
 import dayjs from 'dayjs';
 import { useSnackbar } from '../../Components/snackbar/AtlasSnackbar';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import moduleSettings from '../../config/moduleSettings';
 import {
     formatPeriodLabel,
     getCashboxMonth,
