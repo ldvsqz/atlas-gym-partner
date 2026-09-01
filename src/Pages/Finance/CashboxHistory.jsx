@@ -1,31 +1,31 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-    Container, 
-    Box, 
-    Card, 
-    CardContent, 
-    Grid, 
-    Typography, 
-    Button, 
+import {
+    Container,
+    Box,
+    Card,
+    CardContent,
+    Grid,
+    Typography,
+    Button,
     TextField,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableContainer, 
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
     TableHead,
-    TableRow, 
-    Paper, 
-    CircularProgress, 
+    TableRow,
+    Paper,
+    CircularProgress,
     Stack,
     Alert as MuiAlert,
     Divider
 } from '@mui/material';
 import Menu from '../../Components/Menu/Menu';
-import FinanceService from '../../../Firebase/financeService'; 
+import FinanceService from '../../../Firebase/financeService';
 import { useSnackbar } from '../../Components/snackbar/AtlasSnackbar';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -56,8 +56,14 @@ const DEFAULT_DISTRIBUTION_PERCENTAGES = {
 
 const getCashboxSettings = () => moduleSettings.getSettings('cashbox');
 
-function getDistributionKeys(percentages = {}) {
+function getDistributionKeys(percentages = {}, partsCount = 0) {
+    const configuredCount = Number(partsCount || 0);
     const keys = Object.keys(percentages || {});
+
+    if (configuredCount > 0) {
+        return Array.from({ length: configuredCount }, (_, index) => `part${index + 1}`);
+    }
+
     if (keys.length === 0) return [];
 
     const numberedKeys = keys.filter((key) => /^part\d+$/.test(key));
@@ -154,6 +160,7 @@ function CashboxPage() {
     const [historyLoading, setHistoryLoading] = useState(false);
     const [cashboxMonth, setCashboxMonth] = useState(isMonthParam(initialMonth) ? initialMonth : dayjs().format('YYYY-MM'));
     const [cashboxSettings, setCashboxSettings] = useState(getCashboxSettings);
+    const [partsCount, setPartsCount] = useState(() => getCashboxSettings().partsCount ?? 3);
     const [debtAmount, setDebtAmount] = useState(() => getCashboxSettings().fixedDebtAmount ?? 0);
     const [distributionPercentages, setDistributionPercentages] = useState(
         () => getCashboxSettings().distributionPercentages || DEFAULT_DISTRIBUTION_PERCENTAGES,
@@ -199,6 +206,7 @@ function CashboxPage() {
             setSavedCashbox(cashbox);
 
             if (cashbox) {
+                setPartsCount(Number(cashbox.partsCount ?? cashboxSettings.partsCount ?? 3));
                 setDebtAmount(cashbox.debts ?? cashboxSettings.fixedDebtAmount ?? 0);
                 setDistributionPercentages(
                     cashbox.distributionPercentages || cashboxSettings.distributionPercentages || {
@@ -209,6 +217,7 @@ function CashboxPage() {
                 );
                 setMaintenancePercentage(cashbox.maintenancePercentage ?? cashboxSettings.maintenancePercentage ?? 20);
             } else {
+                setPartsCount(Number(cashboxSettings.partsCount ?? 3));
                 setDebtAmount(cashboxSettings.fixedDebtAmount ?? 0);
                 setDistributionPercentages(cashboxSettings.distributionPercentages || DEFAULT_DISTRIBUTION_PERCENTAGES);
                 setMaintenancePercentage(cashboxSettings.maintenancePercentage ?? 20);
@@ -229,6 +238,7 @@ function CashboxPage() {
     useEffect(() => {
         const unsubscribe = moduleSettings.subscribe('cashbox', (settings) => {
             setCashboxSettings(settings);
+            setPartsCount(Number(settings.partsCount || 3));
             setDebtAmount(settings.fixedDebtAmount ?? 0);
             setDistributionPercentages(settings.distributionPercentages || DEFAULT_DISTRIBUTION_PERCENTAGES);
             setMaintenancePercentage(settings.maintenancePercentage ?? 20);
@@ -276,9 +286,10 @@ function CashboxPage() {
         const distributableBalance = balanceAfterDebts - maintenanceFund;
         const safeDistributableBalance = distributableBalance > 0 ? distributableBalance : 0;
 
-        const distributionKeys = getDistributionKeys(distributionPercentages);
+        const distributionKeys = getDistributionKeys(distributionPercentages, partsCount);
         const distributions = distributionKeys.reduce((acc, key) => {
-            acc[key] = safeDistributableBalance * (Number(distributionPercentages[key] || 0) / 100);
+            const percentage = Number(distributionPercentages[key] ?? 0);
+            acc[key] = safeDistributableBalance * (percentage / 100);
             return acc;
         }, {});
 
@@ -346,7 +357,7 @@ function CashboxPage() {
             theme: 'grid',
             head: [['Distribución', 'Porcentaje', 'Monto']],
             body: [
-                ...getDistributionKeys(distributionPercentages).map((key) => [
+                ...getDistributionKeys(distributionPercentages, partsCount).map((key) => [
                     getDistributionLabel(key),
                     `${distributionPercentages[key] ?? 0}%`,
                     formatCurrency(cashbox.distributions[key] ?? 0),
@@ -422,7 +433,7 @@ function CashboxPage() {
                 theme: 'grid',
                 head: [['Distribución', 'Porcentaje', 'Monto']],
                 body: [
-                    ...getDistributionKeys(cashbox.distributionPercentages || {}).map((key) => [
+                    ...getDistributionKeys(cashbox.distributionPercentages || {}, cashbox.partsCount || partsCount).map((key) => [
                         getDistributionLabel(key),
                         `${cashbox.distributionPercentages?.[key] ?? 0}%`,
                         formatCurrency(distributions[key] ?? 0),
@@ -437,6 +448,11 @@ function CashboxPage() {
     };
 
     const saveCashbox = async () => {
+        if (cashbox.distributionTotalPercentage !== 100) {
+            showSnackbar('La suma de los porcentajes del monto distribuible debe ser 100% y no incluye el fondo de mantenimiento.', 'warning');
+            return;
+        }
+
         try {
             setCashboxSaving(true);
             const closedAt = new Date();
@@ -487,8 +503,9 @@ function CashboxPage() {
 
             const payload = {
                 month: cashboxMonth,
+                partsCount: Number(partsCount || cashboxSettings.partsCount || 3),
                 debts: currentCashbox.debts,
-                distributionPercentages: getDistributionKeys(distributionPercentages).reduce((acc, key) => ({
+                distributionPercentages: getDistributionKeys(distributionPercentages, partsCount).reduce((acc, key) => ({
                     ...acc,
                     [key]: Number(distributionPercentages[key] || 0),
                 }), {}),
@@ -572,7 +589,11 @@ function CashboxPage() {
                                     </Typography>
                                 </Box>
                                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-                                    <Button variant="outlined" onClick={saveCashbox} disabled={cashboxSaving}>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={saveCashbox}
+                                        disabled={cashboxSaving || cashbox.distributionTotalPercentage !== 100}
+                                    >
                                         Guardar Caja
                                     </Button>
                                     <Button variant="outlined" onClick={downloadCashboxPDF}>
@@ -583,47 +604,14 @@ function CashboxPage() {
 
                             <Grid container spacing={2} sx={{ mb: 2 }}>
                                 <Grid item xs={12} md={3}>
-                                    <TextField
-                                        fullWidth
-                                        label="Mes de caja"
-                                        type="month"
-                                        value={cashboxMonth}
-                                        onChange={(event) => handleCashboxMonthChange(event.target.value)}
-                                        InputLabelProps={{ shrink: true }}
-                                    />
+                                    <Card variant="outlined">
+                                        <CardContent>
+                                            <Typography variant="body2" color="text.secondary">Mes de caja</Typography>
+                                            <Typography variant="h6">{formatMonth(cashboxMonth)}</Typography>
+                                        </CardContent>
+                                    </Card>
                                 </Grid>
                                 <Grid item xs={12} md={3}>
-                                    <TextField
-                                        fullWidth
-                                        label="Deudas"
-                                        type="number"
-                                        value={debtAmount}
-                                        InputProps={{ readOnly: true }}
-                                        inputProps={{ min: 0, step: '0.01', tabIndex: -1 }}
-                                    />
-                                </Grid>
-                                {getDistributionKeys(distributionPercentages).map((key) => (
-                                    <Grid item xs={12} md={2} key={key}>
-                                        <TextField
-                                            fullWidth
-                                            label={`${getDistributionLabel(key)} %`}
-                                            type="number"
-                                            value={distributionPercentages[key] ?? ''}
-                                            InputProps={{ readOnly: true }}
-                                            inputProps={{ min: 0, step: '1', tabIndex: -1 }}
-                                        />
-                                    </Grid>
-                                ))}
-                            </Grid>
-
-                            {cashbox.distributionTotalPercentage !== 100 && (
-                                <MuiAlert severity="warning" sx={{ mb: 2 }}>
-                                    Los porcentajes de distribución suman {cashbox.distributionTotalPercentage}%. Lo recomendado es 100%.
-                                </MuiAlert>
-                            )}
-
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6} md={3}>
                                     <Card variant="outlined">
                                         <CardContent>
                                             <Typography variant="body2" color="text.secondary">Balance total</Typography>
@@ -631,6 +619,17 @@ function CashboxPage() {
                                         </CardContent>
                                     </Card>
                                 </Grid>
+                                <Grid item xs={12} sm={6} md={3}>
+                                    <Card variant="outlined">
+                                        <CardContent>
+                                            <Typography variant="body2" color="text.secondary">Deudas</Typography>
+                                            <Typography variant="h6">{formatCurrency(debtAmount)}</Typography>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            </Grid>
+
+                            <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6} md={3}>
                                     <Card variant="outlined">
                                         <CardContent>
@@ -642,25 +641,32 @@ function CashboxPage() {
                                 <Grid item xs={12} sm={6} md={3}>
                                     <Card variant="outlined">
                                         <CardContent>
-                                            <Typography variant="body2" color="text.secondary">Distribuible</Typography>
-                                            <Typography variant="h6">{formatCurrency(cashbox.distributableBalance)}</Typography>
+                                            <Typography variant="body2" color="text.secondary">Mantenimiento {maintenancePercentage}% (M)</Typography>
+                                            <Typography variant="h6">{formatCurrency(cashbox.maintenanceFund)}</Typography>
                                         </CardContent>
                                     </Card>
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={3}>
                                     <Card variant="outlined">
                                         <CardContent>
-                                            <Typography variant="body2" color="text.secondary">Mantenimiento {maintenancePercentage}% (M)</Typography>
-                                            <Typography variant="h6">{formatCurrency(cashbox.maintenanceFund)}</Typography>
+                                            <Typography variant="body2" color="text.secondary">Distribuible</Typography>
+                                            <Typography variant="h6">{formatCurrency(cashbox.distributableBalance)}</Typography>
                                         </CardContent>
                                     </Card>
                                 </Grid>
                             </Grid>
 
+                            {cashbox.distributionTotalPercentage !== 100 && (
+                                <MuiAlert severity="warning" sx={{ mb: 2 }}>
+                                    La suma de los porcentajes del monto distribuible es {cashbox.distributionTotalPercentage}%.
+                                    Debe ser 100% y no incluye el fondo de mantenimiento.
+                                </MuiAlert>
+                            )}
+
                             <Divider sx={{ my: 2 }} />
 
                             <Grid container spacing={2}>
-                                {getDistributionKeys(distributionPercentages).map((key) => (
+                                {getDistributionKeys(distributionPercentages, partsCount).map((key) => (
                                     <Grid item xs={12} md={4} key={key}>
                                         <Typography variant="body2" color="text.secondary">
                                             {getDistributionLabel(key)} ({distributionPercentages[key]}%)
@@ -675,12 +681,12 @@ function CashboxPage() {
 
                     </>
                 )}
-                
-                <CashboxHistoryDialog 
-                    open={openHistoryModal} 
-                    onClose={() => setOpenHistoryModal(false)} 
-                    history={history} 
-                    loading={historyLoading} 
+
+                <CashboxHistoryDialog
+                    open={openHistoryModal}
+                    onClose={() => setOpenHistoryModal(false)}
+                    history={history}
+                    loading={historyLoading}
                     onDownloadHistoryPDF={downloadCashboxHistoryPDF}
                 />
             </Container>

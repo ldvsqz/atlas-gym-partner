@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import ErrorBoundary from './Components/ErrorBoundary/ErrorBoundary'
 import moduleSettings from './config/moduleSettings';
+import SettingsService from '../Firebase/settingsService';
 //import './index.css'
 
 import { SnackbarProvider } from './Components/snackbar/AtlasSnackbar';
@@ -17,6 +18,33 @@ moduleSettings.registerModule('cashbox', {
   },
   maintenancePercentage: 20,
 });
+
+async function hydrateModuleSettings() {
+  try {
+    moduleSettings.restoreOverrides();
+
+    const savedSettings = await SettingsService.getAllModuleSettings();
+    if (!savedSettings || Object.keys(savedSettings).length === 0) {
+      return;
+    }
+
+    const dbOverrides = Object.fromEntries(
+      Object.entries(savedSettings).map(([moduleName, record]) => [
+        moduleName,
+        record?.overrides || {},
+      ])
+    );
+
+    if (Object.keys(dbOverrides).length > 0) {
+      moduleSettings.loadOverrides(dbOverrides);
+      moduleSettings.persistOverrides();
+    }
+  } catch (error) {
+    console.error('Error loading module settings from database:', error);
+  }
+}
+
+hydrateModuleSettings();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

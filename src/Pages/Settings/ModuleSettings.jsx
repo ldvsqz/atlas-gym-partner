@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Typography, Paper, Grid, TextField, Button, Stack, Tabs, Tab } from '@mui/material';
+import { Box, Container, Typography, Paper, Grid, TextField, Button, Stack, Tabs, Tab, Alert } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import moduleSettings from '../../config/moduleSettings';
 import SettingsService from '../../../Firebase/settingsService';
@@ -17,7 +17,7 @@ const FIELD_LABELS = {
   },
 };
 
-const PART_LABEL_PREFIX = 'Porcentaje parte';
+const PART_LABEL_PREFIX = 'Parte';
 
 function getCashboxPartKeys(settings = {}) {
   const count = Number(settings.partsCount || 0);
@@ -28,6 +28,12 @@ function getCashboxPartKeys(settings = {}) {
 function formatPartLabel(key) {
   const match = key.match(/^part(\d+)$/);
   return match ? `${PART_LABEL_PREFIX} ${match[1]}` : key;
+}
+
+function getDistributablePercentageTotal(settings = {}) {
+  const percentages = settings.distributionPercentages || {};
+  const total = Object.values(percentages).reduce((sum, value) => sum + Number(value || 0), 0);
+  return Number.isFinite(total) ? total : 0;
 }
 
 function ModuleSettings() {
@@ -123,6 +129,8 @@ function ModuleSettings() {
 
   const moduleNames = Object.keys(local);
   const activeSettings = activeTab ? local[activeTab] || {} : {};
+  const cashboxDistributionTotal = getDistributablePercentageTotal(activeSettings);
+  const isCashboxSettingsInvalid = activeTab === 'cashbox' && cashboxDistributionTotal !== 100;
 
   return (
     <Container fixed>
@@ -159,34 +167,45 @@ function ModuleSettings() {
               {MODULE_LABELS[activeTab] || activeTab}
             </Typography>
 
+            {activeTab === 'cashbox' && isCashboxSettingsInvalid && (
+              <Alert severity="warning" sx={{ mb: 2 }}>
+                La suma de los porcentajes del monto distribuible es {cashboxDistributionTotal}%. Debe ser 100% y no incluye el fondo de mantenimiento.
+              </Alert>
+            )}
+ 
             <Grid container spacing={2}>
               {Object.entries(activeSettings).map(([key, value]) => {
                 if (activeTab === 'cashbox' && key === 'distributionPercentages') {
                   const partKeys = getCashboxPartKeys(activeSettings);
                   return (
                     <React.Fragment key={key}>
-                      {partKeys.map((partKey) => (
-                        <Grid item xs={12} md={6} key={partKey}>
+                      {partKeys.map((partKey, index) => (
+                        <Grid item xs={12} sm={6} md={4} key={partKey}>
                           <TextField
                             label={formatPartLabel(partKey)}
                             value={activeSettings.distributionPercentages?.[partKey] ?? ''}
                             fullWidth
+                            size="small"
                             type="number"
                             onChange={(e) => handleNestedChange(activeTab, key, partKey, e.target.value)}
+                            InputProps={{
+                              inputProps: { min: 0, step: 1 },
+                            }}
                           />
                         </Grid>
                       ))}
                     </React.Fragment>
                   );
                 }
-
+ 
                 if (activeTab === 'cashbox' && key === 'partsCount') {
                   return (
-                    <Grid item xs={12} md={6} key={key}>
+                    <Grid item xs={12} md={4} key={key}>
                       <TextField
                         label={FIELD_LABELS[activeTab]?.[key] || key}
                         value={value ?? ''}
                         fullWidth
+                        size="small"
                         type="number"
                         inputProps={{ min: 1 }}
                         onChange={(e) => handleChange(activeTab, key, Number(e.target.value))}
@@ -194,39 +213,41 @@ function ModuleSettings() {
                     </Grid>
                   );
                 }
-
+ 
                 if (activeTab === 'cashbox' && key === 'maintenancePercentage') {
                   return (
-                    <Grid item xs={12} md={6} key={key}>
+                    <Grid item xs={12} md={4} key={key}>
                       <TextField
                         label={FIELD_LABELS[activeTab]?.[key] || key}
                         value={value ?? ''}
                         fullWidth
+                        size="small"
                         type="number"
                         onChange={(e) => handleChange(activeTab, key, Number(e.target.value))}
                       />
                     </Grid>
                   );
                 }
-
+ 
                 if (activeTab === 'cashbox' && key === 'fixedDebtAmount') {
                   return (
-                    <Grid item xs={12} md={6} key={key}>
+                    <Grid item xs={12} md={4} key={key}>
                       <TextField
                         label={FIELD_LABELS[activeTab]?.[key] || key}
                         value={value ?? ''}
                         fullWidth
+                        size="small"
                         type="number"
                         onChange={(e) => handleChange(activeTab, key, Number(e.target.value))}
                       />
                     </Grid>
                   );
                 }
-
+ 
                 if (activeTab === 'cashbox') {
                   return null;
                 }
-
+ 
                 return (
                   <Grid item xs={12} md={6} key={key}>
                     <TextField
@@ -240,9 +261,13 @@ function ModuleSettings() {
                 );
               })}
             </Grid>
-
+ 
             <Box sx={{ mt: 3, textAlign: 'right' }}>
-              <Button variant="contained" onClick={() => handleSaveModule(activeTab)}>
+              <Button
+                variant="contained"
+                onClick={() => handleSaveModule(activeTab)}
+                disabled={isCashboxSettingsInvalid}
+              >
                 Guardar configuración
               </Button>
             </Box>
