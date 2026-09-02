@@ -138,13 +138,19 @@ class Util {
         const diffTime = membershipDate - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        if (diffDays < 0) {
-            return `Hola, ${name}. Esperamos que estés muy bien 🫡 tu membresía venció el ${membershipDate.toLocaleDateString()} te invitamos a renovarla para continuar con tus entrenamientos 🥊`;
+        const firstName = getFirstName(name);
+
+        if (diffDays <= 0) {
+            return `Hola, ${firstName}. Tu membresía venció el ${membershipDate.toLocaleDateString()}. Cuando quieras, puedes renovarla 🔄`;
         } else if (diffDays <= 7) {
-            return `Hola, ${name}. Esperamos que estés muy bien 🫡 tu membresía está por vencer el ${membershipDate.toLocaleDateString()} podés renovarla en cualquier momento para seguir entrenando 🥊`;
+            return `Hola, ${firstName}. Tu membresía vence el ${membershipDate.toLocaleDateString()}. ¡Te esperamos! 📅`;
         } else {
-            return `Hola, ${name}. Esperamos que estés muy bien 🫡 tu membresía ha sido renovada hasta el ${membershipDate.toLocaleDateString()} ✅ ya podés continuar entrenando con normalidad 🥊`;
+            return `Hola, ${firstName}. ¡Membresía renovada hasta el ${membershipDate.toLocaleDateString()}! Nos vemos en el entrenamiento ✅`;
         }
+    }
+
+    getFirstName(name) {
+        return name.trim().split(/\s+/)[0];
     }
 
 
@@ -188,11 +194,11 @@ class Util {
     }
 
     isMembershipDisplayable(_date) {
-        const currentDate = new Date() -15 * 24 * 60 * 60 * 1000; // 15 days ago
+        const currentDate = new Date() - 15 * 24 * 60 * 60 * 1000; // 15 days ago
         const membershipDate = new Date(this.getDateFromFirebase(_date));
         return membershipDate >= currentDate;
     }
-    
+
 }
 
 export default Util
