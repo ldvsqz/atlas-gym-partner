@@ -312,7 +312,7 @@ function ModuleSettings() {
                     </Grid>
                   );
                 }
-  
+
                 if (activeTab === 'cashbox' && key === 'maintenancePercentage') {
                   return (
                     <Grid item xs={12} md={4} key={key}>
@@ -327,7 +327,7 @@ function ModuleSettings() {
                     </Grid>
                   );
                 }
-  
+
                 if (activeTab === 'cashbox' && key === 'fixedDebtAmount') {
                   return (
                     <Grid item xs={12} md={4} key={key}>
