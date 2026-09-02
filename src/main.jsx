@@ -4,6 +4,7 @@ import App from './App'
 import ErrorBoundary from './Components/ErrorBoundary/ErrorBoundary'
 import moduleSettings from './config/moduleSettings';
 import SettingsService from '../Firebase/settingsService';
+import { DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS, DEFAULT_RESERVED_GRID_CELLS } from './features/gymLayout/models/gymLayoutModels';
 //import './index.css'
 
 import { SnackbarProvider } from './Components/snackbar/AtlasSnackbar';
@@ -17,6 +18,12 @@ moduleSettings.registerModule('cashbox', {
     part3: 20,
   },
   maintenancePercentage: 20,
+});
+
+moduleSettings.registerModule('gymLayout', {
+  rows: DEFAULT_GRID_ROWS,
+  cols: DEFAULT_GRID_COLS,
+  reservedCells: DEFAULT_RESERVED_GRID_CELLS,
 });
 
 async function hydrateModuleSettings() {

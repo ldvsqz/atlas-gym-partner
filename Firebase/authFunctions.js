@@ -1,6 +1,6 @@
 import { GoogleAuthProvider, signInWithPopup, getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, deleteUser } from "firebase/auth";
-import { httpsCallable } from 'firebase/functions';
-import { app, functions } from "./firebase"
+import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { app, db } from "./firebase"
 import UserService from './userService';
 import UserModel from "../src/models/UserModel";
 import { Timestamp } from 'firebase/firestore';
@@ -15,9 +15,26 @@ const createAppError = (code, message) => {
 };
 
 const checkRegistrationAvailability = async ({ dni = '', email = '' }) => {
-    const checkAvailability = httpsCallable(functions, 'checkRegistrationAvailability');
-    const response = await checkAvailability({ dni, email });
-    return response.data || {};
+    const normalizedEmail = (email || '').trim().toLowerCase();
+    const normalizedDni = (dni || '').trim();
+
+    if (!normalizedEmail && !normalizedDni) {
+        return { available: true };
+    }
+
+    const checks = [];
+
+    if (normalizedDni) {
+        checks.push(getDocs(query(collection(db, 'users'), where('dni', '==', normalizedDni), limit(1))));
+    }
+
+    if (normalizedEmail) {
+        checks.push(getDocs(query(collection(db, 'users'), where('email', '==', normalizedEmail), limit(1))));
+    }
+
+    const snapshots = await Promise.all(checks);
+    const available = snapshots.every((snapshot) => snapshot.empty);
+    return { available };
 };
 
 

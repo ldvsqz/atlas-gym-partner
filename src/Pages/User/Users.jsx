@@ -10,7 +10,6 @@ import StatService from '../../../Firebase/statsService';
 import Util from '../../assets/Util';
 import UserModel from '../../models/UserModel';
 import FinanceModel from '../../models/FinanceModel';
-import OpenWAService from '../../services/openwaService';
 //MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -186,26 +185,17 @@ function User({ menu }) {
       const activeUsers = UsersData.filter((user) => util.isMembershipDisplayable(user.until));
       setUsers(UsersData);
       setFilteredUsers(activeUsers);
-      handleWaNotificationResponse(true, user);
+      // handleWaNotificationResponse(true, user);
     }
   };
 
   const handleWaNotificationResponse = async (response, user) => {
     if (!response) return;
 
-    try {
-      const result = await OpenWAService.sendMembershipStatusNotification(user.uid);
-      const message = result.status === 'expired'
-        ? `Notificación de vencimiento enviada a ${user.name}`
-        : `Notificación de membresía activa enviada a ${user.name}`;
-
-      showSnackbar(message, 'success');
-    } catch (error) {
-      console.error('Error sending membership notification via OpenWA API:', error);
-      const msgText = util.selectMembershipMessage(user.name, user.until);
-      util.openWAChat('71699673', msgText);
-      showSnackbar(`Abriendo WhatsApp Web para notificar a ${user.name}...`, 'info');
-    }
+    const msgText = util.selectMembershipMessage(user.name, user.until);
+    const phone = user.phone || '71699673';
+    util.openWAChat(phone, msgText);
+    showSnackbar(`Abriendo WhatsApp Web para notificar a ${user.name}...`, 'info');
   };
 
   const handleOpenAddUserModal = () => {

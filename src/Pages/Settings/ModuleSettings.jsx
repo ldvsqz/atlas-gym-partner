@@ -7,6 +7,7 @@ import { useSnackbar } from '../../Components/snackbar/AtlasSnackbar';
 
 const MODULE_LABELS = {
   cashbox: 'Arqueo de Caja',
+  gymLayout: 'Layout de Gimnasio',
 };
 
 const FIELD_LABELS = {
@@ -14,6 +15,10 @@ const FIELD_LABELS = {
     fixedDebtAmount: 'Monto fijo de deudas',
     partsCount: 'Número de partes',
     maintenancePercentage: 'Porcentaje de mantenimiento',
+  },
+  gymLayout: {
+    rows: 'Filas',
+    cols: 'Columnas',
   },
 };
 
@@ -39,6 +44,7 @@ function getDistributablePercentageTotal(settings = {}) {
 function ModuleSettings() {
   const [local, setLocal] = useState({});
   const [activeTab, setActiveTab] = useState('');
+  const [selectedReservedCell, setSelectedReservedCell] = useState(null);
 
   const { showSnackbar } = useSnackbar();
 
@@ -80,6 +86,12 @@ function ModuleSettings() {
     if (activeTab && !keys.includes(activeTab) && keys.length) setActiveTab(keys[0]);
   }, [local, activeTab]);
 
+  useEffect(() => {
+    if (activeTab !== 'gymLayout') {
+      setSelectedReservedCell(null);
+    }
+  }, [activeTab]);
+
   const handleChange = (moduleName, key, value) => {
     setLocal((prev) => ({
       ...prev,
@@ -103,9 +115,96 @@ function ModuleSettings() {
     }));
   };
 
+  const handleReservedCellMetaChange = (moduleName, x, y, field, value) => {
+    setLocal((prev) => {
+      const current = Array.isArray(prev[moduleName]?.reservedCells) ? prev[moduleName].reservedCells : [];
+      const next = current.map((cell) => {
+        const cellX = Number(cell.x || 0);
+        const cellY = Number(cell.y || 0);
+        if (cellX !== x || cellY !== y) return cell;
+
+        if (field === 'label' || field === 'description' || field === 'color') {
+          return { ...cell, [field]: value };
+        }
+
+        return { ...cell, [field]: Number(value) || 0 };
+      });
+
+      return {
+        ...prev,
+        [moduleName]: {
+          ...(prev[moduleName] || {}),
+          reservedCells: next,
+        },
+      };
+    });
+  };
+
+  const handleToggleReservedCell = (moduleName, x, y) => {
+    setLocal((prev) => {
+      const current = Array.isArray(prev[moduleName]?.reservedCells) ? prev[moduleName].reservedCells : [];
+      const normalized = current.filter((cell) => {
+        const cellX = Number(cell.x || 0);
+        const cellY = Number(cell.y || 0);
+        return cellX >= 0 && cellY >= 0;
+      });
+
+      const key = `${x}-${y}`;
+      const next = normalized.filter((cell) => `${Number(cell.x || 0)}-${Number(cell.y || 0)}` !== key);
+
+      const isRemoving = next.length !== normalized.length;
+      if (isRemoving) {
+        setSelectedReservedCell((currentSelection) => (
+          currentSelection && currentSelection.x === x && currentSelection.y === y ? null : currentSelection
+        ));
+        return {
+          ...prev,
+          [moduleName]: {
+            ...(prev[moduleName] || {}),
+            reservedCells: next,
+          },
+        };
+      }
+
+      const createdCell = {
+        id: `__reserved_${Date.now()}__`,
+        label: 'Bloqueado',
+        description: 'bloqueado',
+        x,
+        y,
+        w: 1,
+        h: 1,
+        color: '#64748B',
+      };
+
+      setSelectedReservedCell({ x, y });
+      return {
+        ...prev,
+        [moduleName]: {
+          ...(prev[moduleName] || {}),
+          reservedCells: [...normalized, createdCell],
+        },
+      };
+    });
+  };
+
   const handleSaveModule = async (moduleName) => {
+    const normalized = {
+      ...(local[moduleName] || {}),
+    };
+
+    if (moduleName === 'gymLayout' && Array.isArray(normalized.reservedCells)) {
+      normalized.reservedCells = normalized.reservedCells.map((cell) => ({
+        ...cell,
+        x: Number(cell.x || 0),
+        y: Number(cell.y || 0),
+        w: Math.max(1, Number(cell.w || 1)),
+        h: Math.max(1, Number(cell.h || 1)),
+      }));
+    }
+
     const overrides = {};
-    overrides[moduleName] = local[moduleName] || {};
+    overrides[moduleName] = normalized;
     moduleSettings.loadOverrides(overrides);
     moduleSettings.persistOverrides();
 
@@ -213,7 +312,7 @@ function ModuleSettings() {
                     </Grid>
                   );
                 }
- 
+  
                 if (activeTab === 'cashbox' && key === 'maintenancePercentage') {
                   return (
                     <Grid item xs={12} md={4} key={key}>
@@ -228,7 +327,7 @@ function ModuleSettings() {
                     </Grid>
                   );
                 }
- 
+  
                 if (activeTab === 'cashbox' && key === 'fixedDebtAmount') {
                   return (
                     <Grid item xs={12} md={4} key={key}>
@@ -243,8 +342,147 @@ function ModuleSettings() {
                     </Grid>
                   );
                 }
- 
-                if (activeTab === 'cashbox') {
+
+                if (activeTab === 'gymLayout' && key === 'rows') {
+                  return (
+                    <Grid item xs={12} md={4} key={key}>
+                      <TextField
+                        label={FIELD_LABELS[activeTab]?.[key] || key}
+                        value={value ?? ''}
+                        fullWidth
+                        size="small"
+                        type="number"
+                        inputProps={{ min: 1 }}
+                        onChange={(e) => handleChange(activeTab, key, Number(e.target.value))}
+                      />
+                    </Grid>
+                  );
+                }
+
+                if (activeTab === 'gymLayout' && key === 'cols') {
+                  return (
+                    <Grid item xs={12} md={4} key={key}>
+                      <TextField
+                        label={FIELD_LABELS[activeTab]?.[key] || key}
+                        value={value ?? ''}
+                        fullWidth
+                        size="small"
+                        type="number"
+                        inputProps={{ min: 1 }}
+                        onChange={(e) => handleChange(activeTab, key, Number(e.target.value))}
+                      />
+                    </Grid>
+                  );
+                }
+
+                if (activeTab === 'gymLayout' && key === 'reservedCells') {
+                  const rows = Math.max(1, Number(activeSettings.rows || 1));
+                  const cols = Math.max(1, Number(activeSettings.cols || 1));
+                  const reservedCells = Array.isArray(value) ? value : [];
+                  const reservedSet = new Set(
+                    reservedCells
+                      .filter((cell) => Number(cell.x || 0) >= 0 && Number(cell.y || 0) >= 0)
+                      .map((cell) => `${Number(cell.x || 0)}-${Number(cell.y || 0)}`)
+                  );
+                  const selectedReservedDefinition = selectedReservedCell
+                    ? reservedCells.find((cell) => Number(cell.x || 0) === selectedReservedCell.x && Number(cell.y || 0) === selectedReservedCell.y)
+                    : null;
+
+                  return (
+                    <Grid item xs={12} key={key}>
+                      <Paper variant="outlined" sx={{ p: 2 }}>
+                        <Typography variant="subtitle1" sx={{ mb: 2 }}>Celdas reservadas</Typography>
+                        <Box
+                          sx={{
+                            display: 'grid',
+                            gridTemplateColumns: `repeat(${Math.min(cols, 12)}, minmax(16px, 1fr))`,
+                            gap: 0.5,
+                            maxWidth: Math.min(290, cols * 24 + (cols - 1) * 4),
+                            width: '100%',
+                            overflowX: 'auto',
+                          }}
+                        >
+                          {Array.from({ length: rows * cols }, (_, index) => {
+                            const x = index % cols;
+                            const y = Math.floor(index / cols);
+                            const isReserved = reservedSet.has(`${x}-${y}`);
+                            const isSelected = Boolean(
+                              selectedReservedCell && selectedReservedCell.x === x && selectedReservedCell.y === y
+                            );
+
+                            return (
+                              <Button
+                                key={`${x}-${y}`}
+                                variant={isReserved ? 'contained' : 'outlined'}
+                                color={isReserved ? (isSelected ? 'secondary' : 'warning') : 'primary'}
+                                onClick={() => {
+                                  if (isReserved) {
+                                    setSelectedReservedCell({ x, y });
+                                    return;
+                                  }
+                                  handleToggleReservedCell(activeTab, x, y);
+                                }}
+                                sx={{
+                                  minWidth: 0,
+                                  width: '100%',
+                                  aspectRatio: '1 / 1',
+                                  p: 0,
+                                  fontSize: '0.55rem',
+                                  borderRadius: 1,
+                                  borderWidth: isSelected ? 2 : 1,
+                                  lineHeight: 1,
+                                  minHeight: 18,
+                                }}
+                              >
+                                {isReserved ? 'X' : ''}
+                              </Button>
+                            );
+                          })}
+                        </Box>
+
+                        {selectedReservedDefinition && (
+                          <Box sx={{ mt: 2, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+                            <Stack direction={{ xs: 'column', md: 'row' }} spacing={1} sx={{ mb: 1 }}>
+                              <TextField
+                                label="Etiqueta"
+                                size="small"
+                                value={selectedReservedDefinition.label || ''}
+                                onChange={(e) => handleReservedCellMetaChange(activeTab, Number(selectedReservedDefinition.x || 0), Number(selectedReservedDefinition.y || 0), 'label', e.target.value)}
+                                fullWidth
+                              />
+                              <TextField
+                                label="Descripción"
+                                size="small"
+                                value={selectedReservedDefinition.description || ''}
+                                onChange={(e) => handleReservedCellMetaChange(activeTab, Number(selectedReservedDefinition.x || 0), Number(selectedReservedDefinition.y || 0), 'description', e.target.value)}
+                                fullWidth
+                              />
+                              <TextField
+                                label="Color"
+                                size="small"
+                                type="color"
+                                value={selectedReservedDefinition.color || '#64748B'}
+                                onChange={(e) => handleReservedCellMetaChange(activeTab, Number(selectedReservedDefinition.x || 0), Number(selectedReservedDefinition.y || 0), 'color', e.target.value)}
+                                sx={{ minWidth: 100 }}
+                              />
+                            </Stack>
+
+                            <Button
+                              size="small"
+                              color="warning"
+                              variant="outlined"
+                              onClick={() => handleToggleReservedCell(activeTab, Number(selectedReservedDefinition.x || 0), Number(selectedReservedDefinition.y || 0))}
+                            >
+                              Quitar reserva
+                            </Button>
+                          </Box>
+                        )}
+                      </Paper>
+                    </Grid>
+                  );
+                }
+  
+                if (activeTab === 'cashbox' || activeTab === 'gymLayout') {
                   return null;
                 }
  
