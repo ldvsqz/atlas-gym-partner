@@ -1,5 +1,7 @@
 import { collection, deleteDoc, updateDoc, getDocs, doc, getDoc, setDoc, query, where, orderBy, limit } from 'firebase/firestore';
 import { db } from "./firebase"
+import { DEFAULT_GYM_ID } from './tenant';
+import { cachedRequest } from './requestCache';
 
 const COLLECTION_NAME = 'stats';
 
@@ -39,7 +41,7 @@ class StatService {
         try {
             const statsRef = collection(db, COLLECTION_NAME);
             const docRef = doc(statsRef);
-            const payload = removeUndefinedFields({ ...stats, id: docRef.id });
+            const payload = removeUndefinedFields({ ...stats, id: docRef.id, gymId: stats.gymId || DEFAULT_GYM_ID });
             await setDoc(docRef, payload);
             return payload;
         } catch (error) {
@@ -68,20 +70,11 @@ class StatService {
 
     //get all stats
     async getAll() {
-        const statsRef = collection(db, COLLECTION_NAME);
-        try {
-            const querySnapshot = await getDocs(statsRef);
-            const stats = [];
-            querySnapshot.forEach((doc) => {
-                stats.push({
-                    id: doc.id,
-                    ...doc.data()
-                });
-            });
-            return stats;
-        } catch (error) {
-            console.error('Error al obtener los usuarios:', error);
-        }
+        return cachedRequest('stats:all', async () => {
+            const statsRef = collection(db, COLLECTION_NAME);
+            const querySnapshot = await getDocs(query(statsRef, where('gymId', '==', DEFAULT_GYM_ID)));
+            return querySnapshot.docs.map((snapshot) => ({ id: snapshot.id, ...snapshot.data() }));
+        });
     }
 
 
@@ -117,7 +110,7 @@ class StatService {
             return null
         }
         const statsRef = collection(db, COLLECTION_NAME);
-        const statsQuery = await query(statsRef, where('uid', '==', uid), orderBy('date', 'desc'), limit(1));
+        const statsQuery = query(statsRef, where('gymId', '==', DEFAULT_GYM_ID), where('uid', '==', uid), orderBy('date', 'desc'), limit(1));
         try {
             const querySnapshot = await getDocs(statsQuery);
             if (querySnapshot.empty) {
@@ -142,7 +135,7 @@ class StatService {
         }
 
         const statsRef = collection(db, COLLECTION_NAME);
-        const statsQuery = query(statsRef, where('uid', '==', uid), orderBy('date', 'desc'));
+        const statsQuery = query(statsRef, where('gymId', '==', DEFAULT_GYM_ID), where('uid', '==', uid), orderBy('date', 'desc'));
 
         try {
             const querySnapshot = await getDocs(statsQuery);
@@ -166,4 +159,3 @@ class StatService {
 
 
 export default StatService.getInstance();
-

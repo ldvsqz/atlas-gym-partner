@@ -11,9 +11,14 @@ service firebase.storage {
         && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.rol == 0;
     }
 
-    match /gym-exercises/{exerciseId}/{fileName} {
-      allow read: if true;
-      allow write: if isAdmin()
+    function isAdminForGym(gymId) {
+      return isAdmin()
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.gymId == gymId;
+    }
+
+    match /gyms/{gymId}/gym-exercises/{exerciseId}/{fileName} {
+      allow read: if isAdminForGym(gymId);
+      allow write: if isAdminForGym(gymId)
         && request.resource.size < 5 * 1024 * 1024
         && request.resource.contentType.matches('image/.*');
     }

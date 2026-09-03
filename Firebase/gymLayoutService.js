@@ -9,8 +9,11 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { DEFAULT_GYM_ID } from './tenant';
+import { cachedRequest, invalidateRequests } from './requestCache';
 import {
   DEFAULT_LAYOUT_ID,
   createGymLayoutModel,
@@ -42,9 +45,11 @@ class GymLayoutService {
   }
 
   async getExercises() {
-    const exercisesQuery = query(collection(db, GYM_EXERCISES_COLLECTION), orderBy('name', 'asc'));
-    const snapshot = await getDocs(exercisesQuery);
-    return snapshot.docs.map(mapDoc);
+    return cachedRequest('gym-layout:exercises', async () => {
+      const exercisesQuery = query(collection(db, GYM_EXERCISES_COLLECTION), where('gymId', '==', DEFAULT_GYM_ID), orderBy('name', 'asc'));
+      const snapshot = await getDocs(exercisesQuery);
+      return snapshot.docs.map(mapDoc);
+    });
   }
 
   async createExercise(exercise) {
@@ -61,9 +66,11 @@ class GymLayoutService {
       category,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
+      gymId: exercise.gymId || DEFAULT_GYM_ID,
     };
 
     await setDoc(exerciseRef, payload);
+    invalidateRequests('gym-layout:exercises');
     return { id: exerciseRef.id, ...payload };
   }
 
@@ -80,20 +87,25 @@ class GymLayoutService {
       color: getGymExerciseCategoryColor(category),
       category,
       updatedAt: serverTimestamp(),
+      gymId: exercise.gymId || DEFAULT_GYM_ID,
     };
 
     await updateDoc(exerciseRef, payload);
+    invalidateRequests('gym-layout:exercises');
     return { id: exerciseId, ...payload };
   }
 
   async deleteExercise(exerciseId) {
     await deleteDoc(doc(db, GYM_EXERCISES_COLLECTION, exerciseId));
+    invalidateRequests('gym-layout:exercises');
   }
 
   async getLayouts() {
-    const layoutsQuery = query(collection(db, GYM_LAYOUTS_COLLECTION), orderBy('updatedAt', 'desc'));
-    const snapshot = await getDocs(layoutsQuery);
-    return snapshot.docs.map((layoutDoc) => createGymLayoutModel(mapDoc(layoutDoc)));
+    return cachedRequest('gym-layout:layouts', async () => {
+      const layoutsQuery = query(collection(db, GYM_LAYOUTS_COLLECTION), where('gymId', '==', DEFAULT_GYM_ID), orderBy('updatedAt', 'desc'));
+      const snapshot = await getDocs(layoutsQuery);
+      return snapshot.docs.map((layoutDoc) => createGymLayoutModel(mapDoc(layoutDoc)));
+    });
   }
 
   async getLayout(layoutId = DEFAULT_LAYOUT_ID) {
@@ -127,16 +139,19 @@ class GymLayoutService {
       doc(db, GYM_LAYOUTS_COLLECTION, layoutId),
       {
         ...payload,
+        gymId: layout.gymId || DEFAULT_GYM_ID,
         createdAt: layout.createdAt || serverTimestamp(),
       },
       { merge: true }
     );
 
+    invalidateRequests('gym-layout:layouts');
     return { id: layoutId, ...payload };
   }
 
   async deleteLayout(layoutId) {
     await deleteDoc(doc(db, GYM_LAYOUTS_COLLECTION, layoutId));
+    invalidateRequests('gym-layout:layouts');
   }
 }
 

@@ -1,5 +1,6 @@
 import { collection, deleteDoc, updateDoc, getDocs, doc, getDoc, addDoc, setDoc, query, where, orderBy, limit } from 'firebase/firestore';
 import { db } from "./firebase"
+import { DEFAULT_GYM_ID } from './tenant';
 
 
 
@@ -23,7 +24,7 @@ class RoutineService {
             const routineRef = collection(db, 'routine');
             const docRef = doc(routineRef);
             routine['id'] = docRef.id;
-            await setDoc(docRef, routine);
+            await setDoc(docRef, { ...routine, gymId: routine.gymId || DEFAULT_GYM_ID });
         } catch (error) {
             console.error('Error trying to insert routine:', error);
         }
@@ -51,7 +52,7 @@ class RoutineService {
     async getAll() {
         const routineRef = collection(db, 'routine');
         try {
-            const querySnapshot = await getDocs(routineRef);
+            const querySnapshot = await getDocs(query(routineRef, where('gymId', '==', DEFAULT_GYM_ID)));
             const routine = [];
             querySnapshot.forEach((doc) => {
                 routine.push({
@@ -92,7 +93,7 @@ class RoutineService {
             return null
         }
         const routineRef = collection(db, 'routine');
-        const lastRoutineQuery = query(routineRef, where('uid', '==', uid), orderBy('date', 'desc'), limit(1));
+        const lastRoutineQuery = query(routineRef, where('gymId', '==', DEFAULT_GYM_ID), where('uid', '==', uid), orderBy('date', 'desc'), limit(1));
         const querySnapshot = await getDocs(lastRoutineQuery);
         try {
             if (querySnapshot.docs) {
@@ -110,7 +111,7 @@ class RoutineService {
 
     async getByDni(dni) {
         const routineRef = collection(db, 'routine');
-        const dniQuery = query(routineRef, where('dni', '==', dni));
+        const dniQuery = query(routineRef, where('gymId', '==', DEFAULT_GYM_ID), where('dni', '==', dni));
         const querySnapshot = await getDocs(dniQuery);
 
         const routine = [];
@@ -135,6 +136,5 @@ class RoutineService {
 
 
 export default RoutineService.getInstance();
-
 
 

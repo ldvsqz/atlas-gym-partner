@@ -15,6 +15,8 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { getCurrentGymId } from './tenant';
+import { cachedRequest, invalidateRequests } from './requestCache';
 import {
   createDefaultCycleDays,
   getCycleDayDocId,
@@ -62,6 +64,7 @@ class TrainingService {
 
   async createCycle(cycle) {
     const cycleRef = doc(collection(db, CYCLES_COLLECTION));
+    const gymId = await getCurrentGymId();
     const payload = {
       name: cycle.name.trim(),
       type: cycle.type,
@@ -72,9 +75,11 @@ class TrainingService {
       startsAt: cycle.startsAt || null,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
+      gymId,
     };
 
     await setDoc(cycleRef, payload);
+    invalidateRequests('training:cycles');
 
     await this.initializeCycleDays(cycleRef.id, payload.weeks);
 
@@ -109,8 +114,10 @@ class TrainingService {
   }
 
   async getCyclesByType(type) {
+    const gymId = await getCurrentGymId();
     const cyclesQuery = query(
       collection(db, CYCLES_COLLECTION),
+      where('gymId', '==', gymId),
       where('type', '==', type)
     );
     const snapshot = await getDocs(cyclesQuery);
@@ -118,21 +125,27 @@ class TrainingService {
   }
 
   async getAllCycles() {
-    const cyclesQuery = query(collection(db, CYCLES_COLLECTION), orderBy('createdAt', 'desc'));
-    const snapshot = await getDocs(cyclesQuery);
-    return snapshot.docs.map(mapDoc);
+    return cachedRequest('training:cycles', async () => {
+      const gymId = await getCurrentGymId();
+      const cyclesQuery = query(collection(db, CYCLES_COLLECTION), where('gymId', '==', gymId));
+      const snapshot = await getDocs(cyclesQuery);
+      return sortByCreatedAtDesc(snapshot.docs.map(mapDoc));
+    });
   }
 
   async updateCycle(cycleId, data) {
     const cycleRef = doc(db, CYCLES_COLLECTION, cycleId);
+    const gymId = await getCurrentGymId();
     const payload = {
       ...data,
       name: data.name?.trim(),
       description: data.description?.trim() || '',
       weeks: Number(data.weeks),
       updatedAt: serverTimestamp(),
+      gymId,
     };
     await updateDoc(cycleRef, payload);
+    invalidateRequests('training:cycles');
     return { id: cycleId, ...payload };
   }
 
@@ -140,6 +153,7 @@ class TrainingService {
     const daysSnapshot = await getDocs(collection(db, CYCLES_COLLECTION, cycleId, DAYS_SUBCOLLECTION));
     await commitInBatches(daysSnapshot.docs, (batch, dayDoc) => batch.delete(dayDoc.ref));
     await deleteDoc(doc(db, CYCLES_COLLECTION, cycleId));
+    invalidateRequests('training:cycles');
   }
 
   async ensureCycleDays(cycleId, weeks = 1, existingDays = []) {
@@ -245,6 +259,7 @@ class TrainingService {
 
   async createExercise(exercise) {
     const exerciseRef = doc(collection(db, EXERCISES_COLLECTION));
+    const gymId = await getCurrentGymId();
     const payload = {
       name: exercise.name.trim(),
       category: exercise.category,
@@ -253,13 +268,15 @@ class TrainingService {
       equipment: exercise.equipment,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
+      gymId,
     };
     await setDoc(exerciseRef, payload);
     return { id: exerciseRef.id, ...payload };
   }
 
   async getExercises() {
-    const exercisesQuery = query(collection(db, EXERCISES_COLLECTION), orderBy('name', 'asc'));
+    const gymId = await getCurrentGymId();
+    const exercisesQuery = query(collection(db, EXERCISES_COLLECTION), where('gymId', '==', gymId), orderBy('name', 'asc'));
     const snapshot = await getDocs(exercisesQuery);
     return snapshot.docs.map(mapDoc);
   }
@@ -267,6 +284,7 @@ class TrainingService {
   async getExercisesByIds(exerciseIds = []) {
     const uniqueIds = [...new Set(exerciseIds.filter(Boolean).map(String))];
     if (!uniqueIds.length) return [];
+    const gymId = await getCurrentGymId();
 
     const chunks = Array.from({ length: Math.ceil(uniqueIds.length / 10) }, (_, index) =>
       uniqueIds.slice(index * 10, (index + 1) * 10)
@@ -274,7 +292,11 @@ class TrainingService {
 
     const snapshots = await Promise.all(
       chunks.map((ids) =>
-        getDocs(query(collection(db, EXERCISES_COLLECTION), where(documentId(), 'in', ids)))
+        getDocs(query(
+          collection(db, EXERCISES_COLLECTION),
+          where('gymId', '==', gymId),
+          where(documentId(), 'in', ids)
+        ))
       )
     );
 
@@ -283,11 +305,13 @@ class TrainingService {
 
   async updateExercise(exerciseId, data) {
     const exerciseRef = doc(db, EXERCISES_COLLECTION, exerciseId);
+    const gymId = await getCurrentGymId();
     const payload = {
       ...data,
       name: data.name.trim(),
       description: data.description?.trim() || '',
       updatedAt: serverTimestamp(),
+      gymId,
     };
     await updateDoc(exerciseRef, payload);
     return { id: exerciseId, ...payload };

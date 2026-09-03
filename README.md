@@ -2,6 +2,13 @@
 
 ## Deployment
 
+### Gym isolation
+
+Atlas assigns every user and business document to a `gymId`. Set
+`VITE_DEFAULT_GYM_ID` in the build environment (defaults to `default-gym`) and
+complete the migration in [docs/multi-tenant-migration.md](docs/multi-tenant-migration.md)
+before deploying the security rules.
+
 ### Firebase Hosting Setup
 
 The project uses GitHub Actions for automatic deployment to Firebase Hosting on pushes to the `master` branch.

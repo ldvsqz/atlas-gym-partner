@@ -1,5 +1,7 @@
 import { collection, deleteDoc, updateDoc, getDocs, doc, getDoc, setDoc, query, where, limit } from 'firebase/firestore';
 import { db } from "./firebase"
+import { DEFAULT_GYM_ID } from './tenant';
+import { cachedRequest, invalidateRequests } from './requestCache';
 
 const COLLECTION_NAME = 'users';
 
@@ -20,7 +22,7 @@ class UserService {
     //add a user to firebase
     async add(user) {
         const userRef = doc(db, COLLECTION_NAME, user.uid);
-        const userData = { ...user }; // Convert UserModel object to plain JavaScript object
+        const userData = { ...user, gymId: user.gymId || DEFAULT_GYM_ID }; // Convert UserModel object to plain JavaScript object
         await setDoc(userRef, userData);
         return true;
     }
@@ -75,20 +77,11 @@ class UserService {
 
     //get all users
     async getAll() {
-        const usersRef = collection(db, COLLECTION_NAME);
-        try {
-            const querySnapshot = await getDocs(usersRef);
-            const users = [];
-            querySnapshot.forEach((doc) => {
-                users.push({
-                    id: doc.id,
-                    ...doc.data()
-                });
-            });
-            return users;
-        } catch (error) {
-            return error;
-        }
+        return cachedRequest('users:all', async () => {
+            const usersRef = collection(db, COLLECTION_NAME);
+            const querySnapshot = await getDocs(query(usersRef, where('gymId', '==', DEFAULT_GYM_ID)));
+            return querySnapshot.docs.map((snapshot) => ({ id: snapshot.id, ...snapshot.data() }));
+        });
     }
 
 
@@ -96,7 +89,9 @@ class UserService {
     async delete(uid) {
         const userRef = doc(db, COLLECTION_NAME, uid);
         try {
-            return await deleteDoc(userRef);
+            const result = await deleteDoc(userRef);
+            invalidateRequests('users:all');
+            return result;
         } catch (error) {
             return error
         }
@@ -138,5 +133,3 @@ class UserService {
 
 
 export default UserService.getInstance();
-
-

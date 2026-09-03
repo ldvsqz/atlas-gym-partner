@@ -159,9 +159,10 @@ function SessionEditorDrawer({
   useEffect(() => {
     if (!open || !focusGenerator) return;
 
-    window.setTimeout(() => {
+    const scrollTimer = window.setTimeout(() => {
       generatorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 80);
+    return () => window.clearTimeout(scrollTimer);
   }, [focusGenerator, open]);
 
   useEffect(() => {

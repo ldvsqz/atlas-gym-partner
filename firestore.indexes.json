@@ -4,6 +4,7 @@
       "collectionGroup": "routine",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "gymId", "order": "ASCENDING" },
         { "fieldPath": "uid", "order": "ASCENDING" },
         { "fieldPath": "date", "order": "DESCENDING" }
       ]
@@ -12,36 +13,25 @@
       "collectionGroup": "stats",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "gymId", "order": "ASCENDING" },
         { "fieldPath": "uid", "order": "ASCENDING" },
         { "fieldPath": "date", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "users",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "rol", "order": "ASCENDING" }
       ]
     },
     {
       "collectionGroup": "cycles",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "gymId", "order": "ASCENDING" },
         { "fieldPath": "type", "order": "ASCENDING" },
         { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "days",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        { "fieldPath": "dayIndex", "order": "ASCENDING" }
       ]
     },
     {
       "collectionGroup": "gymExercises",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "gymId", "order": "ASCENDING" },
         { "fieldPath": "name", "order": "ASCENDING" }
       ]
     },
@@ -49,6 +39,7 @@
       "collectionGroup": "gymLayouts",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "gymId", "order": "ASCENDING" },
         { "fieldPath": "updatedAt", "order": "DESCENDING" }
       ]
     },
@@ -56,6 +47,7 @@
       "collectionGroup": "exercises",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "gymId", "order": "ASCENDING" },
         { "fieldPath": "name", "order": "ASCENDING" }
       ]
     }

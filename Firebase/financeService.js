@@ -1,4 +1,6 @@
 import { db } from './firebase';
+import { getCurrentGymId } from './tenant';
+import { cachedRequest, invalidateRequests } from './requestCache';
 import {
     collection,
     getDoc,
@@ -7,6 +9,8 @@ import {
     deleteDoc,
     setDoc,
     doc,
+    query,
+    where,
     serverTimestamp
 } from 'firebase/firestore';
 
@@ -31,8 +35,10 @@ class FinanceService {
         try {
             const financeRef = collection(db, COLLECTION_NAME);
             const docRef = doc(financeRef);
-            const plainFinance = { ...finance, id: docRef.id };
+            const gymId = await getCurrentGymId();
+            const plainFinance = { ...finance, id: docRef.id, gymId };
             await setDoc(docRef, plainFinance);
+            invalidateRequests('finance:all');
             return plainFinance;
         } catch (error) {
             console.error('Error trying to insert finance:', error);
@@ -41,26 +47,19 @@ class FinanceService {
     }
 
     async getAll() {
-        const financeRef = collection(db, COLLECTION_NAME);
-        try {
-            const querySnapshot = await getDocs(financeRef);
-            const finances = [];
-            querySnapshot.forEach((doc) => {
-                finances.push({
-                    id: doc.id,
-                    ...doc.data()
-                });
-            });
-            return finances;
-        } catch (error) {
-            console.error('Error al obtener los usuarios:', error);
-        }
+        return cachedRequest('finance:all', async () => {
+            const financeRef = collection(db, COLLECTION_NAME);
+            const gymId = await getCurrentGymId();
+            const querySnapshot = await getDocs(query(financeRef, where('gymId', '==', gymId)));
+            return querySnapshot.docs.map((snapshot) => ({ id: snapshot.id, ...snapshot.data() }));
+        });
     }
 
     async delete(id) {
         const financeRef = doc(db, COLLECTION_NAME, id);
         try {
             await deleteDoc(financeRef);
+            invalidateRequests('finance:all');
         } catch (error) {
             console.error('Error trying to delete finance:', error);
         }
@@ -73,6 +72,7 @@ class FinanceService {
         try {
             const plainFinance = { ...newFinance };
             await updateDoc(financeRef, plainFinance);
+            invalidateRequests('finance:all');
         } catch (error) {
             console.error('Error trying to update finance data:', error);
         }
@@ -100,14 +100,17 @@ class FinanceService {
         const cashboxRef = doc(db, CASHBOX_COLLECTION_NAME, month);
         try {
             const currentCashbox = await getDoc(cashboxRef);
+            const gymId = await getCurrentGymId();
             const payload = {
                 ...cashbox,
                 month,
+                gymId,
                 updatedAt: serverTimestamp(),
                 ...(currentCashbox.exists() ? {} : { createdAt: serverTimestamp() })
             };
 
             await setDoc(cashboxRef, payload, { merge: true });
+            invalidateRequests('finance:cashboxes');
             return { id: month, ...payload };
         } catch (error) {
             console.error('Error trying to save monthly cashbox:', error);
@@ -117,18 +120,16 @@ class FinanceService {
 
     async getAllMonthlyCashboxes() {
         try {
-            const cashboxRef = collection(db, CASHBOX_COLLECTION_NAME);
-            const querySnapshot = await getDocs(cashboxRef);
-            const cashboxes = [];
-
-            querySnapshot.forEach((docSnapshot) => {
-                cashboxes.push({ id: docSnapshot.id, ...docSnapshot.data() });
-            });
-
-            return cashboxes.sort((a, b) => {
+            return cachedRequest('finance:cashboxes', async () => {
+              const cashboxRef = collection(db, CASHBOX_COLLECTION_NAME);
+              const gymId = await getCurrentGymId();
+              const querySnapshot = await getDocs(query(cashboxRef, where('gymId', '==', gymId)));
+              const cashboxes = querySnapshot.docs.map((docSnapshot) => ({ id: docSnapshot.id, ...docSnapshot.data() }));
+              return cashboxes.sort((a, b) => {
                 const monthA = (a.month || a.id || '').toString();
                 const monthB = (b.month || b.id || '').toString();
                 return monthB.localeCompare(monthA);
+              });
             });
         } catch (error) {
             console.error('Error trying to get monthly cashbox history:', error);

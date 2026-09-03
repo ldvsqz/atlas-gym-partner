@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useParam
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Box, CircularProgress, colors } from '@mui/material';
-import { useAuthProfile } from "./hooks/useAuthProfile";
+import { AuthProfileProvider, useAuthProfile } from "./hooks/useAuthProfile";
 import Menu from "./Components/Menu/Menu";
 import Login from "./Pages/Login/Login";
 import Register from "./Pages/Register/Register";
@@ -40,8 +40,6 @@ function NotificationManager() {
 
   useEffect(() => {
     if (user?.uid) {
-      NotificationService.requestAndRegisterToken(user.uid);
-
       const unsubscribe = NotificationService.onForegroundMessage((payload) => {
         const title = payload.notification?.title || payload.data?.title || 'Atlas Gym Partner 🥊';
         const body = payload.notification?.body || payload.data?.body || 'Tienes una nueva notificación de membresía.';
@@ -49,8 +47,14 @@ function NotificationManager() {
           new Notification(title, { body, icon: '/atlas.ico' });
         }
       });
+      const notificationTimer = window.setTimeout(() => {
+        if (NotificationService.getPermissionStatus() === 'granted') {
+          NotificationService.requestAndRegisterToken(user.uid);
+        }
+      }, 5000);
 
       return () => {
+        window.clearTimeout(notificationTimer);
         if (typeof unsubscribe === 'function') unsubscribe();
       };
     }
@@ -70,11 +74,12 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Router>
-        <NotificationManager />
-        <RouteTracker>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
+      <AuthProfileProvider>
+        <Router>
+          <NotificationManager />
+          <RouteTracker>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/reset" element={<ResetPassword />} />
               <Route path="/register" element={<Register />} />
@@ -94,10 +99,11 @@ function App() {
               <Route path="/aboutus" element={<PrivateRoute><Aboutus menu={getMenu("Sobre nosotros")} /></PrivateRoute>} />
               <Route path="/user/:uid" element={<UserRoute><User menu={getMenu("Atlas")} /></UserRoute>} />
               <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Suspense>
-        </RouteTracker>
-      </Router>
+              </Routes>
+            </Suspense>
+          </RouteTracker>
+        </Router>
+      </AuthProfileProvider>
     </ThemeProvider>
   );
 }
