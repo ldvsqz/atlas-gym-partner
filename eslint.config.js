@@ -43,6 +43,15 @@ export default [
     },
   },
   {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.es2021,
+      },
+    },
+  },
+  {
     files: ['public/firebase-messaging-sw.js', '**/service-worker*.js'],
     languageOptions: {
       globals: {
