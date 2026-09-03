@@ -271,6 +271,7 @@ function User({ menu }) {
                         {isAdmin && currentUid !== user.uid && (
                           <Alert
                           fullWidth
+                          variant="outlined"
                           buttonName="Renovar membresía"
                           title="Renovar membresía"
                           message={`¿Desea renovar la membresía de: ${user.name}?`}
