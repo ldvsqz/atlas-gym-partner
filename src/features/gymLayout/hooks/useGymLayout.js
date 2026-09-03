@@ -46,7 +46,7 @@ export const useGymLayout = (layoutId = DEFAULT_LAYOUT_ID) => {
     fetchLayoutById(layoutId);
   }, [fetchLayoutById, layoutId]);
 
-  const updateDraft = (updater) => {
+  const updateDraft = useCallback((updater) => {
     setLayout((current) => {
       const nextLayout = typeof updater === 'function' ? updater(current) : updater;
       const rows = Number(nextLayout.rows || current.rows);
@@ -68,7 +68,7 @@ export const useGymLayout = (layoutId = DEFAULT_LAYOUT_ID) => {
         listNotes: nextLayout.listNotes ?? current.listNotes ?? '',
       };
     });
-  };
+  }, []);
 
   const saveLayout = async (nextLayout = layout) => {
     try {

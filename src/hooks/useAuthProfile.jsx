@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../Firebase/authFunctions';
 import UserService from '../../Firebase/userService';
 
-export function useAuthProfile() {
+const AuthProfileContext = createContext(null);
+
+export function AuthProfileProvider({ children }) {
   const [user, authLoading] = useAuthState(auth);
   const [profile, setProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -42,12 +44,24 @@ export function useAuthProfile() {
     };
   }, [user]);
 
-  const isAdmin = profile?.rol === 0;
-
-  return {
+  const value = useMemo(() => ({
     user,
     profile,
-    isAdmin,
+    isAdmin: profile?.rol === 0,
     loading: authLoading || profileLoading,
-  };
+  }), [authLoading, profile, profileLoading, user]);
+
+  return (
+    <AuthProfileContext.Provider value={value}>
+      {children}
+    </AuthProfileContext.Provider>
+  );
+}
+
+export function useAuthProfile() {
+  const context = useContext(AuthProfileContext);
+  if (!context) {
+    throw new Error('useAuthProfile must be used within AuthProfileProvider');
+  }
+  return context;
 }

@@ -4,6 +4,7 @@ import { db, messaging } from '../../Firebase/firebase';
 
 class NotificationService {
   static #instance;
+  static #registrationRequests = new Map();
 
   static getInstance() {
     if (!NotificationService.#instance) {
@@ -22,6 +23,17 @@ class NotificationService {
   }
 
   async requestAndRegisterToken(uid) {
+    if (NotificationService.#registrationRequests.has(uid)) {
+      return NotificationService.#registrationRequests.get(uid);
+    }
+
+    const request = this.#requestAndRegisterToken(uid);
+    NotificationService.#registrationRequests.set(uid, request);
+    request.catch(() => NotificationService.#registrationRequests.delete(uid));
+    return request;
+  }
+
+  async #requestAndRegisterToken(uid) {
     if (!this.isSupported()) {
       console.warn('Notifications not supported in this browser.');
       return null;
@@ -33,7 +45,9 @@ class NotificationService {
     }
 
     try {
-      const permission = await Notification.requestPermission();
+      const permission = Notification.permission === 'default'
+        ? await Notification.requestPermission()
+        : Notification.permission;
       if (permission !== 'granted') {
         console.log('Notification permission was not granted.');
         return null;

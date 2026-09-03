@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logout from "../Logout/Logout";
 import { useAuthProfile } from "../../hooks/useAuthProfile";
@@ -25,7 +25,6 @@ import GridOnIcon from "@mui/icons-material/GridOn";
 import SettingsIcon from '@mui/icons-material/Settings';
 
 
-import { auth } from "../../../Firebase/authFunctions";
 import "./Menu.css";
 
 function Menu({
@@ -39,18 +38,6 @@ function Menu({
   const [showMenu, setMenu] = useState(false);
 
   const menuTitle = header || title || "";
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (!user) {
-        navigate("/", { replace: true });
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [navigate]);
 
   const toggleDrawer = (open) => (event) => {
     if (

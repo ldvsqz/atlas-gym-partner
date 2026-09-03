@@ -7,7 +7,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 function Alert(props) {
-    const { buttonName= '', title= '', message = '', onResponse } = props;
+    const { buttonName= '', title= '', message = '', onResponse, fullWidth, variant } = props;
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -25,7 +25,7 @@ function Alert(props) {
 
     return (
         <div>
-            <Button onClick={handleClickOpen}>
+            <Button onClick={handleClickOpen} fullWidth={fullWidth} variant={variant}>
                 {buttonName}
             </Button>
             <Dialog

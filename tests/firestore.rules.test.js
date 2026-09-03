@@ -21,6 +21,7 @@ let testEnv;
 
 const adminProfile = {
   uid: 'admin-user',
+  gymId: 'gym-a',
   rol: 0,
   name: 'Admin',
   email: 'admin@example.com',
@@ -30,6 +31,7 @@ const adminProfile = {
 
 const memberProfile = {
   uid: 'member-user',
+  gymId: 'gym-a',
   rol: 1,
   name: 'Member',
   email: 'member@example.com',
@@ -102,6 +104,25 @@ maybeDescribe('users collection rules', () => {
     await assertFails(updateDoc(doc(db, 'users/member-user'), {
       rol: 0,
     }));
+  });
+
+  it('blocks members from changing their gym', async () => {
+    const db = testEnv.authenticatedContext('member-user').firestore();
+    await assertFails(updateDoc(doc(db, 'users/member-user'), {
+      gymId: 'gym-b',
+    }));
+  });
+
+  it('blocks admins from reading profiles in another gym', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), 'users/other-gym-user'), {
+        ...memberProfile,
+        uid: 'other-gym-user',
+        gymId: 'gym-b',
+      });
+    });
+    const db = testEnv.authenticatedContext('admin-user').firestore();
+    await assertFails(getDoc(doc(db, 'users/other-gym-user')));
   });
 });
 maybeDescribe('default deny rule', () => {

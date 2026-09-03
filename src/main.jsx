@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import ErrorBoundary from './Components/ErrorBoundary/ErrorBoundary'
 import moduleSettings from './config/moduleSettings';
-import SettingsService from '../Firebase/settingsService';
 import { DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS, DEFAULT_RESERVED_GRID_CELLS } from './features/gymLayout/models/gymLayoutModels';
 //import './index.css'
 
@@ -26,32 +25,7 @@ moduleSettings.registerModule('gymLayout', {
   reservedCells: DEFAULT_RESERVED_GRID_CELLS,
 });
 
-async function hydrateModuleSettings() {
-  try {
-    moduleSettings.restoreOverrides();
-
-    const savedSettings = await SettingsService.getAllModuleSettings();
-    if (!savedSettings || Object.keys(savedSettings).length === 0) {
-      return;
-    }
-
-    const dbOverrides = Object.fromEntries(
-      Object.entries(savedSettings).map(([moduleName, record]) => [
-        moduleName,
-        record?.overrides || {},
-      ])
-    );
-
-    if (Object.keys(dbOverrides).length > 0) {
-      moduleSettings.loadOverrides(dbOverrides);
-      moduleSettings.persistOverrides();
-    }
-  } catch (error) {
-    console.error('Error loading module settings from database:', error);
-  }
-}
-
-hydrateModuleSettings();
+moduleSettings.restoreOverrides();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
