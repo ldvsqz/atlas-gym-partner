@@ -4,6 +4,7 @@ import { DEFAULT_GYM_ID } from './tenant';
 import { cachedRequest, invalidateRequests } from './requestCache';
 
 const COLLECTION_NAME = 'users';
+const hasGymAssignment = (user) => typeof user?.gymId === 'string' && user.gymId.trim().length > 0;
 
 class UserService {
 
@@ -22,7 +23,7 @@ class UserService {
     //add a user to firebase
     async add(user) {
         const userRef = doc(db, COLLECTION_NAME, user.uid);
-        const userData = { ...user, gymId: user.gymId || DEFAULT_GYM_ID }; // Convert UserModel object to plain JavaScript object
+        const userData = { ...user, gymId: user.gymId }; // Convert UserModel object to plain JavaScript object
         await setDoc(userRef, userData);
         return true;
     }
@@ -76,25 +77,30 @@ class UserService {
 
 
     //get all users
-    async getAll() {
-        return cachedRequest('users:all', async () => {
+    async getAll(gymId = DEFAULT_GYM_ID) {
+        return cachedRequest(`users:all:${gymId}`, async () => {
             const usersRef = collection(db, COLLECTION_NAME);
-            const querySnapshot = await getDocs(query(usersRef, where('gymId', '==', DEFAULT_GYM_ID)));
-            return querySnapshot.docs.map((snapshot) => ({ id: snapshot.id, ...snapshot.data() }));
+            const querySnapshot = await getDocs(query(usersRef, where('gymId', '==', gymId)));
+            return querySnapshot.docs
+                .map((snapshot) => ({ id: snapshot.id, ...snapshot.data() }))
+                .filter(hasGymAssignment);
         });
+    }
+
+    async getAllUsers() {
+        const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
+        return querySnapshot.docs
+            .map((snapshot) => ({ id: snapshot.id, ...snapshot.data() }))
+            ;
     }
 
 
     //delete a single user by ID
     async delete(uid) {
         const userRef = doc(db, COLLECTION_NAME, uid);
-        try {
-            const result = await deleteDoc(userRef);
-            invalidateRequests('users:all');
-            return result;
-        } catch (error) {
-            return error
-        }
+        const result = await deleteDoc(userRef);
+        invalidateRequests(`users:all:${DEFAULT_GYM_ID}`);
+        return result;
     }
 
 

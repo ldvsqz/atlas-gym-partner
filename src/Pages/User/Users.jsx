@@ -10,6 +10,7 @@ import StatService from '../../../Firebase/statsService';
 import Util from '../../assets/Util';
 import UserModel from '../../models/UserModel';
 import FinanceModel from '../../models/FinanceModel';
+import { getCurrentGymId } from '../../../Firebase/tenant';
 //MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -85,6 +86,23 @@ function User({ menu }) {
     return safeDate ? safeDate.getTime() : 0;
   };
 
+  const formatMembershipTenure = (createdAt) => {
+    const startDate = getSafeDate(createdAt);
+    if (!startDate) return 'No disponible';
+
+    const now = new Date();
+    let years = now.getFullYear() - startDate.getFullYear();
+    let months = now.getMonth() - startDate.getMonth();
+    if (now.getDate() < startDate.getDate()) months -= 1;
+    if (months < 0) {
+      years -= 1;
+      months += 12;
+    }
+
+    if (years > 0) return `${years} ${years === 1 ? 'año' : 'años'}`;
+    return `${Math.max(months, 0)} ${months === 1 ? 'mes' : 'meses'}`;
+  };
+
   const getLatestStatsByUser = (stats = []) => stats.reduce((acc, stat) => {
     if (!stat?.uid) return acc;
 
@@ -120,8 +138,9 @@ function User({ menu }) {
 
   useEffect(() => {
     const fetchUsers = async () => {
+      const gymId = await getCurrentGymId();
       const [UsersData, statsData = []] = await Promise.all([
-        UserService.getAll(),
+        UserService.getAll(gymId),
         StatService.getAll().catch((error) => {
           console.error('Error fetching user stats:', error);
           return [];
@@ -130,7 +149,11 @@ function User({ menu }) {
 
       setUsers(UsersData);
       setLatestStatsByUser(getLatestStatsByUser(statsData || []));
-      const activeUsers = UsersData.filter((user) => util.isMembershipDisplayable(user.until));
+      const assignedUsers = UsersData.filter(
+        (user) => typeof user.gymId === 'string' && user.gymId.trim().length > 0,
+      );
+      setUsers(assignedUsers);
+      const activeUsers = assignedUsers.filter((user) => util.isMembershipDisplayable(user.until));
       setFilteredUsers(activeUsers);
       setLoading(false)
     };
@@ -181,7 +204,7 @@ function User({ menu }) {
         console.error('Error adding finance movement:', error);
       });
       // Refresh the users list
-      const UsersData = await UserService.getAll();
+      const UsersData = await UserService.getAll(await getCurrentGymId());
       const activeUsers = UsersData.filter((user) => util.isMembershipDisplayable(user.until));
       setUsers(UsersData);
       setFilteredUsers(activeUsers);
@@ -220,7 +243,9 @@ function User({ menu }) {
     const email = util.generateemail(formattedName);
     try {
       const birthdayDate = newUser.birthday ? newUser.birthday.toDate() : Timestamp.now();
-      const user = new UserModel(birthdayDate, formattedName, email, newUser.name, newUser.phone, email, Timestamp.now());
+      const gymId = await getCurrentGymId();
+      const user = new UserModel(birthdayDate, formattedName, email, newUser.name, newUser.phone, email, Timestamp.now(), gymId);
+      user.createdAt = Timestamp.now();
       await userService.add(user);
       const UsersData = await UserService.getAll();
       setUsers(UsersData);
@@ -359,6 +384,11 @@ function User({ menu }) {
                             cursor: 'pointer'
                           }}>
                           {util.formatDateShort(util.getDateFromFirebase(user.until))} {user.rol === 0 && '(Admin)'}
+                          {getSafeDate(user.createdAt) && (
+                            <Box sx={{ color: 'text.secondary', fontSize: '0.78rem', mt: 0.25 }}>
+                              Desde {util.formatDateShort(util.getDateFromFirebase(user.createdAt))} · {formatMembershipTenure(user.createdAt)}
+                            </Box>
+                          )}
                         </TableCell>
                           )}
                         {!showAdmins && (

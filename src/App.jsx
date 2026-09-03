@@ -21,6 +21,9 @@ const TrainingPage = lazy(() => import("./features/training/pages/TrainingPage")
 const PublicCycleView = lazy(() => import("./features/training/public/PublicCycleView"));
 const GymLayoutPage = lazy(() => import("./features/gymLayout/pages/GymLayoutPage"));
 const CashboxPage = lazy(() => import("./Pages/Finance/CashboxHistory"));
+const GymRequest = lazy(() => import("./Pages/GymRequest/GymRequest"));
+const SuperAdmin = lazy(() => import("./Pages/SuperAdmin/SuperAdmin"));
+const MembershipRequests = lazy(() => import("./Pages/MembershipRequests/MembershipRequests"));
 
 import NotificationService from "./services/notificationService";
 
@@ -83,10 +86,13 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path="/reset" element={<ResetPassword />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/gym-request" element={<PrivateRoute><GymRequest menu={getMenu("Solicitar gimnasio")} /></PrivateRoute>} />
+              <Route path="/super-admin" element={<SuperAdminRoute><SuperAdmin menu={getMenu("Administración global")} /></SuperAdminRoute>} />
+              <Route path="/membership-requests" element={<AdminRoute><MembershipRequests menu={getMenu("Solicitudes de membresía")} /></AdminRoute>} />
               <Route path="/public/cycle/:id" element={<PublicCycleView />} />
               <Route path="/cycle/:id" element={<PublicCycleView />} />
               <Route path="/events" element={<AdminRoute><Events menu={getMenu("Eventos")} /></AdminRoute>} />
-              <Route path="/users" element={<AdminRoute><Users menu={getMenu("Personas")} /></AdminRoute>} />
+              <Route path="/users" element={<AdminRoute><Users menu={getMenu("Miembros")} /></AdminRoute>} />
               <Route path="/finance" element={<AdminRoute><Finance menu={getMenu("Finanzas")} /></AdminRoute>} />
               <Route
                 path="/cashbox"
@@ -134,10 +140,18 @@ function AdminRoute({ children }) {
     return <Navigate to="/" replace />;
   }
 
-  if (profile?.rol !== 0) {
+  if (profile?.rol !== 0 && profile?.rol !== 2) {
     return <Navigate to={`/user/${user.uid}`} replace state={{ uid: user.uid }} />;
   }
 
+  return children;
+}
+
+function SuperAdminRoute({ children }) {
+  const { user, profile, loading } = useAuthProfile();
+  if (loading) return <PageLoader />;
+  if (!user) return <Navigate to="/" replace />;
+  if (profile?.rol !== 2) return <Navigate to={`/user/${user.uid}`} replace />;
   return children;
 }
 
@@ -153,7 +167,7 @@ function UserRoute({ children }) {
     return <Navigate to="/" replace />;
   }
 
-  if (profile?.rol === 0 || uid === user.uid) {
+  if (profile?.rol === 0 || profile?.rol === 2 || uid === user.uid) {
     return children;
   }
 

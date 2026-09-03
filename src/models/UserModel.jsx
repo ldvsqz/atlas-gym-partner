@@ -1,5 +1,4 @@
 import { Timestamp } from 'firebase/firestore';
-import { DEFAULT_GYM_ID } from '../../Firebase/tenant';
 
 class UserModel {
     constructor(
@@ -10,7 +9,7 @@ class UserModel {
         phone = '',
         uid = '',
         until = Timestamp.now(),
-        gymId = DEFAULT_GYM_ID
+        gymId = null
     ) {
         this.birthday = birthday;
         this.dni = dni;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logout from "../Logout/Logout";
 import { useAuthProfile } from "../../hooks/useAuthProfile";
@@ -23,6 +23,11 @@ import InfoIcon from "@mui/icons-material/Info";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import GridOnIcon from "@mui/icons-material/GridOn";
 import SettingsIcon from '@mui/icons-material/Settings';
+import { setCurrentGymId } from '../../../Firebase/tenant';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import TenantService from '../../../Firebase/tenantService';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 
 import "./Menu.css";
@@ -33,9 +38,33 @@ function Menu({
   version,
 }) {
   const navigate = useNavigate();
-  const { user, isAdmin } = useAuthProfile();
+  const { user, profile, isAdmin, isSuperAdmin } = useAuthProfile();
 
   const [showMenu, setMenu] = useState(false);
+  const activeGymId = user?.uid
+    ? localStorage.getItem(`ACTIVE_GYM_ID:${user.uid}`) || profile?.gymId || ''
+    : '';
+  const [activeGymName, setActiveGymName] = useState('');
+
+  useEffect(() => {
+    if (!isAdmin || !activeGymId) {
+      setActiveGymName('');
+      return;
+    }
+
+    let mounted = true;
+    TenantService.getAll(true).then((tenants) => {
+      if (mounted) {
+        setActiveGymName(tenants.find((tenant) => tenant.id === activeGymId)?.name || activeGymId);
+      }
+    }).catch(() => {
+      if (mounted) setActiveGymName(activeGymId);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [activeGymId, isAdmin]);
 
   const menuTitle = header || title || "";
 
@@ -66,6 +95,21 @@ function Menu({
       onKeyDown={toggleDrawer(false)}
     >
       <List>
+        {isAdmin && (profile?.gymIds?.length > 1) && (
+          <ListItem>
+            <Select
+              fullWidth
+              size="small"
+              value={activeGymId}
+              onChange={(event) => {
+                setCurrentGymId(event.target.value);
+                window.location.reload();
+              }}
+            >
+              {profile.gymIds.map((gymId) => <MenuItem key={gymId} value={gymId}>{gymId}</MenuItem>)}
+            </Select>
+          </ListItem>
+        )}
         <ListItem key="Mi perfil" disablePadding>
           <ListItemButton onClick={handleOnNavigate}>
             <ListItemIcon>
@@ -76,12 +120,39 @@ function Menu({
         </ListItem>
 
         {isAdmin && (
-          <ListItem key="Personas" disablePadding>
+          <ListItem key="Miembros" disablePadding>
             <ListItemButton component={Link} to="/users">
               <ListItemIcon>
                 <GroupIcon />
               </ListItemIcon>
-              <ListItemText primary="Personas" />
+              <ListItemText primary="Miembros" />
+            </ListItemButton>
+          </ListItem>
+        )}
+
+        {isAdmin && !isSuperAdmin && (
+          <ListItem key="Solicitudes de membresía" disablePadding>
+            <ListItemButton component={Link} to="/membership-requests">
+              <ListItemIcon><GroupIcon /></ListItemIcon>
+              <ListItemText primary="Solicitudes de membresía" />
+            </ListItemButton>
+          </ListItem>
+        )}
+
+        {!isSuperAdmin && !profile?.gymId && (
+          <ListItem key="Solicitar gimnasio" disablePadding>
+            <ListItemButton component={Link} to="/gym-request">
+              <ListItemIcon><GroupIcon /></ListItemIcon>
+              <ListItemText primary="Solicitar gimnasio" />
+            </ListItemButton>
+          </ListItem>
+        )}
+
+        {isSuperAdmin && (
+          <ListItem key="Administración global" disablePadding>
+            <ListItemButton component={Link} to="/super-admin">
+              <ListItemIcon><AdminPanelSettingsIcon /></ListItemIcon>
+              <ListItemText primary="Administración global" />
             </ListItemButton>
           </ListItem>
         )}
@@ -175,6 +246,11 @@ function Menu({
                 </div>
               )}
             </Typography>
+            {isAdmin && activeGymName && (
+            <Typography variant="body2" sx={{ ml: 2, maxWidth: 260, textAlign: 'right' }}>
+              Administrando: {activeGymName}
+            </Typography>
+            )}
           </Toolbar>
         </AppBar>
       </Box>

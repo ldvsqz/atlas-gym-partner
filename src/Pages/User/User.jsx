@@ -8,6 +8,8 @@ import Grid from '@mui/material/Grid';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
+import Badge from '@mui/material/Badge';
+import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -15,7 +17,10 @@ import CardActions from '@mui/material/CardActions';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
 import MuiAlert from '@mui/material/Alert';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -42,6 +47,9 @@ import UserModel from "../../models/UserModel";
 import { Timestamp } from 'firebase/firestore';
 import 'firebase/firestore';
 import { useAuthProfile } from '../../hooks/useAuthProfile';
+import TenantService from '../../../Firebase/tenantService';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../../Firebase/firebase';
 
 const getStatDate = (stat) => {
   if (!stat?.date) return null;
@@ -70,6 +78,13 @@ function User({ menu }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isOperationLoading, setIsOperationLoading] = useState(false);
   const [newRole, setNewRole] = useState(null);
+  const [tenants, setTenants] = useState([]);
+  const [transferGymId, setTransferGymId] = useState('');
+  const [transferDetails, setTransferDetails] = useState('');
+  const [transferDialogOpen, setTransferDialogOpen] = useState(false);
+  const [requestsDialogOpen, setRequestsDialogOpen] = useState(false);
+  const [myRequests, setMyRequests] = useState([]);
+  const [photoUploading, setPhotoUploading] = useState(false);
 
   const { showSnackbar } = useSnackbar();
   const params = useParams();
@@ -92,6 +107,11 @@ function User({ menu }) {
           StatService.getAllByUID(uid),
           RoutineService.getLast(uid),
         ]);
+        const tenantData = await TenantService.getAll();
+        setTenants(tenantData);
+        if (uid === authUser?.uid) {
+          setMyRequests(await TenantService.getMyRequests(uid));
+        }
 
         setUser(userData || new UserModel());
         setStats(userStats || {});
@@ -197,6 +217,62 @@ function User({ menu }) {
   const isOwnProfile = currentUid === user.uid;
   const canAddStats = isAdmin || (isOwnProfile && !hasStats);
   const canEditStats = isAdmin && hasStats;
+  const currentTenant = tenants.find((tenant) => tenant.id === user.gymId);
+  const requestLabels = {
+    gymRequests: 'Crear gimnasio',
+    gymMembershipRequests: 'Unirse a gimnasio',
+    gymTransferRequests: 'Traslado de gimnasio',
+  };
+  const requestStatusLabels = {
+    pending: 'Pendiente',
+    approved: 'Aprobada',
+    rejected: 'Rechazada',
+  };
+
+  async function handleTransferRequest() {
+    try {
+      setIsOperationLoading(true);
+      await TenantService.requestTransfer(authUser, transferGymId, transferDetails, user);
+      setTransferDialogOpen(false);
+      setTransferGymId('');
+      setTransferDetails('');
+      showSnackbar('Solicitud de traslado enviada.', 'success');
+    } catch {
+      showSnackbar('No se pudo enviar la solicitud de traslado.', 'error');
+    } finally {
+      setIsOperationLoading(false);
+    }
+  }
+
+  async function handleProfilePhotoChange(event) {
+      const file = event.target.files?.[0];
+      event.target.value = '';
+      if (!file || !isOwnProfile) return;
+
+      if (!file.type.startsWith('image/')) {
+        showSnackbar('Seleccione una imagen válida.', 'error');
+        return;
+      }
+      if (file.size >= 5 * 1024 * 1024) {
+        showSnackbar('La imagen debe pesar menos de 5 MB.', 'error');
+        return;
+      }
+
+      try {
+        setPhotoUploading(true);
+        const photoRef = ref(storage, `users/${user.uid}/profile/avatar`);
+        await uploadBytes(photoRef, file, { contentType: file.type });
+        const photoURL = await getDownloadURL(photoRef);
+        await UserService.update(user.uid, { photoURL });
+        setUser((current) => ({ ...current, photoURL }));
+        showSnackbar('Foto de perfil actualizada.', 'success');
+      } catch (error) {
+        console.error('Error uploading profile photo:', error);
+        showSnackbar('No se pudo actualizar la foto de perfil.', 'error');
+      } finally {
+        setPhotoUploading(false);
+    }
+  }
 
 
   return (
@@ -218,7 +294,44 @@ function User({ menu }) {
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap', mb: 2 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minWidth: 0 }}>
-                        <Avatar sx={{ width: 72, height: 72, fontSize: 28 }}>{user.name?.charAt(0) || 'U'}</Avatar>
+                        <Box sx={{ position: 'relative' }}>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={isOwnProfile ? (
+                              <IconButton
+                                component="label"
+                                htmlFor="profile-photo-upload"
+                                disabled={photoUploading}
+                                aria-label="Cambiar foto de perfil"
+                                size="small"
+                                sx={{
+                                  backgroundColor: 'primary.main',
+                                  color: 'primary.contrastText',
+                                  '&:hover': { backgroundColor: 'primary.dark' },
+                                  '&.Mui-disabled': { backgroundColor: 'action.disabledBackground' },
+                                }}
+                              >
+                                {photoUploading ? <CircularProgress size={16} color="inherit" /> : <EditIcon fontSize="small" />}
+                              </IconButton>
+                            ) : null}
+                          >
+                            <Avatar src={user.photoURL || undefined} sx={{ width: 72, height: 72, fontSize: 28 }}>
+                              {user.name?.charAt(0) || 'U'}
+                            </Avatar>
+                          </Badge>
+                          {isOwnProfile && (
+                            <>
+                              <input
+                                id="profile-photo-upload"
+                                type="file"
+                                accept="image/*"
+                                hidden
+                                onChange={handleProfilePhotoChange}
+                              />
+                            </>
+                          )}
+                        </Box>
                         <Box sx={{ minWidth: 0 }}>
                           <Typography variant="h5" fontWeight={700} noWrap>{user.name || 'Usuario'}</Typography>
                           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
@@ -259,9 +372,23 @@ function User({ menu }) {
                         <Typography variant="subtitle2" color="text.secondary">Rol</Typography>
                         <Typography variant="body1">{user.rol === 0 ? 'Admin' : 'Miembro'}</Typography>
                       </Grid>
+                      <Grid item xs={12} sm={12}>
+                        <Typography variant="subtitle2" color="text.secondary">Gimnasio empadronado</Typography>
+                        <Typography variant="body1">{currentTenant?.name || user.gymId || 'Sin gimnasio asignado'}</Typography>
+                      </Grid>
                     </Grid>
                   </CardContent>
                   <CardActions sx={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, p: 2 }}>
+                    {isOwnProfile && (
+                      <Button fullWidth variant="outlined" onClick={() => setRequestsDialogOpen(true)}>
+                        Ver estado de mis solicitudes{myRequests.some((request) => request.status === 'pending') ? ' (pendientes)' : ''}
+                      </Button>
+                    )}
+                    {isOwnProfile && user.gymId && (
+                      <Button fullWidth variant="outlined" onClick={() => setTransferDialogOpen(true)}>
+                        Solicitar traslado de gimnasio
+                      </Button>
+                    )}
                     
                     <Grid container spacing={4} mb={6}>
                       <Grid item xs={12} md={6}>
@@ -315,6 +442,55 @@ function User({ menu }) {
                     </Grid>
                   </CardActions>
                 </Card>
+                <Dialog open={requestsDialogOpen} onClose={() => setRequestsDialogOpen(false)} fullWidth maxWidth="sm">
+                  <DialogTitle>Estado de mis solicitudes</DialogTitle>
+                  <DialogContent>
+                    {!myRequests.length && (
+                      <Typography color="text.secondary">No tienes solicitudes registradas.</Typography>
+                    )}
+                    <Stack spacing={1.5}>
+                      {myRequests.map((request) => (
+                        <Box key={`${request.type}-${request.id}`} sx={{ p: 1.5, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+                          <Typography variant="body1" fontWeight={600}>
+                            {requestLabels[request.type] || 'Solicitud'}: {request.name || request.gymId || '—'}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Estado: {requestStatusLabels[request.status] || request.status || 'Desconocido'}
+                          </Typography>
+                          {request.details && <Typography variant="body2">Detalles: {request.details}</Typography>}
+                        </Box>
+                      ))}
+                    </Stack>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={() => setRequestsDialogOpen(false)}>Cerrar</Button>
+                  </DialogActions>
+                </Dialog>
+                <Dialog open={transferDialogOpen} onClose={() => setTransferDialogOpen(false)} fullWidth maxWidth="sm">
+                  <DialogTitle>Solicitar traslado</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText sx={{ mb: 2 }}>
+                      Gimnasio actual: {currentTenant?.name || user.gymId}
+                    </DialogContentText>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Gimnasio destino"
+                      value={transferGymId}
+                      onChange={(event) => setTransferGymId(event.target.value)}
+                      SelectProps={{ native: false }}
+                    >
+                      {tenants.filter((tenant) => tenant.id !== user.gymId).map((tenant) => (
+                        <MenuItem key={tenant.id} value={tenant.id}>{tenant.name}</MenuItem>
+                      ))}
+                    </TextField>
+                    <TextField fullWidth multiline rows={3} label="Motivo o detalles" value={transferDetails} onChange={(event) => setTransferDetails(event.target.value)} sx={{ mt: 2 }} />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={() => setTransferDialogOpen(false)}>Cancelar</Button>
+                    <Button variant="contained" disabled={!transferGymId || isOperationLoading} onClick={handleTransferRequest}>Enviar solicitud</Button>
+                  </DialogActions>
+                </Dialog>
               </Grid>
               <Grid item xs={12} md={5}>
                 <Stack spacing={2}>

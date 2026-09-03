@@ -1,7 +1,7 @@
 {
   "name": "atlas-gym-partner",
   "private": true,
-  "version": "0.0.24",
+  "version": "0.0.25",
   "type": "module",
   "scripts": {
     "dev": "vite --open",
@@ -13,6 +13,7 @@
     "test:rules:emulator": "vitest run tests/firestore.rules.test.js",
     "migrate:gym-id": "node scripts/migrate-gym-id.mjs",
     "verify:gym-id": "node scripts/migrate-gym-id.mjs --verify",
+    "promote:admins": "node scripts/promote-admins.mjs",
     "audit": "npm audit --omit=dev && npm --prefix functions audit --omit=dev"
   },
   "dependencies": {

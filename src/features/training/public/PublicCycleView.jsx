@@ -265,8 +265,8 @@ function PublicCycleView() {
 
         if (linkedLayoutIds.length) {
           const [layouts, gymExercises] = await Promise.all([
-            Promise.all(linkedLayoutIds.map((layoutId) => GymLayoutService.getLayout(layoutId))),
-            GymLayoutService.getExercises(),
+            Promise.all(linkedLayoutIds.map((layoutId) => GymLayoutService.getLayout(layoutId, publicCycle.gymId))),
+            GymLayoutService.getExercises(publicCycle.gymId),
           ]);
           nextCircuitDetails = buildCircuitDetailsMap({ layouts, exercises: gymExercises });
         }
