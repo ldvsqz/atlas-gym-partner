@@ -1,6 +1,5 @@
 import { GoogleAuthProvider, signInWithPopup, getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, deleteUser } from "firebase/auth";
-import { collection, query, where, getDocs, limit } from 'firebase/firestore';
-import { app, db } from "./firebase"
+import { app } from "./firebase"
 import UserService from './userService';
 import UserModel from "../src/models/UserModel";
 import { Timestamp } from 'firebase/firestore';
@@ -15,40 +14,13 @@ const createAppError = (code, message) => {
     return error;
 };
 
-const checkRegistrationAvailability = async ({ dni = '', email = '' }) => {
-    const normalizedEmail = (email || '').trim().toLowerCase();
-    const normalizedDni = (dni || '').trim();
-
-    if (!normalizedEmail && !normalizedDni) {
-        return { available: true };
-    }
-
-    const checks = [];
-
-    if (normalizedDni) {
-        checks.push(getDocs(query(collection(db, 'users'), where('dni', '==', normalizedDni), limit(1))));
-    }
-
-    if (normalizedEmail) {
-        checks.push(getDocs(query(collection(db, 'users'), where('email', '==', normalizedEmail), limit(1))));
-    }
-
-    const snapshots = await Promise.all(checks);
-    const available = snapshots.every((snapshot) => snapshot.empty);
-    return { available };
-};
-
-
 const signInWithGoogle = async () => {
     const res = await signInWithPopup(auth, googleProvider);
     const normalizedEmail = (res.user.email || '').trim().toLowerCase();
     const userExists = await UserService.existsByUid(res.user.uid);
-    const { available } = await checkRegistrationAvailability({ email: normalizedEmail });
     if (userExists) {
         const user = await UserService.get(res.user.uid);
         return user;
-    } else if (!available) {
-        throw createAppError('app/registration-unavailable', 'Ya existe un perfil registrado con estos datos.');
     } else {
         const user = new UserModel(
             res.user.birthday || Timestamp.now(),
@@ -77,15 +49,6 @@ const registerWithEmailAndPassword = async (dni, birthday, phone, name, email, p
     const normalizedEmail = (email || '').trim().toLowerCase();
     const normalizedPhone = (phone || '').trim();
     const normalizedName = (name || '').trim();
-
-    const { available } = await checkRegistrationAvailability({
-        dni: normalizedDni,
-        email: normalizedEmail,
-    });
-
-    if (!available) {
-        throw createAppError('app/registration-unavailable', 'Ya existe un perfil registrado con estos datos.');
-    }
 
     const res = await createUserWithEmailAndPassword(auth, normalizedEmail, password);
     const user = new UserModel(

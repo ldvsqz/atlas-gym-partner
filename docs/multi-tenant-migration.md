@@ -33,14 +33,16 @@ export FIREBASE_PROJECT_ID=atlas-gym-partner
 export GYM_ID=default-gym
 node scripts/migrate-gym-id.mjs
 node scripts/migrate-gym-id.mjs --apply
+node scripts/migrate-gym-id.mjs --verify
 ```
 
 El primer comando `node` es solo una simulacion. Revisa sus cantidades y ejecuta
-`--apply` una sola vez. Luego verifica que no queden documentos sin `gymId` y
+`--apply` una sola vez. El comando `--verify` falla si quedan documentos sin
+`gymId` o configuraciones de modulo fuera del namespace del gimnasio. Luego
 publica las reglas:
 
 ```bash
-node scripts/migrate-gym-id.mjs
+node scripts/migrate-gym-id.mjs --verify
 npx firebase deploy --only firestore:rules --project atlas-gym-partner
 ```
 
