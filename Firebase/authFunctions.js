@@ -3,6 +3,7 @@ import { app } from "./firebase"
 import UserService from './userService';
 import UserModel from "../src/models/UserModel";
 import { Timestamp } from 'firebase/firestore';
+import { DEFAULT_GYM_ID } from './tenant';
 
 const auth = getAuth(app)
 const googleProvider = new GoogleAuthProvider();
