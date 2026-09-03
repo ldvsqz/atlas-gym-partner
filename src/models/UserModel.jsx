@@ -10,7 +10,7 @@ class UserModel {
         phone = '',
         uid = '',
         until = Timestamp.now(),
-        gymId = DEFAULT_GYM_ID
+        gymId = null
     ) {
         this.birthday = birthday;
         this.dni = dni;

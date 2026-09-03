@@ -105,7 +105,7 @@ function Register() {
       localStorage.setItem('UID', createdUser.uid);
       localStorage.setItem('ROL', createdUser.rol);
       showSnackbar('Usuario registrado correctamente.', 'success');
-      navigate(`/user/${createdUser.uid}`, { state: { uid: createdUser.uid } });
+      navigate('/gym-request');
     } catch (error) {
       showSnackbar(getRegisterErrorMessage(error), 'error');
     } finally {

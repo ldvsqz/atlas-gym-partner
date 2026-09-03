@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../Firebase/authFunctions';
 import UserService from '../../Firebase/userService';
+import { GYM_ADMIN_ROLE, SUPER_ADMIN_ROLE } from '../../Firebase/tenant';
 
 const AuthProfileContext = createContext(null);
 
@@ -47,7 +48,8 @@ export function AuthProfileProvider({ children }) {
   const value = useMemo(() => ({
     user,
     profile,
-    isAdmin: profile?.rol === 0,
+    isAdmin: profile?.rol === GYM_ADMIN_ROLE || profile?.rol === SUPER_ADMIN_ROLE,
+    isSuperAdmin: profile?.rol === SUPER_ADMIN_ROLE,
     loading: authLoading || profileLoading,
   }), [authLoading, profile, profileLoading, user]);
 

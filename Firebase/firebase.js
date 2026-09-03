@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
+import { getStorage } from "firebase/storage"
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyClgcMOlZg5OeL2Cjwg1s0zYaDMS8m1OZg",
@@ -16,6 +17,7 @@ import { getMessaging, isSupported } from "firebase/messaging"
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
+const storage = getStorage(app)
 
 let messaging = null;
 isSupported().then((supported) => {
@@ -24,4 +26,4 @@ isSupported().then((supported) => {
   }
 }).catch((err) => console.error("Firebase Messaging support error:", err));
 
-export { db, app, messaging, firebaseConfig }
+export { db, app, storage, messaging, firebaseConfig }

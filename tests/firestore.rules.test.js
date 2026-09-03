@@ -40,6 +40,27 @@ const memberProfile = {
   until: new Date('2026-12-31'),
 };
 
+const superAdminProfile = {
+  uid: 'super-admin',
+  gymId: 'gym-a',
+  rol: 2,
+  name: 'Super Admin',
+  email: 'super@example.com',
+};
+
+const memberReadableCollections = ['gymExercises', 'gymLayouts', 'exercises'];
+const memberOwnedCollections = ['stats', 'routine'];
+const adminOnlyCollections = ['finances', 'monthlyCashboxes', 'notificados', 'moduleSettings'];
+
+const seedDocument = async (collectionName, documentId, gymId = 'gym-a', extraData = {}) => {
+  await testEnv.withSecurityRulesDisabled(async (context) => {
+    await setDoc(doc(context.firestore(), collectionName, documentId), {
+      gymId,
+      ...extraData,
+    });
+  });
+};
+
 beforeAll(async () => {
   const hasEmulatorEnv = Boolean(process.env.FIRESTORE_EMULATOR_HOST || process.env.FIREBASE_EMULATOR_HOST);
   if (!hasEmulatorEnv) {
@@ -62,6 +83,7 @@ beforeEach(async () => {
     const db = context.firestore();
     await setDoc(doc(db, 'users/admin-user'), adminProfile);
     await setDoc(doc(db, 'users/member-user'), memberProfile);
+    await setDoc(doc(db, 'users/super-admin'), superAdminProfile);
   });
 });
 
@@ -125,6 +147,196 @@ maybeDescribe('users collection rules', () => {
     await assertFails(getDoc(doc(db, 'users/other-gym-user')));
   });
 });
+
+maybeDescribe('tenant-scoped business collection rules', () => {
+  it.each(memberReadableCollections)('allows members to read %s in their gym', async (collectionName) => {
+    await seedDocument(collectionName, 'gym-a-document');
+    const db = testEnv.authenticatedContext('member-user').firestore();
+
+    await assertSucceeds(getDoc(doc(db, collectionName, 'gym-a-document')));
+  });
+
+  maybeDescribe('super admin rules', () => {
+    it('allows super admins to read users across gyms', async () => {
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await setDoc(doc(context.firestore(), 'users/other-gym-user'), {
+          ...memberProfile,
+          uid: 'other-gym-user',
+          gymId: 'gym-b',
+        });
+      });
+      const db = testEnv.authenticatedContext('super-admin').firestore();
+
+      await assertSucceeds(getDoc(doc(db, 'users/other-gym-user')));
+    });
+
+    it('allows super admins to assign an admin to a gym', async () => {
+      const db = testEnv.authenticatedContext('super-admin').firestore();
+
+      await assertSucceeds(updateDoc(doc(db, 'users/admin-user'), {
+        rol: 0,
+        gymId: 'gym-b',
+      }));
+    });
+
+    it('blocks gym admins from changing a member role or gym', async () => {
+      const db = testEnv.authenticatedContext('admin-user').firestore();
+
+      await assertFails(updateDoc(doc(db, 'users/member-user'), {
+        rol: 0,
+        gymId: 'gym-b',
+      }));
+    });
+
+    it('allows gym admins to approve an unassigned member without changing their role', async () => {
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await setDoc(doc(context.firestore(), 'users/unassigned-user'), {
+          ...memberProfile,
+          uid: 'unassigned-user',
+          gymId: null,
+        });
+      });
+      const db = testEnv.authenticatedContext('admin-user').firestore();
+
+      await assertSucceeds(updateDoc(doc(db, 'users/unassigned-user'), {
+        gymId: 'gym-a',
+        rol: 1,
+      }));
+    });
+
+    it('allows signed-in users to create gym requests', async () => {
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await setDoc(doc(context.firestore(), 'users/unassigned-user'), {
+          ...memberProfile,
+          uid: 'unassigned-user',
+          gymId: null,
+        });
+      });
+      const db = testEnv.authenticatedContext('unassigned-user').firestore();
+
+      await assertSucceeds(setDoc(doc(db, 'gymRequests/request-1'), {
+        requestedBy: 'unassigned-user',
+        status: 'pending',
+        name: 'New Gym',
+      }));
+    });
+
+    it('allows signed-in users to read active gym names', async () => {
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await setDoc(doc(context.firestore(), 'gymTenants/gym-b'), {
+          name: 'Gym B',
+          status: 'active',
+        });
+      });
+      const db = testEnv.authenticatedContext('member-user').firestore();
+
+      await assertSucceeds(getDoc(doc(db, 'gymTenants/gym-b')));
+    });
+
+    it('blocks signed-in users from reading inactive gyms', async () => {
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await setDoc(doc(context.firestore(), 'gymTenants/gym-b'), {
+          name: 'Gym B',
+          status: 'inactive',
+        });
+      });
+      const db = testEnv.authenticatedContext('member-user').firestore();
+
+      await assertFails(getDoc(doc(db, 'gymTenants/gym-b')));
+    });
+
+    it('allows super admins to approve gym requests and create tenants', async () => {
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await setDoc(doc(context.firestore(), 'gymRequests/request-1'), {
+          requestedBy: 'member-user',
+          status: 'pending',
+          name: 'New Gym',
+        });
+      });
+      const db = testEnv.authenticatedContext('super-admin').firestore();
+
+      await assertSucceeds(setDoc(doc(db, 'gymTenants/gym-b'), {
+        name: 'New Gym',
+        status: 'active',
+      }));
+      await assertSucceeds(updateDoc(doc(db, 'gymRequests/request-1'), {
+        status: 'approved',
+        gymId: 'gym-b',
+      }));
+    });
+  });
+
+  it.each(memberReadableCollections)('blocks members from reading %s in another gym', async (collectionName) => {
+    await seedDocument(collectionName, 'gym-b-document', 'gym-b');
+    const db = testEnv.authenticatedContext('member-user').firestore();
+
+    await assertFails(getDoc(doc(db, collectionName, 'gym-b-document')));
+  });
+
+  it.each(memberOwnedCollections)('allows members to read their own %s', async (collectionName) => {
+    await seedDocument(collectionName, 'member-document', 'gym-a', { uid: 'member-user' });
+    const db = testEnv.authenticatedContext('member-user').firestore();
+
+    await assertSucceeds(getDoc(doc(db, collectionName, 'member-document')));
+  });
+
+  it.each(memberOwnedCollections)("blocks members from reading another user's %s", async (collectionName) => {
+    await seedDocument(collectionName, 'other-document', 'gym-a', { uid: 'other-user' });
+    const db = testEnv.authenticatedContext('member-user').firestore();
+
+    await assertFails(getDoc(doc(db, collectionName, 'other-document')));
+  });
+
+  it.each(adminOnlyCollections)('allows admins to read %s in their gym', async (collectionName) => {
+    await seedDocument(collectionName, 'admin-document');
+    const db = testEnv.authenticatedContext('admin-user').firestore();
+
+    await assertSucceeds(getDoc(doc(db, collectionName, 'admin-document')));
+  });
+
+  it.each(adminOnlyCollections)('blocks admins from reading %s in another gym', async (collectionName) => {
+    await seedDocument(collectionName, 'gym-b-document', 'gym-b');
+    const db = testEnv.authenticatedContext('admin-user').firestore();
+
+    await assertFails(getDoc(doc(db, collectionName, 'gym-b-document')));
+  });
+
+  it.each(adminOnlyCollections)('blocks members from reading %s', async (collectionName) => {
+    await seedDocument(collectionName, 'member-denied-document');
+    const db = testEnv.authenticatedContext('member-user').firestore();
+
+    await assertFails(getDoc(doc(db, collectionName, 'member-denied-document')));
+  });
+});
+
+maybeDescribe('public cycle rules', () => {
+  it('allows unauthenticated reads of public cycles and days', async () => {
+    await seedDocument('cycles', 'public-cycle', 'gym-a', { public: true });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), 'cycles/public-cycle/days/day-1'), {
+        name: 'Public day',
+      });
+    });
+    const db = testEnv.unauthenticatedContext().firestore();
+
+    await assertSucceeds(getDoc(doc(db, 'cycles/public-cycle')));
+    await assertSucceeds(getDoc(doc(db, 'cycles/public-cycle/days/day-1')));
+  });
+
+  it('blocks unauthenticated reads of private cycles and days', async () => {
+    await seedDocument('cycles', 'private-cycle', 'gym-a', { public: false });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), 'cycles/private-cycle/days/day-1'), {
+        name: 'Private day',
+      });
+    });
+    const db = testEnv.unauthenticatedContext().firestore();
+
+    await assertFails(getDoc(doc(db, 'cycles/private-cycle')));
+    await assertFails(getDoc(doc(db, 'cycles/private-cycle/days/day-1')));
+  });
+});
+
 maybeDescribe('default deny rule', () => {
   it('blocks access to unknown collections', async () => {
     const db = testEnv.authenticatedContext('admin-user').firestore();
