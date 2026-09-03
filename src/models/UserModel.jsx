@@ -1,4 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
+import { DEFAULT_GYM_ID } from '../../Firebase/tenant';
 
 class UserModel {
     constructor(
