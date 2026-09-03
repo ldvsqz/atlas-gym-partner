@@ -138,7 +138,7 @@ class Util {
         const diffTime = membershipDate - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        const firstName = getFirstName(name);
+        const firstName = this.getFirstName(name);
 
         if (diffDays <= 0) {
             return `Hola, ${firstName}. Tu membresía venció el ${membershipDate.toLocaleDateString()}. Cuando quieras, puedes renovarla 🔄`;
