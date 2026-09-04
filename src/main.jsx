@@ -25,6 +25,10 @@ moduleSettings.registerModule('gymLayout', {
   reservedCells: DEFAULT_RESERVED_GRID_CELLS,
 });
 
+moduleSettings.registerModule('members', {
+  notificationMessage: '',
+});
+
 moduleSettings.restoreOverrides();
 
 ReactDOM.createRoot(document.getElementById('root')).render(

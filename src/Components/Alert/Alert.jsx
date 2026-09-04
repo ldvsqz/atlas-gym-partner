@@ -5,9 +5,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Tooltip from '@mui/material/Tooltip';
 
 function Alert(props) {
-    const { buttonName= '', title= '', message = '', onResponse, fullWidth, variant } = props;
+    const { buttonName= '', title= '', message = '', onResponse, fullWidth, variant, buttonSx, buttonTooltip } = props;
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -25,9 +26,11 @@ function Alert(props) {
 
     return (
         <div>
-            <Button onClick={handleClickOpen} fullWidth={fullWidth} variant={variant}>
-                {buttonName}
-            </Button>
+            <Tooltip title={buttonTooltip || buttonName}>
+                <Button onClick={handleClickOpen} fullWidth={fullWidth} variant={variant} aria-label={buttonTooltip || buttonName} sx={buttonSx}>
+                    {buttonName}
+                </Button>
+            </Tooltip>
             <Dialog
                 open={open}
                 onClose={handleCancel}

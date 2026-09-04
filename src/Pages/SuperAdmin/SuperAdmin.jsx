@@ -8,6 +8,7 @@ import UserService from '../../../Firebase/userService';
 import TenantService from '../../../Firebase/tenantService';
 import { useSnackbar } from '../../Components/snackbar/AtlasSnackbar';
 import { getCurrentGymId, setCurrentGymId } from '../../../Firebase/tenant';
+import { provisionExistingMemberAccounts } from '../../../Firebase/memberAuthService';
 
 const formatValue = (value) => {
   if (value === null || value === undefined || value === '') return 'No registrado';
@@ -30,6 +31,7 @@ function SuperAdmin({ menu }) {
   const [tenantName, setTenantName] = useState('');
   const [deleteTenantTarget, setDeleteTenantTarget] = useState(null);
   const [activeGymId, setActiveGymId] = useState('');
+  const [provisioningAccounts, setProvisioningAccounts] = useState(false);
   const { showSnackbar } = useSnackbar();
 
   const refresh = async () => {
@@ -164,6 +166,35 @@ function SuperAdmin({ menu }) {
     }));
   };
 
+  const downloadCredentialsReport = (created, skipped) => {
+    const rows = [
+      ['estado', 'uid', 'correo', 'contraseña_temporal', 'detalle'],
+      ...created.map((account) => ['creada', account.uid, account.email, account.temporaryPassword, '']),
+      ...skipped.map((account) => ['omitida', account.uid, account.email, '', account.reason]),
+    ];
+    const csv = rows.map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(',')).join('\n');
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'cuentas-miembros.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleProvisionAccounts = async () => {
+    if (!window.confirm('Se crearán cuentas con contraseñas temporales únicas para los perfiles elegibles. El reporte se descargará una sola vez. ¿Continuar?')) return;
+    try {
+      setProvisioningAccounts(true);
+      const result = await provisionExistingMemberAccounts();
+      downloadCredentialsReport(result.created || [], result.skipped || []);
+      showSnackbar(`${result.created?.length || 0} cuentas creadas. Se descargó el reporte.`, 'success');
+    } catch (error) {
+      showSnackbar(error.message || 'No se pudieron crear las cuentas.', 'error');
+    } finally {
+      setProvisioningAccounts(false);
+    }
+  };
+
   const saveTenant = async () => {
     try {
       await TenantService.updateTenant(editingTenant.id, { name: tenantName, status: editingTenant.status });
@@ -242,6 +273,9 @@ function SuperAdmin({ menu }) {
                 >
             {tenants.map((tenant) => <MenuItem key={tenant.id} value={tenant.id}>{tenant.name}</MenuItem>)}
                 </Select>
+                <Button variant="outlined" color="inherit" onClick={handleProvisionAccounts} disabled={provisioningAccounts} sx={{ mt: 1 }}>
+                  {provisioningAccounts ? 'Creando cuentas...' : 'Crear cuentas para miembros existentes'}
+                </Button>
               </Stack>
             </Stack>
           </CardContent>

@@ -13,10 +13,14 @@ import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
+import Chip from '@mui/material/Chip';
+import MuiTooltip from '@mui/material/Tooltip';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import DeleteIcon from '@mui/icons-material/Delete';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+import KeyIcon from '@mui/icons-material/Key';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -47,6 +51,8 @@ import UserModel from "../../models/UserModel";
 import { Timestamp } from 'firebase/firestore';
 import 'firebase/firestore';
 import { useAuthProfile } from '../../hooks/useAuthProfile';
+import { sendPasswordReset } from '../../../Firebase/authFunctions';
+import { createMemberEmailPasswordAccount, getMemberAuthStatus } from '../../../Firebase/memberAuthService';
 import TenantService from '../../../Firebase/tenantService';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../../Firebase/firebase';
@@ -72,12 +78,9 @@ function User({ menu }) {
   const [statsHistory, setStatsHistory] = useState([]);
   const [routine, setRoutine] = useState({});
   const [loading, setLoading] = useState(true);
-  const { user: authUser, isAdmin } = useAuthProfile();
+  const { user: authUser, isAdmin, isSuperAdmin } = useAuthProfile();
   const currentUid = authUser?.uid;
-  const [roleChangeDialogOpen, setRoleChangeDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isOperationLoading, setIsOperationLoading] = useState(false);
-  const [newRole, setNewRole] = useState(null);
   const [tenants, setTenants] = useState([]);
   const [transferGymId, setTransferGymId] = useState('');
   const [transferDetails, setTransferDetails] = useState('');
@@ -85,6 +88,9 @@ function User({ menu }) {
   const [requestsDialogOpen, setRequestsDialogOpen] = useState(false);
   const [myRequests, setMyRequests] = useState([]);
   const [photoUploading, setPhotoUploading] = useState(false);
+  const [memberAuthStatus, setMemberAuthStatus] = useState({ loading: true, hasAccount: false, hasEmailPassword: false });
+  const [createAccountDialogOpen, setCreateAccountDialogOpen] = useState(false);
+  const [temporaryPassword, setTemporaryPassword] = useState('');
 
   const { showSnackbar } = useSnackbar();
   const params = useParams();
@@ -128,6 +134,24 @@ function User({ menu }) {
     fetchClientData();
   }, [location.state, params.uid, navigate, authUser?.uid]);
 
+  useEffect(() => {
+    let active = true;
+    if (!user.uid) return undefined;
+
+    setMemberAuthStatus({ loading: true, hasAccount: false, hasEmailPassword: false });
+    getMemberAuthStatus(user.uid)
+      .then((status) => {
+        if (active) setMemberAuthStatus({ loading: false, ...status });
+      })
+      .catch(() => {
+        if (active) setMemberAuthStatus({ loading: false, hasAccount: false, hasEmailPassword: false, unavailable: true });
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [user.uid]);
+
 
 
   function handleOnRenew(response) {
@@ -158,36 +182,25 @@ function User({ menu }) {
     util.openWAChat(number);
   }
 
-  async function handleRoleChange() {
-    if (newRole === null) return;
+  async function handlePasswordReset() {
     try {
-      setIsOperationLoading(true);
-      const updatedUser = { ...user, rol: newRole };
-      await UserService.update(user.uid, updatedUser);
-      setUser(updatedUser);
-      setRoleChangeDialogOpen(false);
-      setNewRole(null);
-      showSnackbar('Rol actualizado correctamente', 'success');
-    } catch (err) {
-      console.error('Error updating role', err);
-      showSnackbar('Error al actualizar el rol del usuario', 'error');
-    } finally {
-      setIsOperationLoading(false);
+      await sendPasswordReset(user.email);
+      showSnackbar('Se envio un enlace para cambiar la contraseña.', 'success');
+    } catch {
+      showSnackbar('No se pudo enviar el enlace para cambiar la contraseña.', 'error');
     }
   }
 
-  async function handleDeleteUser() {
+  async function handleCreateAuthAccount() {
     try {
       setIsOperationLoading(true);
-      await UserService.delete(user.uid);
-      setDeleteDialogOpen(false);
-      showSnackbar('Usuario eliminado correctamente', 'success');
-      setTimeout(() => {
-        navigate('/users');
-      }, 1500);
-    } catch (err) {
-      console.error('Error deleting user', err);
-      showSnackbar('Error al eliminar el usuario', 'error');
+      const status = await createMemberEmailPasswordAccount(user.uid, temporaryPassword);
+      
+      setCreateAccountDialogOpen(false);
+      setTemporaryPassword('');
+      showSnackbar('Cuenta de acceso creada correctamente.', 'success');
+    } catch (error) {
+      showSnackbar(error.message || 'No se pudo crear la cuenta de acceso.', 'error');
     } finally {
       setIsOperationLoading(false);
     }
@@ -227,6 +240,12 @@ function User({ menu }) {
     pending: 'Pendiente',
     approved: 'Aprobada',
     rejected: 'Rechazada',
+  };
+  const avatarActionButtonSx = {
+    width: 42,
+    minWidth: 42,
+    height: 42,
+    p: 0,
   };
 
   async function handleTransferRequest() {
@@ -278,7 +297,7 @@ function User({ menu }) {
   return (
     <div>
       {menu}
-      <Container fixed>
+      <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
         {loading ? (
           <Stack spacing={1} sx={{ width: '100%', mt: 4 }}>
             <Skeleton animation="wave" variant="rectangular" height={60} />
@@ -287,13 +306,14 @@ function User({ menu }) {
             <Skeleton animation="wave" variant="rectangular" height={40} />
           </Stack>
         ) : (
-          <Box sx={{ width: '100%', mt: 4 }}>
+          <Box sx={{ width: '100%' }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={7}>
-                <Card sx={{ borderRadius: 3, boxShadow: 2 }}>
+              <Grid item xs={12}>
+                <Card variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
                   <CardContent>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap', mb: 2 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minWidth: 0 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap', mb: 2.5 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flex: 1, flexWrap: 'wrap', minWidth: 0 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minWidth: 0 }}>
                         <Box sx={{ position: 'relative' }}>
                           <Badge
                             overlap="circular"
@@ -342,105 +362,91 @@ function User({ menu }) {
                           </Typography>
                         </Box>
                       </Box>
-                      {user.phone && currentUid !== user.uid && (
-                        <Button
-                          fullWidth
-                          variant="outlined"
-                          size="small"
-                          startIcon={<WhatsAppIcon />}
-                          onClick={() => handleOnCopyNumber(user.phone)}
-                        >
-                          Contactar
-                        </Button>
-                      )}
+                      <Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ ml: 'auto', flexShrink: 0 }}>
+                        {isOwnProfile && (
+                          <MuiTooltip title={`Estado de mis solicitudes${myRequests.some((request) => request.status === 'pending') ? ' pendientes' : ''}`}>
+                            <Button variant="outlined" aria-label="Ver estado de mis solicitudes" onClick={() => setRequestsDialogOpen(true)} sx={avatarActionButtonSx}>
+                              <AssignmentOutlinedIcon />
+                            </Button>
+                          </MuiTooltip>
+                        )}
+                        {isOwnProfile && user.gymId && (
+                          <MuiTooltip title="Solicitar traslado de gimnasio">
+                            <Button variant="outlined" aria-label="Solicitar traslado de gimnasio" onClick={() => setTransferDialogOpen(true)} sx={avatarActionButtonSx}>
+                              <SwapHorizIcon />
+                            </Button>
+                          </MuiTooltip>
+                        )}
+                        {isAdmin && !isOwnProfile && (
+                          <Alert
+                            variant="outlined"
+                            buttonSx={avatarActionButtonSx}
+                            buttonName={<AutorenewIcon />}
+                            buttonTooltip="Renovar membresía"
+                            title="Renovar membresía"
+                            message={`¿Desea renovar la membresía de: ${user.name}?`}
+                            onResponse={handleOnRenew}
+                          />
+                        )}
+                        {isOwnProfile && memberAuthStatus.hasEmailPassword && (
+                          <MuiTooltip title="Enviar enlace para cambiar contraseña">
+                            <Button variant="outlined" aria-label="Cambiar contraseña" onClick={handlePasswordReset} sx={avatarActionButtonSx}>
+                              <KeyIcon />
+                            </Button>
+                          </MuiTooltip>
+                        )}
+                        {isSuperAdmin && !memberAuthStatus.loading && !memberAuthStatus.unavailable && !memberAuthStatus.hasAccount && (
+                          <MuiTooltip title="Crear cuenta de acceso">
+                            <Button variant="outlined" aria-label="Crear cuenta de acceso" onClick={() => setCreateAccountDialogOpen(true)} sx={avatarActionButtonSx}>
+                              <PersonAddIcon />
+                            </Button>
+                          </MuiTooltip>
+                        )}
+                        <SetUser user={user} onSave={(updatedUser) => setUser(updatedUser)} buttonSx={avatarActionButtonSx} iconOnly />
+                      </Stack>
                     </Box>
-                    <Divider sx={{ mb: 2 }} />
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={12}>
-                        <Typography variant="subtitle2" color="text.secondary">Email</Typography>
-                        <Typography variant="body1" gutterBottom>{user.email || '—'}</Typography>
+                    </Box>
+                    <Divider sx={{ mb: 2.5 }} />
+                    <Grid container spacing={1.25}>
+                      <Grid item xs={12} sm={6}>
+                        <Box sx={{ minHeight: 72, p: 1.5, border: '1px solid', borderColor: 'divider', borderRadius: 1, bgcolor: 'action.hover' }}>
+                          <Typography variant="caption" color="text.secondary">Email</Typography>
+                          <Typography variant="body2" fontWeight={600} sx={{ overflowWrap: 'anywhere' }}>{user.email || '—'}</Typography>
+                        </Box>
                       </Grid>
-                      <Grid item xs={12} sm={12}>
-                          <Typography variant="subtitle2" color="text.secondary">Teléfono</Typography>
-                          <Typography variant="body1">{user.phone || '—'}</Typography>
+                      <Grid item xs={12} sm={6}>
+                        <Box sx={{ minHeight: 72, p: 1.5, border: '1px solid', borderColor: 'divider', borderRadius: 1, bgcolor: 'action.hover' }}>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>Teléfono</Typography>
+                          {user.phone ? (
+                            <MuiTooltip title="Abrir chat de WhatsApp">
+                              <Button
+                                variant="text"
+                                startIcon={<WhatsAppIcon />}
+                                onClick={() => handleOnCopyNumber(user.phone)}
+                                sx={{ minWidth: 0, minHeight: 0, px: 0, py: 0.25, justifyContent: 'flex-start', textTransform: 'none', fontWeight: 600 }}
+                              >
+                                {user.phone}
+                              </Button>
+                            </MuiTooltip>
+                          ) : (
+                            <Typography variant="body2" fontWeight={600}>—</Typography>
+                          )}
+                        </Box>
                         </Grid>
-                      <Grid item xs={12} sm={12}>
-                        <Typography variant="subtitle2" color="text.secondary">DNI</Typography>
-                        <Typography variant="body1" gutterBottom>{user.dni || '—'}</Typography>
+                      <Grid item xs={12} sm={6}>
+                        <Box sx={{ minHeight: 72, p: 1.5, border: '1px solid', borderColor: 'divider', borderRadius: 1, bgcolor: 'action.hover' }}>
+                          <Typography variant="caption" color="text.secondary">DNI</Typography>
+                          <Typography variant="body2" fontWeight={600}>{user.dni || '—'}</Typography>
+                        </Box>
                       </Grid>
-                      <Grid item xs={12} sm={12}>
-                        <Typography variant="subtitle2" color="text.secondary">Rol</Typography>
-                        <Typography variant="body1">{user.rol === 0 ? 'Admin' : 'Miembro'}</Typography>
-                      </Grid>
-                      <Grid item xs={12} sm={12}>
-                        <Typography variant="subtitle2" color="text.secondary">Gimnasio empadronado</Typography>
-                        <Typography variant="body1">{currentTenant?.name || user.gymId || 'Sin gimnasio asignado'}</Typography>
+                      <Grid item xs={12} sm={6}>
+                        <Box sx={{ minHeight: 72, p: 1.5, border: '1px solid', borderColor: 'divider', borderRadius: 1, bgcolor: 'action.hover' }}>
+                          <Typography variant="caption" color="text.secondary">Gimnasio</Typography>
+                          <Typography variant="body2" fontWeight={600} sx={{ overflowWrap: 'anywhere' }}>{currentTenant?.name || user.gymId || 'Sin gimnasio asignado'}</Typography>
+                        </Box>
                       </Grid>
                     </Grid>
                   </CardContent>
-                  <CardActions sx={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, p: 2 }}>
-                    {isOwnProfile && (
-                      <Button fullWidth variant="outlined" onClick={() => setRequestsDialogOpen(true)}>
-                        Ver estado de mis solicitudes{myRequests.some((request) => request.status === 'pending') ? ' (pendientes)' : ''}
-                      </Button>
-                    )}
-                    {isOwnProfile && user.gymId && (
-                      <Button fullWidth variant="outlined" onClick={() => setTransferDialogOpen(true)}>
-                        Solicitar traslado de gimnasio
-                      </Button>
-                    )}
-                    
-                    <Grid container spacing={4} mb={6}>
-                      <Grid item xs={12} md={6}>
-                        <SetUser user={user} onSave={(updatedUser) => setUser(updatedUser)} />
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        {isAdmin && currentUid !== user.uid && (
-                          <Alert
-                          fullWidth
-                          variant="outlined"
-                          buttonName="Renovar membresía"
-                          title="Renovar membresía"
-                          message={`¿Desea renovar la membresía de: ${user.name}?`}
-                          onResponse={(response) => handleOnRenew(response)}
-                          />
-                        )}
-                      </Grid>
-
-
-                      {isAdmin && currentUid !== user.uid && (
-                        <>
-                      <Grid item xs={12} md={6}>
-                        <Button
-                          fullWidth
-                          variant="outlined"
-                          startIcon={<AdminPanelSettingsIcon />}
-                          onClick={() => {
-                            setNewRole(user.rol === 0 ? 1 : 0);
-                            setRoleChangeDialogOpen(true);
-                          }}
-                          disabled={isOperationLoading}
-                        >
-                          
-                          {user.rol === 0 ? 'Hacer miembro' : 'Hacer admin'}
-                        </Button>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <Button
-                          fullWidth
-                          variant="contained"
-                          color="error"
-                          startIcon={<DeleteIcon />}
-                          onClick={() => setDeleteDialogOpen(true)}
-                          disabled={isOperationLoading}
-                          >
-                          Eliminar
-                        </Button>
-                      </Grid>
-                    </>
-                  )}
-                    </Grid>
-                  </CardActions>
                 </Card>
                 <Dialog open={requestsDialogOpen} onClose={() => setRequestsDialogOpen(false)} fullWidth maxWidth="sm">
                   <DialogTitle>Estado de mis solicitudes</DialogTitle>
@@ -491,12 +497,41 @@ function User({ menu }) {
                     <Button variant="contained" disabled={!transferGymId || isOperationLoading} onClick={handleTransferRequest}>Enviar solicitud</Button>
                   </DialogActions>
                 </Dialog>
+                <Dialog open={createAccountDialogOpen} onClose={() => !isOperationLoading && setCreateAccountDialogOpen(false)} fullWidth maxWidth="xs">
+                  <DialogTitle>Crear cuenta de acceso</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText sx={{ mb: 2 }}>
+                      Se creará una cuenta para {user.email || 'el correo registrado'} con una contraseña temporal.
+                    </DialogContentText>
+                    <TextField
+                      fullWidth
+                      autoFocus
+                      type="password"
+                      label="Contraseña temporal"
+                      value={temporaryPassword}
+                      onChange={(event) => setTemporaryPassword(event.target.value)}
+                      helperText="Debe tener al menos 6 caracteres."
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={() => setCreateAccountDialogOpen(false)} disabled={isOperationLoading}>Cancelar</Button>
+                    <Button variant="contained" onClick={handleCreateAuthAccount} disabled={temporaryPassword.length < 6 || isOperationLoading}>
+                      Crear cuenta
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Grid>
-              <Grid item xs={12} md={5}>
-                <Stack spacing={2}>
-                  <Card sx={{ borderRadius: 3, boxShadow: 2 }}>
+              <Grid item xs={12}>
+                <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems="stretch" sx={{ '& > .MuiCard-root': { flex: 1 } }}>
+                  <Card variant="outlined" sx={{ borderRadius: 2 }}>
                     <CardContent>
-                      <Typography variant="h6" mb={2}>Medidas del {util.formatDate(util.getDateFromFirebase(stats.date)) || '—'}</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, mb: 2 }}>
+                        <Typography variant="h6">Medidas del {util.formatDate(util.getDateFromFirebase(stats.date)) || '—'}</Typography>
+                        <Stack direction="row" spacing={1}>
+                          {canAddStats && <SetStats stats={stats} uid={user.uid} isEditing={false} onSave={handleOnSaveStats} buttonSx={avatarActionButtonSx} iconOnly />}
+                          {canEditStats && <SetStats stats={stats} uid={user.uid} isEditing={true} onSave={handleOnSaveStats} buttonSx={avatarActionButtonSx} iconOnly />}
+                        </Stack>
+                      </Box>
                       {hasStats ? (
                         <Grid container spacing={1}>
                           <Grid item xs={6}>
@@ -520,23 +555,9 @@ function User({ menu }) {
                         <Typography variant="body2" color="text.secondary">No tiene medidas registradas</Typography>
                       )}
                     </CardContent>
-                    <CardActions sx={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, p: 2 }}>
-                      <Grid container spacing={1}>
-                        {canAddStats && (
-                          <Grid item xs={12} sm={canEditStats ? 6 : 12}>
-                            <SetStats stats={stats} uid={user.uid} isEditing={false} onSave={handleOnSaveStats} />
-                          </Grid>
-                        )}
-                        {canEditStats && (
-                          <Grid item xs={12} sm={6}>
-                            <SetStats stats={stats} uid={user.uid} isEditing={true} onSave={handleOnSaveStats} />
-                          </Grid>
-                        )}
-                      </Grid>
-                    </CardActions>
                   </Card>
 
-                  <Card sx={{ borderRadius: 3, boxShadow: 2 }}>
+                  <Card variant="outlined" sx={{ borderRadius: 2 }}>
                     <CardContent>
                       <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
                         <HealthAndSafetyIcon color={hasMedicalConsiderations ? 'warning' : 'success'} />
@@ -566,7 +587,7 @@ function User({ menu }) {
                 </Stack>
               </Grid>
             </Grid>
-            <Card sx={{ borderRadius: 3, boxShadow: 2, mt: 3 }}>
+            <Card variant="outlined" sx={{ borderRadius: 2, mt: 3 }}>
               <CardContent>
                 <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
                   <InsightsIcon color="primary" />
@@ -617,68 +638,6 @@ function User({ menu }) {
         )}
       </Container>
 
-      {/* Role Change Dialog */}
-      <Dialog
-        open={roleChangeDialogOpen}
-        onClose={() => !isOperationLoading && setRoleChangeDialogOpen(false)}
-      >
-        <DialogTitle>Cambiar rol de usuario</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            ¿Desea cambiar el rol de <strong>{user.name}</strong> de <strong>{user.rol === 0 ? 'Admin' : 'Miembro'}</strong> a <strong>{newRole === 0 ? 'Admin' : 'Miembro'}</strong>?
-          </DialogContentText>
-          <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isOperationLoading}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
-        </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={() => setRoleChangeDialogOpen(false)}
-            disabled={isOperationLoading}
-          >
-            Cancelar
-          </Button>
-          <Button 
-            onClick={handleRoleChange}
-            variant="contained"
-            disabled={isOperationLoading}
-          >
-            Cambiar rol
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Delete User Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={() => !isOperationLoading && setDeleteDialogOpen(false)}
-      >
-        <DialogTitle>Eliminar usuario</DialogTitle>
-        <DialogContent>
-          <DialogContentText sx={{ color: 'error.main' }}>
-            ¿Desea eliminar permanentemente al usuario <strong>{user.name}</strong>? Esta acción no se puede deshacer.
-          </DialogContentText>
-          <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isOperationLoading}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
-        </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={() => setDeleteDialogOpen(false)}
-            disabled={isOperationLoading}
-          >
-            Cancelar
-          </Button>
-          <Button 
-            onClick={handleDeleteUser}
-            variant="contained"
-            color="error"
-            disabled={isOperationLoading}
-          >
-            Eliminar usuario
-          </Button>
-        </DialogActions>
-      </Dialog>
     </div >
   );
 }

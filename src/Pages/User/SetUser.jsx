@@ -21,7 +21,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import InputAdornment from '@mui/material/InputAdornment';
 import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
 import { Timestamp } from 'firebase/firestore';
+import { updateEmail } from 'firebase/auth';
+import { auth } from '../../../Firebase/authFunctions';
 import 'dayjs/locale/es';
 import dayjs from 'dayjs';
 import "./user.css";
@@ -57,7 +60,7 @@ const toTimestamp = (value) => {
   return parsedDate.isValid() ? Timestamp.fromDate(parsedDate.toDate()) : null;
 };
 
-function SetUser({ user, onSave }) {
+function SetUser({ user, onSave, buttonSx, iconOnly = false }) {
   const [userState, setUserState] = useState(() => normalizeUser(user));
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -85,7 +88,7 @@ function SetUser({ user, onSave }) {
   };
 
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const updatedUser = {
@@ -104,20 +107,36 @@ function SetUser({ user, onSave }) {
     handleOpenBackDrop();
     const userData = { ...updatedUser };
     delete userData.id;
-    UserService.update(userData.uid, userData).then(() => {
+    const isOwnAuthProfile = auth.currentUser?.uid === userData.uid;
+    const emailChanged = userData.email !== String(user.email || '').trim().toLowerCase();
+
+    try {
+      if (isOwnAuthProfile && emailChanged) {
+        await updateEmail(auth.currentUser, userData.email);
+      }
+      await UserService.update(userData.uid, userData);
       onSave(updatedUser);
       handleClose();
       handleCloseBackDrop();
       showSnackbar('Datos del usuario guardados correctamente', 'success');
-    }).catch(() => {
+    } catch (error) {
       handleCloseBackDrop();
-      showSnackbar('Error al guardar los datos del usuario', 'error');
-    });
+      showSnackbar(
+        error?.code === 'auth/requires-recent-login'
+          ? 'Por seguridad, cierre sesión e inicie sesión nuevamente antes de cambiar el correo.'
+          : 'Error al guardar los datos del usuario',
+        'error'
+      );
+    }
   };
 
   return (
     <div>
-      <Button fullWidth variant="outlined" startIcon={<EditIcon />} sx={{ width: "100%" }} onClick={handleOpen}>Editar datos</Button>
+      <Tooltip title="Editar datos">
+        <Button fullWidth={!iconOnly} variant="outlined" startIcon={iconOnly ? undefined : <EditIcon />} aria-label="Editar datos" sx={buttonSx} onClick={handleOpen}>
+          {iconOnly ? <EditIcon /> : 'Editar datos'}
+        </Button>
+      </Tooltip>
       <Dialog
         open={open}
         onClose={handleClose}

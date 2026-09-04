@@ -8,6 +8,7 @@ import { useSnackbar } from '../../Components/snackbar/AtlasSnackbar';
 const MODULE_LABELS = {
   cashbox: 'Arqueo de Caja',
   gymLayout: 'Layout de Gimnasio',
+  members: 'Miembros',
 };
 
 const FIELD_LABELS = {
@@ -19,6 +20,9 @@ const FIELD_LABELS = {
   gymLayout: {
     rows: 'Filas',
     cols: 'Columnas',
+  },
+  members: {
+    notificationMessage: 'Mensaje de notificacion',
   },
 };
 
@@ -481,8 +485,25 @@ function ModuleSettings() {
                     </Grid>
                   );
                 }
+
+                if (activeTab === 'members' && key === 'notificationMessage') {
+                  return (
+                    <Grid item xs={12} key={key}>
+                      <TextField
+                        label={FIELD_LABELS[activeTab][key]}
+                        value={value ?? ''}
+                        fullWidth
+                        multiline
+                        minRows={4}
+                        placeholder="Deje vacio para usar el mensaje predeterminado"
+                        helperText="Variables disponibles: {{nombre}} y {{fechaMembresia}}."
+                        onChange={(e) => handleChange(activeTab, key, e.target.value)}
+                      />
+                    </Grid>
+                  );
+                }
   
-                if (activeTab === 'cashbox' || activeTab === 'gymLayout') {
+                if (activeTab === 'cashbox' || activeTab === 'gymLayout' || activeTab === 'members') {
                   return null;
                 }
  
