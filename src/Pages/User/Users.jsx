@@ -11,6 +11,8 @@ import Util from '../../assets/Util';
 import UserModel from '../../models/UserModel';
 import FinanceModel from '../../models/FinanceModel';
 import { getCurrentGymId } from '../../../Firebase/tenant';
+import moduleSettings from '../../config/moduleSettings';
+import { createMemberWithTemporaryAccount } from '../../../Firebase/memberAuthService';
 //MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -43,10 +45,10 @@ import 'dayjs/locale/es';
 
 //components
 import Menu from '../../Components/Menu/Menu';
-import userService from '../../../Firebase/userService';
 import { useSnackbar } from '../../Components/snackbar/AtlasSnackbar';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 
 
 function User({ menu }) {
@@ -59,6 +61,7 @@ function User({ menu }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [latestStatsByUser, setLatestStatsByUser] = useState({});
   const [openAddUserModal, setOpenAddUserModal] = useState(false);
+  const [newAccountCredentials, setNewAccountCredentials] = useState(null);
   const [checked, setChecked] = React.useState(true);
   const [showAdmins, setShowAdmins] = React.useState(false);
   const [newUser, setNewUser] = useState({
@@ -215,7 +218,12 @@ function User({ menu }) {
   const handleWaNotificationResponse = async (response, user) => {
     if (!response) return;
 
-    const msgText = util.selectMembershipMessage(user.name, user.until);
+    const configuredMessage = moduleSettings.getSettings('members').notificationMessage?.trim();
+    const msgText = configuredMessage
+      ? configuredMessage
+        .replaceAll('{{nombre}}', util.getFirstName(user.name))
+        .replaceAll('{{fechaMembresia}}', util.formatDateShort(util.getDateFromFirebase(user.until)))
+      : util.selectMembershipMessage(user.name, user.until);
     const phone = user.phone || '71699673';
     util.openWAChat(phone, msgText);
     showSnackbar(`Abriendo WhatsApp Web para notificar a ${user.name}...`, 'info');
@@ -239,21 +247,31 @@ function User({ menu }) {
   };
 
   const handleAddUserSubmit = async () => {
-    const formattedName = util.formatMailNanme(newUser.name);
-    const email = util.generateemail(formattedName);
+    const email = (newUser.email || '').trim().toLowerCase();
+    if (!newUser.name.trim() || !email) {
+      showSnackbar('Nombre y correo son obligatorios.', 'error');
+      return;
+    }
     try {
       const birthdayDate = newUser.birthday ? newUser.birthday.toDate() : Timestamp.now();
       const gymId = await getCurrentGymId();
-      const user = new UserModel(birthdayDate, formattedName, email, newUser.name, newUser.phone, email, Timestamp.now(), gymId);
-      user.createdAt = Timestamp.now();
-      await userService.add(user);
+      const credentials = await createMemberWithTemporaryAccount({
+        name: newUser.name,
+        email,
+        phone: newUser.phone,
+        dni: newUser.dni,
+        birthday: birthdayDate.toDate().toISOString(),
+        gymId,
+      });
       const UsersData = await UserService.getAll();
       setUsers(UsersData);
       setFilteredUsers(UsersData);
       handleCloseAddUserModal();
-      showSnackbar('Usuario creado exitosamente', 'success');
+      setNewAccountCredentials(credentials);
+      showSnackbar('Usuario y cuenta de acceso creados.', 'success');
     } catch (error) {
       console.error('Error creating user:', error);
+      showSnackbar(error.message || 'No se pudo crear el usuario.', 'error');
     }
   };
 
@@ -442,6 +460,17 @@ function User({ menu }) {
             <Grid item xs={12}>
               <TextField
                 fullWidth
+                required
+                type="email"
+                label="Correo electrónico"
+                variant="standard"
+                value={newUser.email}
+                onChange={(e) => handleAddUserChange('email', e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
                 label="Número telefónico"
                 variant="standard"
                 value={newUser.phone}
@@ -469,6 +498,20 @@ function User({ menu }) {
           <Button onClick={handleAddUserSubmit} variant="contained">
             Crear Usuario
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={Boolean(newAccountCredentials)} onClose={() => setNewAccountCredentials(null)} fullWidth maxWidth="xs">
+        <DialogTitle>Cuenta creada</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Entregue estas credenciales al miembro. La contraseña temporal no volverá a mostrarse.
+          </Typography>
+          <TextField fullWidth label="Correo" value={newAccountCredentials?.email || ''} InputProps={{ readOnly: true }} sx={{ mb: 2 }} />
+          <TextField fullWidth label="Contraseña temporal" value={newAccountCredentials?.temporaryPassword || ''} InputProps={{ readOnly: true }} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setNewAccountCredentials(null)}>Cerrar</Button>
         </DialogActions>
       </Dialog>
 

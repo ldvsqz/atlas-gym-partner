@@ -13,6 +13,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
+import Tooltip from '@mui/material/Tooltip';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import Util from '../../assets/Util';
 import './SetStats.css';
 
@@ -86,7 +89,7 @@ const normalizeStatsForSave = (stats, uid) => {
   return normalizedStats;
 };
 
-function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSave }) {
+function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSave, buttonSx, iconOnly = false }) {
   const [statsState, setStatsState] = useState(new StatsModel());
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -135,9 +138,11 @@ function SetStats({ stats = new StatsModel(), uid = '', isEditing = false, onSav
 
   return (
     <>
-      <Button fullWidth variant="outlined" onClick={handleOpen}>
-        {isEditing ? 'Editar últimas medidas' : 'Agregar nuevas medidas'}
-      </Button>
+      <Tooltip title={isEditing ? 'Editar últimas medidas' : 'Agregar nuevas medidas'}>
+        <Button fullWidth={!iconOnly} variant="outlined" aria-label={isEditing ? 'Editar últimas medidas' : 'Agregar nuevas medidas'} onClick={handleOpen} sx={buttonSx}>
+          {iconOnly ? (isEditing ? <EditIcon /> : <AddIcon />) : (isEditing ? 'Editar últimas medidas' : 'Agregar nuevas medidas')}
+        </Button>
+      </Tooltip>
       <Dialog
         open={open}
         onClose={handleClose}
